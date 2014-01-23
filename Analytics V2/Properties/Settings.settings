@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Analytics_V2.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="hc_config" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\HC\hc.cfg</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

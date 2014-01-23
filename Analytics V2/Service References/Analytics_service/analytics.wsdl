@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Get_Path">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="type" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_PathResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_PathResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Set_Path">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="type" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="path" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Set_PathResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Set_PathResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_Function_Mandatory">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="type" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_Function_MandatoryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_Function_MandatoryResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Get_Countries">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get_CountriesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_CountriesResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_Types">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get_TypesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_TypesResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_Pucs">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get_PucsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_PucsResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Requete">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="condition" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RequeteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RequeteResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_puc">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="condition" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_pucResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Count_by_pucResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_month">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="condition" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_monthResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Count_by_monthResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_years">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="condition" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_yearsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Count_by_yearsResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_types">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="condition" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_typesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Count_by_typesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_countries">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="condition" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Count_by_countriesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Count_by_countriesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Insert">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="puc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="type" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pays" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="datamod" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="timeprocess" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="InsertResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="Get_PathSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Path" />
+  </wsdl:message>
+  <wsdl:message name="Get_PathSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_PathResponse" />
+  </wsdl:message>
+  <wsdl:message name="Set_PathSoapIn">
+    <wsdl:part name="parameters" element="tns:Set_Path" />
+  </wsdl:message>
+  <wsdl:message name="Set_PathSoapOut">
+    <wsdl:part name="parameters" element="tns:Set_PathResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_Function_MandatorySoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Function_Mandatory" />
+  </wsdl:message>
+  <wsdl:message name="Get_Function_MandatorySoapOut">
+    <wsdl:part name="parameters" element="tns:Get_Function_MandatoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_CountriesSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Countries" />
+  </wsdl:message>
+  <wsdl:message name="Get_CountriesSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_CountriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_TypesSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Types" />
+  </wsdl:message>
+  <wsdl:message name="Get_TypesSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_TypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_PucsSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Pucs" />
+  </wsdl:message>
+  <wsdl:message name="Get_PucsSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_PucsResponse" />
+  </wsdl:message>
+  <wsdl:message name="RequeteSoapIn">
+    <wsdl:part name="parameters" element="tns:Requete" />
+  </wsdl:message>
+  <wsdl:message name="RequeteSoapOut">
+    <wsdl:part name="parameters" element="tns:RequeteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_pucSoapIn">
+    <wsdl:part name="parameters" element="tns:Count_by_puc" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_pucSoapOut">
+    <wsdl:part name="parameters" element="tns:Count_by_pucResponse" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_monthSoapIn">
+    <wsdl:part name="parameters" element="tns:Count_by_month" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_monthSoapOut">
+    <wsdl:part name="parameters" element="tns:Count_by_monthResponse" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_yearsSoapIn">
+    <wsdl:part name="parameters" element="tns:Count_by_years" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_yearsSoapOut">
+    <wsdl:part name="parameters" element="tns:Count_by_yearsResponse" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_typesSoapIn">
+    <wsdl:part name="parameters" element="tns:Count_by_types" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_typesSoapOut">
+    <wsdl:part name="parameters" element="tns:Count_by_typesResponse" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_countriesSoapIn">
+    <wsdl:part name="parameters" element="tns:Count_by_countries" />
+  </wsdl:message>
+  <wsdl:message name="Count_by_countriesSoapOut">
+    <wsdl:part name="parameters" element="tns:Count_by_countriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertSoapIn">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="InsertSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:portType name="AnalyticsSoap">
+    <wsdl:operation name="Get_Path">
+      <wsdl:input message="tns:Get_PathSoapIn" />
+      <wsdl:output message="tns:Get_PathSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Set_Path">
+      <wsdl:input message="tns:Set_PathSoapIn" />
+      <wsdl:output message="tns:Set_PathSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Function_Mandatory">
+      <wsdl:input message="tns:Get_Function_MandatorySoapIn" />
+      <wsdl:output message="tns:Get_Function_MandatorySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Countries">
+      <wsdl:input message="tns:Get_CountriesSoapIn" />
+      <wsdl:output message="tns:Get_CountriesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Types">
+      <wsdl:input message="tns:Get_TypesSoapIn" />
+      <wsdl:output message="tns:Get_TypesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Pucs">
+      <wsdl:input message="tns:Get_PucsSoapIn" />
+      <wsdl:output message="tns:Get_PucsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Requete">
+      <wsdl:input message="tns:RequeteSoapIn" />
+      <wsdl:output message="tns:RequeteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_puc">
+      <wsdl:input message="tns:Count_by_pucSoapIn" />
+      <wsdl:output message="tns:Count_by_pucSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_month">
+      <wsdl:input message="tns:Count_by_monthSoapIn" />
+      <wsdl:output message="tns:Count_by_monthSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_years">
+      <wsdl:input message="tns:Count_by_yearsSoapIn" />
+      <wsdl:output message="tns:Count_by_yearsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_types">
+      <wsdl:input message="tns:Count_by_typesSoapIn" />
+      <wsdl:output message="tns:Count_by_typesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_countries">
+      <wsdl:input message="tns:Count_by_countriesSoapIn" />
+      <wsdl:output message="tns:Count_by_countriesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Insert">
+      <wsdl:input message="tns:InsertSoapIn" />
+      <wsdl:output message="tns:InsertSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AnalyticsSoap" type="tns:AnalyticsSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Get_Path">
+      <soap:operation soapAction="http://tempuri.org/Get_Path" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Set_Path">
+      <soap:operation soapAction="http://tempuri.org/Set_Path" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Function_Mandatory">
+      <soap:operation soapAction="http://tempuri.org/Get_Function_Mandatory" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Countries">
+      <soap:operation soapAction="http://tempuri.org/Get_Countries" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Types">
+      <soap:operation soapAction="http://tempuri.org/Get_Types" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Pucs">
+      <soap:operation soapAction="http://tempuri.org/Get_Pucs" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Requete">
+      <soap:operation soapAction="http://tempuri.org/Requete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_puc">
+      <soap:operation soapAction="http://tempuri.org/Count_by_puc" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_month">
+      <soap:operation soapAction="http://tempuri.org/Count_by_month" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_years">
+      <soap:operation soapAction="http://tempuri.org/Count_by_years" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_types">
+      <soap:operation soapAction="http://tempuri.org/Count_by_types" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_countries">
+      <soap:operation soapAction="http://tempuri.org/Count_by_countries" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="AnalyticsSoap12" type="tns:AnalyticsSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Get_Path">
+      <soap12:operation soapAction="http://tempuri.org/Get_Path" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Set_Path">
+      <soap12:operation soapAction="http://tempuri.org/Set_Path" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Function_Mandatory">
+      <soap12:operation soapAction="http://tempuri.org/Get_Function_Mandatory" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Countries">
+      <soap12:operation soapAction="http://tempuri.org/Get_Countries" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Types">
+      <soap12:operation soapAction="http://tempuri.org/Get_Types" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Pucs">
+      <soap12:operation soapAction="http://tempuri.org/Get_Pucs" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Requete">
+      <soap12:operation soapAction="http://tempuri.org/Requete" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_puc">
+      <soap12:operation soapAction="http://tempuri.org/Count_by_puc" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_month">
+      <soap12:operation soapAction="http://tempuri.org/Count_by_month" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_years">
+      <soap12:operation soapAction="http://tempuri.org/Count_by_years" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_types">
+      <soap12:operation soapAction="http://tempuri.org/Count_by_types" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Count_by_countries">
+      <soap12:operation soapAction="http://tempuri.org/Count_by_countries" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert">
+      <soap12:operation soapAction="http://tempuri.org/Insert" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Analytics">
+    <wsdl:port name="AnalyticsSoap" binding="tns:AnalyticsSoap">
+      <soap:address location="http://vuc0009/Zodiac%20Server%202/analytics.asmx" />
+    </wsdl:port>
+    <wsdl:port name="AnalyticsSoap12" binding="tns:AnalyticsSoap12">
+      <soap12:address location="http://vuc0009/Zodiac%20Server%202/analytics.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
