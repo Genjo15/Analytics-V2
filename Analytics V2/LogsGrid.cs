@@ -15,7 +15,7 @@ namespace Analytics_V2
     public partial class LogsGrid : UserControl
     {
         /***************************************************** Variables *****************************************************/
-        // salut
+        
         #region Variables
 
         private string _InputFileName;
@@ -29,6 +29,39 @@ namespace Analytics_V2
         private int _NumberOfDays;
         private int _NumberOfTargets;
 
+        private KryptonForm _ControlDiffForm;
+
+        private int noDiffAlerts = 0;
+        private int noDiffCriticalAlerts = 0;
+        private int noDiffFormatErrors = 0;
+        private string _NoDiffAlertsLogs;
+        private string _NoDiffCriticalAlertsLogs;
+
+        private int diffAlerts = 0;
+        private int diffCriticalAlerts = 0;
+        private int diffFormatErrors = 0;
+
+        private int durationAlerts = 0;
+        private int durationCriticalAlerts = 0;
+        private int durationFormatErrors = 0;
+
+        private int totalAudienceAlerts = 0;
+        private int totalAudienceCriticalAlerts = 0;
+        private int totalAudienceFormatErrors = 0;
+
+        private int targetAudienceAlerts = 0;
+        private int targetAudienceFormatErrors = 0;
+
+        private int indicatorAudienceAlerts = 0;
+        private int indicatorAudienceCriticalAlerts = 0;
+        private int indicatorAudienceFormatErrors = 0;
+
+        
+
+
+
+
+
 
         #endregion
 
@@ -40,6 +73,7 @@ namespace Analytics_V2
         public LogsGrid(String name, List<Process> processList, string dmPath, string inputFile, int targetsNumber)
         {
             InitializeComponent();
+            InitializeControlDiffForm();
             DataGridView.Name = name;
             _DatamodRootPath = "";
             _InputFileName = inputFile;
@@ -57,6 +91,7 @@ namespace Analytics_V2
 
             DataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
+            //_NoDiffCriticalAlertsLogs = "Critical alerts :\n";
         }
 
         #endregion
@@ -83,6 +118,15 @@ namespace Analytics_V2
                 AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
                 DataGridView.Rows.Add(row);
             }
+        }
+
+        private void InitializeControlDiffForm()
+        {
+            _ControlDiffForm = new KryptonForm();
+            _ControlDiffForm.ClientSize = new System.Drawing.Size(950, 825);
+            _ControlDiffForm.StartPosition = FormStartPosition.CenterScreen;
+            _ControlDiffForm.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.Office2010Silver;
+            _ControlDiffForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideControlDiffForm);
         }
 
         /**********************************************\
@@ -375,12 +419,18 @@ namespace Analytics_V2
                         if (file.FullName.Contains(_InputFileName.Replace(".txt", "")) && file.FullName.Contains("CONTROLDIFF.log"))
                         {
                             _ControlDiffPath = file.FullName;
-                            
                         }
                     }
 
-                    AnalyzeControlDiff(commentsCell, checkCell,_ControlDiffPath);
+                    AnalyzeControlDiffOrQHNumbers(commentsCell, checkCell, _ControlDiffPath, false);
 
+
+                    break;
+                }
+
+                case "QHNUMBERS":
+                {
+                    AnalyzeControlDiffOrQHNumbers(commentsCell, checkCell, _DatamodLogPath, true);
                     break;
                 }
 
@@ -521,33 +571,8 @@ namespace Analytics_V2
             }
         }
 
-        private void AnalyzeControlDiff(DataGridViewCell commentsCell, DataGridViewCell checkCell, string logPath)
+        private void AnalyzeControlDiffOrQHNumbers(DataGridViewCell commentsCell, DataGridViewCell checkCell, string logPath, Boolean isQH)
         {
-            //KryptonRichTextBox rtb = new KryptonRichTextBox();
-            int counter = 0;
-            int noDiffAlerts = 0;
-            int noDiffCriticalAlerts=0;
-            int noDiffFormatErrors = 0;
-            
-            int diffAlerts = 0;
-            int diffCriticalAlerts = 0;
-            int diffFormatErrors = 0;
-
-            int durationAlerts = 0;
-            int durationCriticalAlerts = 0;
-            int durationFormatErrors = 0;
-
-            int totalAudienceAlerts = 0;
-            int totalAudienceCriticalAlerts = 0;
-            int totalAudienceFormatErrors = 0;
-
-            int targetAudienceAlerts = 0;
-            int targetAudienceFormatErrors = 0;
-
-            int indicatorAudienceAlerts = 0;
-            int indicatorAudienceCriticalAlerts = 0;
-            int indicatorAudienceFormatErrors = 0;
-
             string currentCheck="";
 
             Dictionary<string, int> checkNoDiffDico = new Dictionary<string, int>();
@@ -556,7 +581,6 @@ namespace Analytics_V2
             Dictionary<string, int> checkIndicatorAudienceDico2 = new Dictionary<string, int>();
 
             commentsCell.Style.BackColor = Color.Transparent;
-            //commentsCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
             
             checkCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -569,10 +593,7 @@ namespace Analytics_V2
                 {
                     // Define current check.
                     if (line.Contains("* CHECK NO DIFF :"))
-                    {
                         currentCheck = "* CHECK NO DIFF :";
-                        //rtb.AppendText("* CHECK NO DIFF :");
-                    }
                     else if (line.Contains("* CHECK DIFF :"))
                         currentCheck = "* CHECK DIFF :";
                     else if (line.Contains("* CHECK DURATION :"))
@@ -589,184 +610,151 @@ namespace Analytics_V2
                         currentCheck = "* CHECK INDICATOR AUD :";
                     else if (line.Contains("* CHECK INDICATOR AUD BLOCK:"))
                         currentCheck = "* CHECK INDICATOR AUD BLOCK:";
+                    else if (line.Contains("== CONTROL TOTAL TV =="))
+                        currentCheck = "";
                     
-                    // Analyze current check.
-                    switch (currentCheck)
+                    if(currentCheck.Equals( "* CHECK NO DIFF :")) 
                     {
-                        case "* CHECK NO DIFF :":
+                        _NoDiffAlertsLogs= _NoDiffAlertsLogs + line + "\n";
+
+                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                            noDiffFormatErrors++;
+
+                        else if (line.Contains("NO DIFF"))
                         {
-                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                                noDiffFormatErrors++;
-                            else if (line.Contains("NO DIFF"))
-                            {
-                                checkTotalAudienceDico.Add(line.Replace(" : ", " ").Replace(" NO DIFF", ""),' ');
+                            checkTotalAudienceDico.Add(line.Replace(" : ", " ").Replace(" NO DIFF", ""), ' ');
 
-                                try
-                                {
-                                    checkNoDiffDico.Add(line.Split(new string[] { ":" }, StringSplitOptions.None)[1], 1);
-                                }
+                            if (checkNoDiffDico.ContainsKey(line.Split(new string[] { ":" }, StringSplitOptions.None)[1]))
+                                checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] = checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] + 1;
+                            else checkNoDiffDico.Add(line.Split(new string[] { ":" }, StringSplitOptions.None)[1],1);
 
-                                catch
-                                {
-                                    checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] = checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] + 1;
-                                }
-                            }
-                            
-                            break;
                         }
+                    }
                     
-                        case "* CHECK DIFF :":
+                    else if (currentCheck.Equals("* CHECK DIFF :"))
+                    {
+                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                            diffFormatErrors++;
+                        else if (line.Contains("[Moy"))
                         {
-                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                                diffFormatErrors++;
-                            else if (line.Contains("[Moy"))
-                            {
-                                diffAlerts++;
-                                int average = int.Parse(line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1]);
-                                string[] splitResult = line.Split(null);
-                                int diff = int.Parse(splitResult[splitResult.Length-5]);
+                            diffAlerts++;
+                            int average = int.Parse(line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1]);
+                            string[] splitResult = line.Split(null);
+                            int diff = int.Parse(splitResult[splitResult.Length-5]);
                                     
-                                if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
-                                    diffCriticalAlerts++;
-                            }
-                            
-
-                            break;
+                            if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
+                                diffCriticalAlerts++;
                         }
+                    }
                     
-                        case "* CHECK DURATION :":
+                    else if (currentCheck.Equals("* CHECK DURATION :"))
+                    {
+                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                            durationFormatErrors++;
+                        else if (line.Contains("[Moy"))
                         {
-                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                                durationFormatErrors++;
-                            else if (line.Contains("[Moy"))
-                            {
-                                durationAlerts++;
-                                string average = line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1];
-                                int minutes = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
-                                int seconds = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
-                                int averageSec = (minutes * 60) + seconds;
+                            durationAlerts++;
+                            string average = line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1];
+                            int minutes = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
+                            int seconds = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
+                            int averageSec = (minutes * 60) + seconds;
 
-                                string[] splitResult = line.Split(null);
-                                string duration = splitResult[splitResult.Length - 4];
-                                minutes = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
-                                seconds = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
-                                int durationSec = (minutes * 60) + seconds;
+                            string[] splitResult = line.Split(null);
+                            string duration = splitResult[splitResult.Length - 4];
+                            minutes = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
+                            seconds = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
+                            int durationSec = (minutes * 60) + seconds;
 
-                                if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
-                                    durationCriticalAlerts++;
-                            }
+                            if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
+                                durationCriticalAlerts++;
                         }
-                            
-                            break;
+                    }
+                           
 
+                    else if (currentCheck.Equals("* CHECK TOT AUD BLOCK:") ||currentCheck.Equals("* CHECK TOT AUD :"))
+                    {
+                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                            totalAudienceFormatErrors++;
 
-                        case "* CHECK TOT AUD BLOCK:":
-                        case "* CHECK TOT AUD :":
+                        else if (line.Contains("Alert : "))
                         {
-                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                                totalAudienceFormatErrors++;
-
-                            else if (line.Contains("Alert : "))
-                            {
-                                try
-                                {
-                                    checkTotalAudienceDico.Add(line.Replace("Alert : ", "").Replace(" AUDIENCES N.A OU 0", ""), ' ');
-                                    totalAudienceCriticalAlerts++;
-                                }
-
-                                catch
-                                {
-                                    totalAudienceAlerts++;
-                                }
-                            }
-                            
-                            break;
+                            if (checkTotalAudienceDico.ContainsKey(line.Replace("Alert : ", "").Replace(" AUDIENCES N.A OU 0", "")))
+                                totalAudienceAlerts++;
+                            else totalAudienceCriticalAlerts++;
                         }
+                    }
 
-                        case "* CHECK TARGET AUD BLOCK:":
-                        case "* CHECK TARGET AUD :":
+                    else if (currentCheck.Equals("* CHECK TARGET AUD BLOCK:") ||currentCheck.Equals("* CHECK TARGET AUD :"))
+                    {
+                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                            targetAudienceFormatErrors++;
+
+                        else if (line.Contains("Alert : "))
                         {
-                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                                targetAudienceFormatErrors++;
-
-                            else if (line.Contains("Alert : "))
-                            {
-                                targetAudienceAlerts++;
-                            }
-
-                            break;
+                            targetAudienceAlerts++;
                         }
+                    }
 
-                        case "* CHECK INDICATOR AUD BLOCK:":
-                        case "* CHECK INDICATOR AUD :":
+                    else if (currentCheck.Equals( "* CHECK INDICATOR AUD BLOCK:") ||currentCheck.Equals("* CHECK INDICATOR AUD :"))
+                    {
+                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                            indicatorAudienceFormatErrors++;
+                        else if (line.Contains("Alert : "))
                         {
-                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                                indicatorAudienceFormatErrors++;
-                            else if (line.Contains("Alert : "))
-                            {
-                                Regex rgx = new Regex("(Alert : )([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] )(.*)");
-                                Regex rgx2 = new Regex("(.*)( AUDIENCES N.A OU 0)(.*)");
+                            Regex rgx = new Regex("(Alert : )([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] )(.*)");
+                            Regex rgx2 = new Regex("(.*)( AUDIENCES N.A OU 0)(.*)");
                                 
-                                // 1st case : For one indicator, audience NA for the whole period
-                                if (rgx.IsMatch(line))
-                                {
-                                    Match m = rgx.Match(line);
-                                    //Console.WriteLine(m.Groups[3].Value);
+                            // 1st case : For one indicator, audience NA for the whole period
+                            if (rgx.IsMatch(line))
+                            {
+                                Match m = rgx.Match(line);
 
-                                    try
-                                    {
-                                        checkIndicatorAudienceDico.Add(m.Groups[3].Value, 1);
-                                    }
-
-                                    catch
-                                    {
-                                        checkIndicatorAudienceDico[m.Groups[3].Value] = checkIndicatorAudienceDico[m.Groups[3].Value] + 1;
-                                    }
-                                }
-
-                                // 2nd case : For one day, audience NA for all targets
-                                if (rgx2.IsMatch(line))
-                                {
-                                    Match m = rgx2.Match(line);
-                                    //Console.WriteLine(m.Groups[1].Value + m.Groups[2].Value);
-                                    try
-                                    {
-                                        checkIndicatorAudienceDico2.Add(m.Groups[1].Value + m.Groups[2].Value, 1);
-                                    }
-
-                                    catch
-                                    {
-                                        checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] = checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] + 1;
-                                    }
-                                }    
+                                if (checkIndicatorAudienceDico.ContainsKey(m.Groups[3].Value))
+                                    checkIndicatorAudienceDico[m.Groups[3].Value] = checkIndicatorAudienceDico[m.Groups[3].Value] + 1;
+                                else checkIndicatorAudienceDico.Add(m.Groups[3].Value,1);
                             }
-   
-                            break;
+
+                            // 2nd case : For one day, audience NA for all targets
+                            if (rgx2.IsMatch(line))
+                            {
+                                Match m = rgx2.Match(line);
+
+                                if (checkIndicatorAudienceDico2.ContainsKey(m.Groups[1].Value + m.Groups[2].Value))
+                                    checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] = checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] + 1;
+                                else checkIndicatorAudienceDico2.Add(m.Groups[1].Value + m.Groups[2].Value, 1);
+                            }    
                         }
-                    
-                        default: break;
                     }
                 }
 
                 file.Close();
 
+                /////////////////////////////
                 // Compute & Display results
 
-                // Check No Diff
-                checkNoDiffDico.Remove("");
-                foreach (KeyValuePair<string, int> element in checkNoDiffDico)
+                if (!isQH)
                 {
-                    if ((float)element.Value > (float)0.7 * (float)_NumberOfDays)
-                        noDiffCriticalAlerts++;
-                    noDiffAlerts = noDiffAlerts + element.Value;
+                    // Check No Diff
+                    checkNoDiffDico.Remove("");
+                    foreach (KeyValuePair<string, int> element in checkNoDiffDico)
+                    {
+                        if ((float)element.Value > (float)0.7 * (float)_NumberOfDays)
+                        {
+                            noDiffCriticalAlerts++;
+                            //_NoDiffCriticalAlertsLogs = _NoDiffCriticalAlertsLogs + "Channel " + element.Key.ToString().Replace(" NO DIFF", "") + " has " + element.Value + " days of no diffusion (over " + _NumberOfDays + " days).\n";
+                            _NoDiffCriticalAlertsLogs = _NoDiffCriticalAlertsLogs + "La chaîne " + element.Key.ToString().Replace(" NO DIFF", "") + " n'a pas été diffusée durant " + element.Value + " jours (sur les " + _NumberOfDays + ").\n";
+
+                        }
+                        noDiffAlerts = noDiffAlerts + element.Value;
+                    }
+                    commentsCell.Value = "No Diff -> Format Errors : " + noDiffFormatErrors + " - Alerts : " + noDiffAlerts + " - Crit. Alerts : " + noDiffCriticalAlerts + "\n";
+
+                    // Check Diff
+                    commentsCell.Value = commentsCell.Value + "Diff -> Format Errors : " + diffFormatErrors + " - Alerts : " + diffAlerts + " - Crit. Alerts : " + diffCriticalAlerts + "\n";
+
+                    // Check Duration
+                    commentsCell.Value = commentsCell.Value + "Duration -> Format Errors : " + durationFormatErrors + " - Alerts : " + durationAlerts + " - Crit. Alerts : " + durationCriticalAlerts + "\n";
                 }
-                commentsCell.Value = "No Diff -> Format Errors : " + noDiffFormatErrors + " - Alerts : " + noDiffAlerts + " - Crit. Alerts : " + noDiffCriticalAlerts + "\n";
-
-                // Check Diff
-                commentsCell.Value = commentsCell.Value + "Diff -> Format Errors : " + diffFormatErrors + " - Alerts : " + diffAlerts + " - Crit. Alerts : " + diffCriticalAlerts + "\n";
-
-                // Check Duration
-                commentsCell.Value = commentsCell.Value + "Duration -> Format Errors : " + durationFormatErrors + " - Alerts : " + durationAlerts + " - Crit. Alerts : " + durationCriticalAlerts + "\n";
 
                 // Check Total Audience
                 commentsCell.Value = commentsCell.Value + "Total Aud. -> Format Errors : " + totalAudienceFormatErrors + " - Alerts : " + totalAudienceAlerts + " - Crit. Alerts : " + totalAudienceCriticalAlerts + "\n";
@@ -790,6 +778,28 @@ namespace Analytics_V2
                 }
                 commentsCell.Value = commentsCell.Value + "Ind. Aud. -> Format Errors : " + indicatorAudienceFormatErrors + " - Alerts : " + indicatorAudienceAlerts + " - Crit. Alerts : " + indicatorAudienceCriticalAlerts;
 
+
+                // Create UC
+                Dictionary<string, char> criticalAlertsResume = new Dictionary<string, char>();
+                if (noDiffCriticalAlerts > 0)
+                    criticalAlertsResume.Add("CHECK NO DIFFUSION", ' ');
+                if (diffCriticalAlerts > 0)
+                    criticalAlertsResume.Add("CHECK NUMBER OF DIFFUSIONS", ' ');
+                if (durationCriticalAlerts > 0)
+                    criticalAlertsResume.Add("CHECK DURATION", ' ');
+                if (totalAudienceCriticalAlerts > 0)
+                    criticalAlertsResume.Add("CHECK TOTAL AUDIENCE", ' ');
+                if (indicatorAudienceCriticalAlerts > 0)
+                    criticalAlertsResume.Add("CHECK INDICATOR AUDIENCE", ' ');
+
+                String[] splitRes = _ControlDiffPath.Split(new string[] { "\\" }, StringSplitOptions.None);
+                _ControlDiffForm.Text = splitRes[splitRes.Length - 1];
+
+                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs);
+                _ControlDiffForm.Controls.Clear();
+                _ControlDiffForm.Controls.Add(review);
+                review.Dock = System.Windows.Forms.DockStyle.Fill;
+
             }
 
             catch (Exception ex) { Console.WriteLine(ex); }
@@ -803,48 +813,48 @@ namespace Analytics_V2
 
         private void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-                try
+            try
+            {
+                if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL") && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATEFORMAT"))
+                    System.Diagnostics.Process.Start(_DatamodLogPath);
+                else if(int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL"))
+                    System.Diagnostics.Process.Start(_LinedelPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATEFORMAT"))
+                    System.Diagnostics.Process.Start(_DateformatPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("XLS2TXT"))
+                    System.Diagnostics.Process.Start(_DatamodRootPath + "XLS2TXT_Process.log");
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("FILESPLIT"))
+                    System.Diagnostics.Process.Start(_DatamodRootPath + "FILESPLIT_Process.log");
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("COLUMNSCONCAT") || DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINESCONCAT")))
+                    System.Diagnostics.Process.Start(_DatamodLogPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATACHECKER"))
+                    System.Diagnostics.Process.Start(_DatacheckerPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("TOTALTVCONTROL"))
+                    System.Diagnostics.Process.Start(_DatamodLogPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("QHNUMBERS"))
+                    System.Diagnostics.Process.Start(_DatamodLogPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("CONTROLDIFF")))
                 {
-                    if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL") && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATEFORMAT"))
-                        System.Diagnostics.Process.Start(_DatamodLogPath);
-                    else if(int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL"))
-                        System.Diagnostics.Process.Start(_LinedelPath);
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATEFORMAT"))
-                        System.Diagnostics.Process.Start(_DateformatPath);
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("XLS2TXT"))
-                        System.Diagnostics.Process.Start(_DatamodRootPath + "XLS2TXT_Process.log");
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("FILESPLIT"))
-                        System.Diagnostics.Process.Start(_DatamodRootPath + "FILESPLIT_Process.log");
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("COLUMNSCONCAT") || DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINESCONCAT")))
-                        System.Diagnostics.Process.Start(_DatamodLogPath);
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATACHECKER"))
-                        System.Diagnostics.Process.Start(_DatacheckerPath);
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("TOTALTVCONTROL"))
-                        System.Diagnostics.Process.Start(_DatamodLogPath);
-                    else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("CONTROLDIFF")))
-                    {
-                        System.Diagnostics.Process.Start(_ControlDiffPath);
+                    //System.Diagnostics.Process.Start(_ControlDiffPath);
 
-                        //var form = new Form();
-                        //form.ClientSize = new System.Drawing.Size(950, 500);
-                        //form.StartPosition = FormStartPosition.CenterScreen;
-                        //String[] splitResult = _ControlDiffPath.Split(new string[] { "\\" }, StringSplitOptions.None);
-                        //form.Controls.Add(rtb);
-                        //rtb.Dock = System.Windows.Forms.DockStyle.Fill;
-                        //
-                        //form.Text = splitResult[splitResult.Length-1];
-                        //
-                        //form.Show(); // if you need modal window
-                    }
-
+                        
+                    _ControlDiffForm.Show();
                 }
 
-                catch(Exception ex)
-                {
-                    var result = KryptonMessageBox.Show("Unable to open file :(\n\n"+ ex, "Error opening file",
-                     MessageBoxButtons.OK,
-                     MessageBoxIcon.Error);
-                }
+            }
+
+            catch(Exception ex)
+            {
+                var result = KryptonMessageBox.Show("Unable to open file :(\n\n"+ ex, "Error opening file",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void HideControlDiffForm(object sender, FormClosingEventArgs e)
+        {
+            _ControlDiffForm.Hide();
+            e.Cancel = true; // this cancels the close event.
         }
 
         /********************************\

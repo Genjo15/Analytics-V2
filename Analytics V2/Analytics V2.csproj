@@ -178,6 +178,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="ControlDiffReview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlDiffReview.Designer.cs">
+      <DependentUpon>ControlDiffReview.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -230,6 +236,9 @@
     <Compile Include="SpecificTools.Designer.cs">
       <DependentUpon>SpecificTools.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ControlDiffReview.resx">
+      <DependentUpon>ControlDiffReview.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FileBrowser.resx">
       <DependentUpon>FileBrowser.cs</DependentUpon>
     </EmbeddedResource>

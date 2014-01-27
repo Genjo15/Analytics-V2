@@ -60,8 +60,6 @@ namespace Analytics_V2
 
         private void UpdateProgressBar(float progress)
         {
-            //while(Bar.Value < progress)
-            //    Bar.PerformStep();
             Bar.Value = (int)progress;
 
             ProgressBarGroupBox.Values.Heading = ProgressBarGroupBox.Values.Heading.Split(new string[] { " - " }, StringSplitOptions.None)[0] + " - " + progress + "%";
@@ -80,11 +78,6 @@ namespace Analytics_V2
                     ProcessSummaryRichTextBox.SelectionColor = Color.Black;
                     ProcessSummaryRichTextBox.AppendText(message);
                     break;
-
-                //case "in_progress":
-                //    ProcessSummaryRichTextBox.SelectionColor = Color.Orange;
-                //    ProcessSummaryRichTextBox.AppendText(message + "\n");
-                //    break;
 
                 case "complete":
                     ProcessSummaryRichTextBox.SelectionColor = Color.Green;
