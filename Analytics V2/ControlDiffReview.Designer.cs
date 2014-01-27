@@ -79,8 +79,10 @@
             this.checkDataGridView.Name = "checkDataGridView";
             this.checkDataGridView.ReadOnly = true;
             this.checkDataGridView.RowHeadersVisible = false;
+            this.checkDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.checkDataGridView.Size = new System.Drawing.Size(950, 157);
             this.checkDataGridView.TabIndex = 0;
+            this.checkDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.checkDataGridView_CellClick);
             // 
             // check
             // 

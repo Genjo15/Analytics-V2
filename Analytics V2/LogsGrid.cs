@@ -31,30 +31,39 @@ namespace Analytics_V2
 
         private KryptonForm _ControlDiffForm;
 
-        private int noDiffAlerts = 0;
-        private int noDiffCriticalAlerts = 0;
-        private int noDiffFormatErrors = 0;
+        private int _NoDiffAlerts = 0;
+        private int _NoDiffCriticalAlerts = 0;
+        private int _NoDiffFormatErrors = 0;
         private string _NoDiffAlertsLogs;
         private string _NoDiffCriticalAlertsLogs;
 
-        private int diffAlerts = 0;
-        private int diffCriticalAlerts = 0;
-        private int diffFormatErrors = 0;
+        private int _DiffAlerts = 0;
+        private int _DiffCriticalAlerts = 0;
+        private int _DiffFormatErrors = 0;
+        private string _DiffAlertsLogs;
+        private string _DiffCriticalAlertsLogs;
 
-        private int durationAlerts = 0;
-        private int durationCriticalAlerts = 0;
-        private int durationFormatErrors = 0;
+        private int _DurationAlerts = 0;
+        private int _DurationCriticalAlerts = 0;
+        private int _DurationFormatErrors = 0;
+        private string _DurationAlertsLogs;
+        private string _DurationCriticalAlertsLogs;
 
-        private int totalAudienceAlerts = 0;
-        private int totalAudienceCriticalAlerts = 0;
-        private int totalAudienceFormatErrors = 0;
+        private int _TotalAudienceAlerts = 0;
+        private int _TotalAudienceCriticalAlerts = 0;
+        private int _TotalAudienceFormatErrors = 0;
+        private string _TotalAudienceAlertsLogs;
+        private string _TotalAudienceCriticalAlertsLogs;
 
-        private int targetAudienceAlerts = 0;
-        private int targetAudienceFormatErrors = 0;
+        private int _TargetAudienceAlerts = 0;
+        private int _TargetAudienceFormatErrors = 0;
+        private string _TargetAudienceAlertsLogs;
 
-        private int indicatorAudienceAlerts = 0;
-        private int indicatorAudienceCriticalAlerts = 0;
-        private int indicatorAudienceFormatErrors = 0;
+        private int _IndicatorAudienceAlerts = 0;
+        private int _IndicatorAudienceCriticalAlerts = 0;
+        private int _IndicatorAudienceFormatErrors = 0;
+        private string _IndicatorAudienceAlertsLogs;
+        private string _IndicatorAudienceCriticalAlertsLogs;
 
         
 
@@ -90,8 +99,6 @@ namespace Analytics_V2
             FillGrid(processList);
 
             DataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-
-            //_NoDiffCriticalAlertsLogs = "Critical alerts :\n";
         }
 
         #endregion
@@ -618,7 +625,7 @@ namespace Analytics_V2
                         _NoDiffAlertsLogs= _NoDiffAlertsLogs + line + "\n";
 
                         if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            noDiffFormatErrors++;
+                            _NoDiffFormatErrors++;
 
                         else if (line.Contains("NO DIFF"))
                         {
@@ -633,27 +640,38 @@ namespace Analytics_V2
                     
                     else if (currentCheck.Equals("* CHECK DIFF :"))
                     {
+                        _DiffAlertsLogs += line + "\n";
                         if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            diffFormatErrors++;
+                            _DiffFormatErrors++;
                         else if (line.Contains("[Moy"))
                         {
-                            diffAlerts++;
+                            _DiffAlerts++;
                             int average = int.Parse(line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1]);
                             string[] splitResult = line.Split(null);
                             int diff = int.Parse(splitResult[splitResult.Length-5]);
-                                    
-                            if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
-                                diffCriticalAlerts++;
+
+                            //if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
+                            if ((float)diff < (float)(average / 2))
+                            {
+                                _DiffCriticalAlerts++;
+                                _DiffCriticalAlertsLogs += line + " : nombre de diffusions trop inférieur à la moyenne!\n";
+                            }
+                            else if ((float)diff > ((float)average + (float)(average / 2)))
+                            {
+                                _DiffCriticalAlerts++;
+                                _DiffCriticalAlertsLogs += line + " : nombre de diffusions trop supérieur à la moyenne!\n";
+                            }
                         }
                     }
                     
                     else if (currentCheck.Equals("* CHECK DURATION :"))
                     {
+                        _DurationAlertsLogs += line + "\n";
                         if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            durationFormatErrors++;
+                            _DurationFormatErrors++;
                         else if (line.Contains("[Moy"))
                         {
-                            durationAlerts++;
+                            _DurationAlerts++;
                             string average = line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1];
                             int minutes = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
                             int seconds = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
@@ -665,40 +683,57 @@ namespace Analytics_V2
                             seconds = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
                             int durationSec = (minutes * 60) + seconds;
 
-                            if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
-                                durationCriticalAlerts++;
+                            //if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
+                            if ((float)durationSec < (float)(averageSec / 2))
+                            {
+                                _DurationCriticalAlerts++;
+                                _DurationCriticalAlertsLogs += line + " : Durée trop inférieure à la moyenne!\n";
+                            }
+
+                            else if ((float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
+                            {
+                                _DurationCriticalAlerts++;
+                                _DurationCriticalAlertsLogs += line + " : Durée trop supérieure à la moyenne!\n";
+                            }
                         }
                     }
                            
 
                     else if (currentCheck.Equals("* CHECK TOT AUD BLOCK:") ||currentCheck.Equals("* CHECK TOT AUD :"))
                     {
+                        _TotalAudienceAlertsLogs += line + "\n";
                         if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            totalAudienceFormatErrors++;
+                            _TotalAudienceFormatErrors++;
 
                         else if (line.Contains("Alert : "))
                         {
                             if (checkTotalAudienceDico.ContainsKey(line.Replace("Alert : ", "").Replace(" AUDIENCES N.A OU 0", "")))
-                                totalAudienceAlerts++;
-                            else totalAudienceCriticalAlerts++;
+                                _TotalAudienceAlerts++;
+                            else
+                            {
+                                _TotalAudienceCriticalAlertsLogs += line.Replace(" AUDIENCES N.A OU 0","") + " Audiences nulles ou égales à 0 (alors que la chaîne est diffusée)\n";
+                                _TotalAudienceCriticalAlerts++;
+                            }
                         }
                     }
 
                     else if (currentCheck.Equals("* CHECK TARGET AUD BLOCK:") ||currentCheck.Equals("* CHECK TARGET AUD :"))
                     {
+                        _TargetAudienceAlertsLogs += line + "\n";
                         if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            targetAudienceFormatErrors++;
+                            _TargetAudienceFormatErrors++;
 
                         else if (line.Contains("Alert : "))
                         {
-                            targetAudienceAlerts++;
+                            _TargetAudienceAlerts++;
                         }
                     }
 
                     else if (currentCheck.Equals( "* CHECK INDICATOR AUD BLOCK:") ||currentCheck.Equals("* CHECK INDICATOR AUD :"))
                     {
+                        _IndicatorAudienceAlertsLogs += line + "\n";
                         if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            indicatorAudienceFormatErrors++;
+                            _IndicatorAudienceFormatErrors++;
                         else if (line.Contains("Alert : "))
                         {
                             Regex rgx = new Regex("(Alert : )([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] )(.*)");
@@ -740,62 +775,68 @@ namespace Analytics_V2
                     {
                         if ((float)element.Value > (float)0.7 * (float)_NumberOfDays)
                         {
-                            noDiffCriticalAlerts++;
-                            //_NoDiffCriticalAlertsLogs = _NoDiffCriticalAlertsLogs + "Channel " + element.Key.ToString().Replace(" NO DIFF", "") + " has " + element.Value + " days of no diffusion (over " + _NumberOfDays + " days).\n";
+                            _NoDiffCriticalAlerts++;
                             _NoDiffCriticalAlertsLogs = _NoDiffCriticalAlertsLogs + "La chaîne " + element.Key.ToString().Replace(" NO DIFF", "") + " n'a pas été diffusée durant " + element.Value + " jours (sur les " + _NumberOfDays + ").\n";
-
                         }
-                        noDiffAlerts = noDiffAlerts + element.Value;
+                        _NoDiffAlerts = _NoDiffAlerts + element.Value;
                     }
-                    commentsCell.Value = "No Diff -> Format Errors : " + noDiffFormatErrors + " - Alerts : " + noDiffAlerts + " - Crit. Alerts : " + noDiffCriticalAlerts + "\n";
+                    commentsCell.Value = "No Diff -> Format Errors : " + _NoDiffFormatErrors + " - Alerts : " + _NoDiffAlerts + " - Crit. Alerts : " + _NoDiffCriticalAlerts + "\n";
 
                     // Check Diff
-                    commentsCell.Value = commentsCell.Value + "Diff -> Format Errors : " + diffFormatErrors + " - Alerts : " + diffAlerts + " - Crit. Alerts : " + diffCriticalAlerts + "\n";
+                    commentsCell.Value = commentsCell.Value + "Diff -> Format Errors : " + _DiffFormatErrors + " - Alerts : " + _DiffAlerts + " - Crit. Alerts : " + _DiffCriticalAlerts + "\n";
 
                     // Check Duration
-                    commentsCell.Value = commentsCell.Value + "Duration -> Format Errors : " + durationFormatErrors + " - Alerts : " + durationAlerts + " - Crit. Alerts : " + durationCriticalAlerts + "\n";
+                    commentsCell.Value = commentsCell.Value + "Duration -> Format Errors : " + _DurationFormatErrors + " - Alerts : " + _DurationAlerts + " - Crit. Alerts : " + _DurationCriticalAlerts + "\n";
                 }
 
                 // Check Total Audience
-                commentsCell.Value = commentsCell.Value + "Total Aud. -> Format Errors : " + totalAudienceFormatErrors + " - Alerts : " + totalAudienceAlerts + " - Crit. Alerts : " + totalAudienceCriticalAlerts + "\n";
+                commentsCell.Value = commentsCell.Value + "Total Aud. -> Format Errors : " + _TotalAudienceFormatErrors + " - Alerts : " + _TotalAudienceAlerts + " - Crit. Alerts : " + _TotalAudienceCriticalAlerts + "\n";
 
                 // Check Target Audience
-                commentsCell.Value = commentsCell.Value + "Target Aud. -> Format Errors : " + targetAudienceFormatErrors + " - Alerts : " + targetAudienceAlerts + "\n";
+                commentsCell.Value = commentsCell.Value + "Target Aud. -> Format Errors : " + _TargetAudienceFormatErrors + " - Alerts : " + _TargetAudienceAlerts + "\n";
 
                 // Check Indicators Audience 1st case : For one indicator, audience NA for the whole period
                 foreach (KeyValuePair<string, int> element in checkIndicatorAudienceDico)
                 {
                     if (element.Value == _NumberOfDays)
-                        indicatorAudienceCriticalAlerts++;
-                    indicatorAudienceAlerts = indicatorAudienceAlerts + element.Value;
+                    {
+                        _IndicatorAudienceCriticalAlerts++;
+                        _IndicatorAudienceCriticalAlertsLogs += element.Key + " : Indicateur nul/n.a pour toute la période !\n";
+                    }
+                    _IndicatorAudienceAlerts = _IndicatorAudienceAlerts + element.Value;
                 }
                 
                 // Check Indicators Audience 2nd case : For one day, audience NA for all targets
                 foreach (KeyValuePair<string, int> element in checkIndicatorAudienceDico2)
                 {
                     if (element.Value == _NumberOfTargets)
-                        indicatorAudienceCriticalAlerts++;
+                    {
+                        _IndicatorAudienceCriticalAlerts++;
+                        _IndicatorAudienceCriticalAlertsLogs += element.Key + " : Audience nulle/n.a pour toutes les cibles ! (une journée) \n";
+                    }
                 }
-                commentsCell.Value = commentsCell.Value + "Ind. Aud. -> Format Errors : " + indicatorAudienceFormatErrors + " - Alerts : " + indicatorAudienceAlerts + " - Crit. Alerts : " + indicatorAudienceCriticalAlerts;
+                commentsCell.Value = commentsCell.Value + "Ind. Aud. -> Format Errors : " + _IndicatorAudienceFormatErrors + " - Alerts : " + _IndicatorAudienceAlerts + " - Crit. Alerts : " + _IndicatorAudienceCriticalAlerts;
 
 
+                /////////////
                 // Create UC
+
                 Dictionary<string, char> criticalAlertsResume = new Dictionary<string, char>();
-                if (noDiffCriticalAlerts > 0)
+                if (_NoDiffCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK NO DIFFUSION", ' ');
-                if (diffCriticalAlerts > 0)
+                if (_DiffCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK NUMBER OF DIFFUSIONS", ' ');
-                if (durationCriticalAlerts > 0)
+                if (_DurationCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK DURATION", ' ');
-                if (totalAudienceCriticalAlerts > 0)
+                if (_TotalAudienceCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK TOTAL AUDIENCE", ' ');
-                if (indicatorAudienceCriticalAlerts > 0)
+                if (_IndicatorAudienceCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK INDICATOR AUDIENCE", ' ');
 
                 String[] splitRes = _ControlDiffPath.Split(new string[] { "\\" }, StringSplitOptions.None);
                 _ControlDiffForm.Text = splitRes[splitRes.Length - 1];
 
-                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs);
+                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs, _DiffAlertsLogs, _DiffCriticalAlertsLogs, _DurationAlertsLogs, _DurationCriticalAlertsLogs, _TotalAudienceAlertsLogs, _TotalAudienceCriticalAlertsLogs, _TargetAudienceAlertsLogs, _IndicatorAudienceAlertsLogs, _IndicatorAudienceCriticalAlertsLogs);
                 _ControlDiffForm.Controls.Clear();
                 _ControlDiffForm.Controls.Add(review);
                 review.Dock = System.Windows.Forms.DockStyle.Fill;
