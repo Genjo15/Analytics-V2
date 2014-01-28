@@ -60,7 +60,10 @@ namespace Analytics_V2
 
         private void UpdateProgressBar(float progress)
         {
+            //if ((int)progress > 100)
+            //    progress = 100;
             Bar.Value = (int)progress;
+
 
             ProgressBarGroupBox.Values.Heading = ProgressBarGroupBox.Values.Heading.Split(new string[] { " - " }, StringSplitOptions.None)[0] + " - " + progress + "%";
         }

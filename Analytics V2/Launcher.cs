@@ -185,8 +185,8 @@ namespace Analytics_V2
                 // Create LogsGrid, analyze it and add it to the control.
                 UpdateRichTextBox("title", "*** ANALYZE LOGS ***");
                 AddLogsGridView(_DatamodPath, originalProcessedFile);
-                counter++;
-                UpdateRichTextBox("complete", "\n      |-->Complete!");
+                counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                UpdateRichTextBox("complete", "      |-->Complete!");
                 UpdateProgressBar(counter);
 
 
@@ -807,7 +807,7 @@ namespace Analytics_V2
 
         private void UpdateProgressBar(float counter)
         {
-            _Progress = (counter / (float)(_NumberOfProcesses + 1)) * 100; // +1 for the process of analyzing logs.
+            _Progress = (counter / (float)(_NumberOfProcesses + 1)) * 100; // +Filecounter for the processes of analyzing logs.
             _UpdateProgressBar.DynamicInvoke(new int[] { _ID, (int)_Progress });
         }
 

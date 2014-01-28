@@ -26,7 +26,7 @@ namespace Analytics_V2
         private string _IndicatorAudienceAlertsLogs;
         private string _IndicatorAudienceCriticalAlertsLogs;
 
-        public ControlDiffReview(Dictionary<string, char> toHighlightDico, string noDiffAlerts, string noDiffCriticalAlerts, string diffAlerts, string diffCriticalAlerts, string durationAlerts, string durationCriticalAlerts, string totalAudienceAlerts, string totalAudienceCriticalAlerts, string targetAudienceAlerts, string indicatorAudienceAlerts, string indicatorAudienceCriticalAlerts)
+        public ControlDiffReview(Dictionary<string, char> toHighlightDico, string noDiffAlerts, string noDiffCriticalAlerts, string diffAlerts, string diffCriticalAlerts, string durationAlerts, string durationCriticalAlerts, string totalAudienceAlerts, string totalAudienceCriticalAlerts, string targetAudienceAlerts, string indicatorAudienceAlerts, string indicatorAudienceCriticalAlerts, Boolean isQH)
         {
             InitializeComponent();
 
@@ -42,9 +42,12 @@ namespace Analytics_V2
             _IndicatorAudienceAlertsLogs = indicatorAudienceAlerts;
             _IndicatorAudienceCriticalAlertsLogs = indicatorAudienceCriticalAlerts;
 
-            controlsList.Add("CHECK NO DIFFUSION");
-            controlsList.Add("CHECK NUMBER OF DIFFUSIONS");
-            controlsList.Add("CHECK DURATION");
+            if (!isQH)
+            {
+                controlsList.Add("CHECK NO DIFFUSION");
+                controlsList.Add("CHECK NUMBER OF DIFFUSIONS");
+                controlsList.Add("CHECK DURATION");
+            }
             controlsList.Add("CHECK TOTAL AUDIENCE");
             controlsList.Add("CHECK TARGET AUDIENCE");
             controlsList.Add("CHECK INDICATOR AUDIENCE");
@@ -69,12 +72,14 @@ namespace Analytics_V2
 
             checkDataGridView.AllowUserToAddRows = false;
 
-            alertsRichTextBox.Text = _NoDiffAlertsLogs;
+            if (!isQH) alertsRichTextBox.Text = _NoDiffAlertsLogs;
+            else alertsRichTextBox.Text = _TotalAudienceAlertsLogs;
             criticalAlertsRichTextBox.SelectionFont = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             criticalAlertsRichTextBox.SelectionColor = Color.Red;
-            if (!string.IsNullOrEmpty(_NoDiffCriticalAlertsLogs))
+            if (!isQH && !string.IsNullOrEmpty(_NoDiffCriticalAlertsLogs))
                 criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _NoDiffCriticalAlertsLogs);
-
+            else if(isQH && !string.IsNullOrEmpty(_TotalAudienceCriticalAlertsLogs))
+                criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _TotalAudienceCriticalAlertsLogs);
 
            
         }

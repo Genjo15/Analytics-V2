@@ -25,6 +25,7 @@ namespace Analytics_V2
         private string _DateformatPath;
         private string _ControlDiffPath;
         private string _DatacheckerPath;
+        private string _HCPath;
 
         private int _NumberOfDays;
         private int _NumberOfTargets;
@@ -33,7 +34,7 @@ namespace Analytics_V2
 
         private int _NoDiffAlerts = 0;
         private int _NoDiffCriticalAlerts = 0;
-        private int _NoDiffFormatErrors = 0;
+        private int _NoDiffFormatErrors = 0; 
         private string _NoDiffAlertsLogs;
         private string _NoDiffCriticalAlertsLogs;
 
@@ -41,10 +42,10 @@ namespace Analytics_V2
         private int _DiffCriticalAlerts = 0;
         private int _DiffFormatErrors = 0;
         private string _DiffAlertsLogs;
-        private string _DiffCriticalAlertsLogs;
+        private string _DiffCriticalAlertsLogs; 
 
         private int _DurationAlerts = 0;
-        private int _DurationCriticalAlerts = 0;
+        private int _DurationCriticalAlerts = 0; 
         private int _DurationFormatErrors = 0;
         private string _DurationAlertsLogs;
         private string _DurationCriticalAlertsLogs;
@@ -87,6 +88,7 @@ namespace Analytics_V2
             _DatamodRootPath = "";
             _InputFileName = inputFile;
             _DatacheckerPath = dmPath.Replace(".txt", "_dc.log");
+            _HCPath = dmPath.Replace(".txt", "_hc.log");
 
             _NumberOfDays = NumberOfDays(dmPath);
             _NumberOfTargets = targetsNumber;
@@ -99,6 +101,18 @@ namespace Analytics_V2
             FillGrid(processList);
 
             DataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            _NoDiffAlertsLogs = "";
+            _NoDiffCriticalAlertsLogs = "";
+            _DiffAlertsLogs = "";
+            _DiffCriticalAlertsLogs = "";
+            _DurationAlertsLogs = "";
+            _DurationCriticalAlertsLogs = "";
+            _TotalAudienceAlertsLogs = "";
+            _TotalAudienceCriticalAlertsLogs = "";
+            _TargetAudienceAlertsLogs = "";
+            _IndicatorAudienceAlertsLogs = "";
+            _IndicatorAudienceCriticalAlertsLogs = "";
         }
 
         #endregion
@@ -109,7 +123,7 @@ namespace Analytics_V2
 
         private void FillGrid(List<Process> processList)
         {
-            for(int i = 0; i<processList.Count;i++)
+            for (int i = 0; i < processList.Count; i++)
             {
                 int occurrenceCounter = 0;
                 DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
@@ -124,7 +138,22 @@ namespace Analytics_V2
 
                 AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
                 DataGridView.Rows.Add(row);
+
+                
             }
+
+            //////////
+            // For HC
+
+            if (File.Exists(_HCPath))
+            {
+                DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
+                row.Cells[1].Value = "HC";
+                AnalyzeHC(row.Cells[2], row.Cells[3], _HCPath);
+                DataGridView.Rows.Add(row);
+            }
+
+            DataGridView.AllowUserToAddRows = false;
         }
 
         private void InitializeControlDiffForm()
@@ -460,7 +489,6 @@ namespace Analytics_V2
             }
         }
 
-
         /*************************************\
          * Analyze the process :             *
          *   - Define graphical display.     *
@@ -529,8 +557,8 @@ namespace Analytics_V2
             {
                 commentsCell.Value = "Alerts : " + warningCounter;
                 checkCell.Value = "Warning";
-                checkCell.Style.ForeColor = System.Drawing.Color.Orange;
-                commentsCell.Style.ForeColor = System.Drawing.Color.Orange;
+                checkCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
+                commentsCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
 
                 if (processToAnalyze.Contains("VALUECHECKER") && informationCounter > 0)
                     commentsCell.Value = "Alerts : " + warningCounter + ". Replacements : " + informationCounter;
@@ -577,6 +605,16 @@ namespace Analytics_V2
                 checkCell.Style.ForeColor = System.Drawing.Color.Green;
             }
         }
+
+        /********************************************\
+         * Analyze CONTROLDIFF/QHNUMBER :           *
+         *   - Go through the file, for each line : *
+         *        . Define current check            *
+         *        . Perform specific check          *
+         *        . Compute result                  *
+         *        . Fill cells                      *
+         *        . Create User Control             *
+        \********************************************/
 
         private void AnalyzeControlDiffOrQHNumbers(DataGridViewCell commentsCell, DataGridViewCell checkCell, string logPath, Boolean isQH)
         {
@@ -780,20 +818,7 @@ namespace Analytics_V2
                         }
                         _NoDiffAlerts = _NoDiffAlerts + element.Value;
                     }
-                    commentsCell.Value = "No Diff -> Format Errors : " + _NoDiffFormatErrors + " - Alerts : " + _NoDiffAlerts + " - Crit. Alerts : " + _NoDiffCriticalAlerts + "\n";
-
-                    // Check Diff
-                    commentsCell.Value = commentsCell.Value + "Diff -> Format Errors : " + _DiffFormatErrors + " - Alerts : " + _DiffAlerts + " - Crit. Alerts : " + _DiffCriticalAlerts + "\n";
-
-                    // Check Duration
-                    commentsCell.Value = commentsCell.Value + "Duration -> Format Errors : " + _DurationFormatErrors + " - Alerts : " + _DurationAlerts + " - Crit. Alerts : " + _DurationCriticalAlerts + "\n";
                 }
-
-                // Check Total Audience
-                commentsCell.Value = commentsCell.Value + "Total Aud. -> Format Errors : " + _TotalAudienceFormatErrors + " - Alerts : " + _TotalAudienceAlerts + " - Crit. Alerts : " + _TotalAudienceCriticalAlerts + "\n";
-
-                // Check Target Audience
-                commentsCell.Value = commentsCell.Value + "Target Aud. -> Format Errors : " + _TargetAudienceFormatErrors + " - Alerts : " + _TargetAudienceAlerts + "\n";
 
                 // Check Indicators Audience 1st case : For one indicator, audience NA for the whole period
                 foreach (KeyValuePair<string, int> element in checkIndicatorAudienceDico)
@@ -805,7 +830,7 @@ namespace Analytics_V2
                     }
                     _IndicatorAudienceAlerts = _IndicatorAudienceAlerts + element.Value;
                 }
-                
+
                 // Check Indicators Audience 2nd case : For one day, audience NA for all targets
                 foreach (KeyValuePair<string, int> element in checkIndicatorAudienceDico2)
                 {
@@ -815,8 +840,34 @@ namespace Analytics_V2
                         _IndicatorAudienceCriticalAlertsLogs += element.Key + " : Audience nulle/n.a pour toutes les cibles ! (une journée) \n";
                     }
                 }
-                commentsCell.Value = commentsCell.Value + "Ind. Aud. -> Format Errors : " + _IndicatorAudienceFormatErrors + " - Alerts : " + _IndicatorAudienceAlerts + " - Crit. Alerts : " + _IndicatorAudienceCriticalAlerts;
 
+                int totalFormatErrors = _NoDiffFormatErrors+ _DiffFormatErrors+ _DurationFormatErrors+ _TotalAudienceFormatErrors +_TargetAudienceFormatErrors+ _IndicatorAudienceFormatErrors;
+                int totalAlerts = _NoDiffAlerts + _DiffAlerts + _DurationAlerts + _TotalAudienceAlerts + _TargetAudienceAlerts + _IndicatorAudienceAlerts;
+                int totalCriticalAlerts = _NoDiffCriticalAlerts + _DiffCriticalAlerts + _DurationCriticalAlerts + _TotalAudienceCriticalAlerts + _IndicatorAudienceCriticalAlerts;
+                commentsCell.Value = "Total Format Error : " + totalFormatErrors + "\nTotal Alerts : " + totalAlerts + "\nTotal Critical Alerts : " + totalCriticalAlerts;
+
+                // Fill cells
+
+                if (totalCriticalAlerts > 0)
+                {
+                    checkCell.Value = "ALERT";
+                    checkCell.Style.ForeColor = System.Drawing.Color.Red;
+                    commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+                }
+
+                else if (totalAlerts > 0)
+                {
+                    checkCell.Value = "Warning";
+                    checkCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
+                    commentsCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
+                }
+
+                else
+                {
+                    checkCell.Value = "OK";
+                    checkCell.Style.ForeColor = System.Drawing.Color.Green;
+                    commentsCell.Style.ForeColor = System.Drawing.Color.Green;
+                }
 
                 /////////////
                 // Create UC
@@ -833,19 +884,75 @@ namespace Analytics_V2
                 if (_IndicatorAudienceCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK INDICATOR AUDIENCE", ' ');
 
-                String[] splitRes = _ControlDiffPath.Split(new string[] { "\\" }, StringSplitOptions.None);
-                _ControlDiffForm.Text = splitRes[splitRes.Length - 1];
+                if (!isQH)
+                {
+                    String[] splitRes = _ControlDiffPath.Split(new string[] { "\\" }, StringSplitOptions.None);
+                    _ControlDiffForm.Text = splitRes[splitRes.Length - 1];
+                }
+                else
+                {
+                    String[] splitRes = _DatamodLogPath.Split(new string[] { "\\" }, StringSplitOptions.None);
+                    _ControlDiffForm.Text = splitRes[splitRes.Length - 1];
+                }
 
-                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs, _DiffAlertsLogs, _DiffCriticalAlertsLogs, _DurationAlertsLogs, _DurationCriticalAlertsLogs, _TotalAudienceAlertsLogs, _TotalAudienceCriticalAlertsLogs, _TargetAudienceAlertsLogs, _IndicatorAudienceAlertsLogs, _IndicatorAudienceCriticalAlertsLogs);
+                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs, _DiffAlertsLogs, _DiffCriticalAlertsLogs, _DurationAlertsLogs, _DurationCriticalAlertsLogs, _TotalAudienceAlertsLogs, _TotalAudienceCriticalAlertsLogs, _TargetAudienceAlertsLogs, _IndicatorAudienceAlertsLogs, _IndicatorAudienceCriticalAlertsLogs, isQH);
                 _ControlDiffForm.Controls.Clear();
                 _ControlDiffForm.Controls.Add(review);
                 review.Dock = System.Windows.Forms.DockStyle.Fill;
-
             }
 
             catch (Exception ex) { Console.WriteLine(ex); }
 
 
+        }
+
+        /********************************************\
+         * Analyze Header Consistency Log :         *
+
+        \********************************************/
+
+        private void AnalyzeHC(DataGridViewCell commentsCell, DataGridViewCell checkCell, string HCPath)
+        {
+            Boolean error = false;
+            string line;
+
+            try
+            {
+                System.IO.StreamReader file = new System.IO.StreamReader(HCPath);
+
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line.Contains("values dismatches"))
+                    {
+                        error = true;
+                        commentsCell.Value = "Values dismatches";
+                    }
+                    else if (line.Contains("Country or configuration file not found"))
+                    {
+                        error = true;
+                        commentsCell.Value = "Country or configuration file not found";
+                    }
+                }
+
+                file.Close();
+            }
+
+            catch (Exception ex) { Console.WriteLine(ex); }
+
+            if (error)
+            {
+                checkCell.Value = "WARNING";
+                checkCell.Style.ForeColor = System.Drawing.Color.Red;
+                commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+            }
+
+            else
+            {
+                commentsCell.Value = "Values matches";
+                checkCell.Value = "OK";
+                checkCell.Style.ForeColor = System.Drawing.Color.Green;
+                commentsCell.Style.ForeColor = System.Drawing.Color.Green;
+            }
         }
 
         /********************************************\
@@ -856,7 +963,9 @@ namespace Analytics_V2
         {
             try
             {
-                if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL") && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATEFORMAT"))
+                if (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("HC"))
+                    System.Diagnostics.Process.Start(_HCPath);
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL") && !DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("DATEFORMAT"))
                     System.Diagnostics.Process.Start(_DatamodLogPath);
                 else if(int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 0 && int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("LINEDEL"))
                     System.Diagnostics.Process.Start(_LinedelPath);
@@ -872,16 +981,8 @@ namespace Analytics_V2
                     System.Diagnostics.Process.Start(_DatacheckerPath);
                 else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("TOTALTVCONTROL"))
                     System.Diagnostics.Process.Start(_DatamodLogPath);
-                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("QHNUMBERS"))
-                    System.Diagnostics.Process.Start(_DatamodLogPath);
-                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("CONTROLDIFF")))
-                {
-                    //System.Diagnostics.Process.Start(_ControlDiffPath);
-
-                        
+                else if ((int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("CONTROLDIFF"))) || (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("QHNUMBERS")))
                     _ControlDiffForm.Show();
-                }
-
             }
 
             catch(Exception ex)
@@ -891,6 +992,10 @@ namespace Analytics_V2
                     MessageBoxIcon.Error);
             }
         }
+
+        /*************************\
+         * Hide the user control *
+        \*************************/
 
         private void HideControlDiffForm(object sender, FormClosingEventArgs e)
         {
@@ -921,7 +1026,6 @@ namespace Analytics_V2
 
             return numberOfDays;
         }
-
 
         #endregion
 
