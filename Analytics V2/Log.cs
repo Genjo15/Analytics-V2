@@ -19,15 +19,8 @@ namespace Analytics_V2
         private KryptonComboBox _ComboBox;
         private List<LogsGrid> _LogsGridViewList;
 
-        //private delegate void processOnLog(List<String> strLst, List<Process> pl);
-        //private processOnLog _InitializeLogsGridViewDel;
-
         private delegate void processOnLog(string outputFile, string inputFile, List<Process> pl, int number);
         private processOnLog _AddLogsGridViewDel;
-
-
-
-        
 
         #endregion
 
@@ -83,22 +76,6 @@ namespace Analytics_V2
         /****************************************************** Methods ******************************************************/
 
         #region Methods
-
-        //private void InitializeLogsGridView(List<String> datamodsList, List<Process> processList)
-        //{
-        //    for (int i = 0; i < datamodsList.Count - 1; i++ ) // Warning, the last element is the ID (not used here). So we finish at count-1.
-        //    {
-        //        String[] splitResult = datamodsList[i].Split(new char[] { '\\' });
-        //        _ComboBox.Items.Add(splitResult[splitResult.Length-1]); // datamod name.
-        //
-        //        _LogsGridViewList.Add(new LogsGrid(splitResult[splitResult.Length - 1], processList, datamodsList[i]));
-        //    }
-        //
-        //    //_SplitContainer.Panel1.Controls.Add(_ComboBox);
-        //    //_ComboBox.SelectedIndexChanged += new EventHandler(DisplayLogsGridView);
-        //    _SplitContainer.Panel2.Controls.Add(_LogsGridViewList[0]);
-        //    _ComboBox.SelectedIndex = 0;
-        //}
 
         private void AddLogsGridView(string outputFile, string inputFile, List<Process> processList, int targetsNumber)
         {

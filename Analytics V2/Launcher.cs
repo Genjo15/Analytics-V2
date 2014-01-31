@@ -39,11 +39,7 @@ namespace Analytics_V2
         private Delegate _UpdateRichTextBox;  // Delegate (for invoking the method which update the RTB).
         //private Delegate _CreateLogsGridView; // Delegate (for creating the grid view with the combo box).
         private Delegate _AddLogsGridView; // Delegate (for adding the grid view with the combo box).
-
-       // private delegate string process();    // Delegate type.
-       // private process _GetCurrentFileDel;   // Delegate for getting the current file.
-
-       
+   
         #endregion
 
         /**************************************************** Constructor ****************************************************/
@@ -82,9 +78,7 @@ namespace Analytics_V2
 
             _UpdateProgressBar = del;
             _UpdateRichTextBox = del2;
-            //_CreateLogsGridView = del3;
             _AddLogsGridView = del3;
-            //_GetCurrentFileDel = new process(Get_CurrentFile);
         }
 
         #endregion
@@ -134,8 +128,6 @@ namespace Analytics_V2
                 string originalProcessedFile = processedFile.Replace("_1.txt", ".txt");
                 _FileCounter++;
                 _CurrentFile = processedFile;
-
-                //tmp_launcher.datamod = System.IO.Path.GetDirectoryName(tmp_launcher.current_file) & "\" & (System.IO.Path.GetFileNameWithoutExtension(tmp_launcher.current_file) & "_new.txt")
 
                  _DatamodPath = Path.GetDirectoryName(processedFile) + "\\" + Path.GetFileNameWithoutExtension(processedFile) + "_new.txt";
 
@@ -191,10 +183,6 @@ namespace Analytics_V2
 
 
             }
-
-            //// Create Logs Datagrid View
-            //if(_OutputFiles.Count>0)
-            //    CreateLogsGridView();
         }
 
 
@@ -820,12 +808,6 @@ namespace Analytics_V2
         /***************************************\
          * Create datagrid view with combo box *
         \***************************************/
-
-        //private void CreateLogsGridView()
-        //{
-        //    _OutputFiles.Add(_ID.ToString());
-        //    _CreateLogsGridView.DynamicInvoke(_OutputFiles,_Config.Get_ProcessList());
-        //}
 
         private void AddLogsGridView(string outputFile, string inputFile)
         {

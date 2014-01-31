@@ -45,8 +45,6 @@ namespace Analytics_V2
         private processOnMainThread _UpdateProgressBarDel;                                  // Delegate for updating the progress bar.
         private delegate void processOnMainThread2(String[] tab);                           // Delegate type2.
         private processOnMainThread2 _UpdateRichTextBoxDel;                                 // Delegate for updating the RTB.
-        //private delegate void processOnMainThread3(List<String> strList, List<Process> pl); // Delegate type3.
-        //private processOnMainThread3 _CreateLogsGridViewDel;                                // Delegate for creating the logs grid view.
         private delegate void processOnMainThread3(int i, string str, string str2, List<Process> pl, int number); // Delegate type3.
         private processOnMainThread3 _AddLogsGridViewDel;                                             // Delegate for adding the logs grid view.
 

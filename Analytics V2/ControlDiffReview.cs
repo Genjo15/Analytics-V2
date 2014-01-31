@@ -12,7 +12,7 @@ namespace Analytics_V2
 {
     public partial class ControlDiffReview : UserControl
     {
-        private List<string> controlsList = new List<string>();
+        private List<string> _ControlsList = new List<string>();
 
         private string _NoDiffAlertsLogs;
         private string _NoDiffCriticalAlertsLogs;
@@ -44,15 +44,15 @@ namespace Analytics_V2
 
             if (!isQH)
             {
-                controlsList.Add("CHECK NO DIFFUSION");
-                controlsList.Add("CHECK NUMBER OF DIFFUSIONS");
-                controlsList.Add("CHECK DURATION");
+                _ControlsList.Add("CHECK NO DIFFUSION");
+                _ControlsList.Add("CHECK NUMBER OF DIFFUSIONS");
+                _ControlsList.Add("CHECK DURATION");
             }
-            controlsList.Add("CHECK TOTAL AUDIENCE");
-            controlsList.Add("CHECK TARGET AUDIENCE");
-            controlsList.Add("CHECK INDICATOR AUDIENCE");
+            _ControlsList.Add("CHECK TOTAL AUDIENCE");
+            _ControlsList.Add("CHECK TARGET AUDIENCE");
+            _ControlsList.Add("CHECK INDICATOR AUDIENCE");
 
-            foreach (string element in controlsList)
+            foreach (string element in _ControlsList)
             {
                 DataGridViewRow row = (DataGridViewRow)checkDataGridView.Rows[0].Clone();
                 row.Cells[0].Value = element;

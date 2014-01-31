@@ -16,11 +16,11 @@ namespace Analytics_V2
 
         #region Variables
 
-        private DirectoryInfo _Root;           // Directory info of the root.
-        private DirectoryInfo[] _Directories;  // Array of directories.
-        private FileInfo[] _Files;             // Array of files.
-        private List<string> _ExpandedNodes; // List of all expanded nodes.
-        private AnalyticsWebService.AnalyticsSoapClient _Request;
+        private DirectoryInfo _Root;                              // Directory info of the root.
+        private DirectoryInfo[] _Directories;                     // Array of directories.
+        private FileInfo[] _Files;                                // Array of files.
+        private List<string> _ExpandedNodes;                      // List of all expanded nodes.
+        private AnalyticsWebService.AnalyticsSoapClient _Request; // Webservice instance.
         private string _Path;
 
 
@@ -174,19 +174,6 @@ namespace Analytics_V2
             }
             //}
         }
-
-        /**************************\
-         * Expand all saved nodes *
-        \**************************/
-
-        //public void ExpandNodes()
-        //{
-        //    foreach (TreeNode element in _ExpandedNodes)
-        //    {
-        //        if (element != null)
-        //             element.Expand();
-        //    }
-        //}
 
         #endregion
 

@@ -66,13 +66,6 @@ namespace Analytics_V2
         private string _IndicatorAudienceAlertsLogs;
         private string _IndicatorAudienceCriticalAlertsLogs;
 
-        
-
-
-
-
-
-
         #endregion
 
 
@@ -121,6 +114,13 @@ namespace Analytics_V2
 
         #region Methods
 
+        /***********************************\
+         * Fill grid:                      *
+         * - Instanciate row               *
+         * - Fill it by analysing cotnrol  *
+         * - add it to the grid.           *
+        \***********************************/
+
         private void FillGrid(List<Process> processList)
         {
             for (int i = 0; i < processList.Count; i++)
@@ -137,9 +137,7 @@ namespace Analytics_V2
 
 
                 AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
-                DataGridView.Rows.Add(row);
-
-                
+                DataGridView.Rows.Add(row);    
             }
 
             //////////
@@ -906,10 +904,9 @@ namespace Analytics_V2
 
         }
 
-        /********************************************\
-         * Analyze Header Consistency Log :         *
-
-        \********************************************/
+        /**********************************\
+         * Analyze Header Consistency Log *
+        \**********************************/
 
         private void AnalyzeHC(DataGridViewCell commentsCell, DataGridViewCell checkCell, string HCPath)
         {

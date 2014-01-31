@@ -35,12 +35,6 @@ namespace Analytics_V2
             InitializeComponent();
 
             this.Dock = System.Windows.Forms.DockStyle.Top;
-            //this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            //| System.Windows.Forms.AnchorStyles.Left)
-            //| System.Windows.Forms.AnchorStyles.Right)));
-
-            
-
 
             ProgressBarGroupBox.Values.Heading = name;
             _UpdateProgressBarDel = new processOnProgressBar(UpdateProgressBar);
@@ -51,8 +45,6 @@ namespace Analytics_V2
 
 
             _Expand = false;
-            //this.Height = 54;
-            //ProgressBarGroupBox.Height = 54;
 
             this.Height = 47;
             ProgressBarGroupBox.Height = 47;
@@ -127,7 +119,6 @@ namespace Analytics_V2
                 _Expand = false;
             }
         }
-
 
         #endregion
 

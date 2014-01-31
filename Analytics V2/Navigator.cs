@@ -23,8 +23,6 @@ namespace Analytics_V2
 
         private List<KryptonHeaderGroup> _ProcessHeaderGroupList; // List of KryptonHeaderGroup.
         private KryptonGroupBox _WarningGroupBox;                 // Groupbox containing warning.
-        //internal FlowLayoutPanel _LayoutPanel;
-        //internal TableLayoutPanel _TableLayoutPanel;
 
 
 
@@ -39,28 +37,7 @@ namespace Analytics_V2
             InitializeComponent();
             _ProcessHeaderGroupList = new List<KryptonHeaderGroup>();
             CreateWarningGroupBox();
-            this.Dock = System.Windows.Forms.DockStyle.Fill;
-
-            //_LayoutPanel = new FlowLayoutPanel();
-            //_LayoutPanel.FlowDirection = FlowDirection.TopDown;
-            //_LayoutPanel.AutoScroll = true;
-            //_LayoutPanel.WrapContents = false;
-            //_LayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            //_LayoutPanel.Dock = DockStyle.Fill;
-            //_LayoutPanel.Location = new System.Drawing.Point(0, 0);
-            //ProgressGroupBox.Panel.Controls.Add(_LayoutPanel);
-            //_LayoutPanel.SizeChanged += new System.EventHandler(ResizeChilds);
-
-            //_TableLayoutPanel = new TableLayoutPanel();
-            //_TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            //_TableLayoutPanel.ColumnCount = 1;
-            //_TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            //_TableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            //_TableLayoutPanel.RowCount = 1;
-            //_TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            //ProgressGroupBox.Panel.Controls.Add(_TableLayoutPanel);
-            
-            
+            this.Dock = System.Windows.Forms.DockStyle.Fill;           
         }
 
         #endregion
@@ -108,7 +85,6 @@ namespace Analytics_V2
         {
             _ProcessHeaderGroupList = new List<KryptonHeaderGroup>();
             this.SummarySplitContainer1.Panel1.Controls.Clear();
-            //int i=0;
 
             // Display the name of the config
             KryptonHeader header = new KryptonHeader();
@@ -143,8 +119,6 @@ namespace Analytics_V2
      
             }
 
-            //this.SummarySplitContainer1.Panel1.Controls.Add(launchButton);
-
             _ProcessHeaderGroupList.Reverse();
             foreach(KryptonHeaderGroup element in _ProcessHeaderGroupList)
                 this.SummarySplitContainer1.Panel1.Controls.Add(element);
@@ -158,12 +132,7 @@ namespace Analytics_V2
             }
 
             this.SummarySplitContainer1.Panel1.Controls.Add(header);
-     
-            //while (i < _ProcessHeaderGroupList[0].Width - (launchButton.Location.X + launchButton.Width))
-            //{
-            //    i++;
-            //    launchButton.Location = new System.Drawing.Point(i, _ProcessHeaderGroupList[0].Location.Y + 38);
-            //}
+   
         }
 
 
@@ -327,34 +296,6 @@ namespace Analytics_V2
             }
         }
 
-       // private void ResizeChilds(object sender, EventArgs e)
-       // {
-       //     var controlList = GetControlHierarchy(_LayoutPanel).ToList();
-       // 
-       //     foreach (var control in controlList)
-       //     {
-       //         control.Width = this.Width -10;
-       //     }
-       // }
-       // 
-       // private IEnumerable<Control> GetControlHierarchy(Control root)
-       // {
-       //     var queue = new Queue<Control>();
-       // 
-       //     queue.Enqueue(root);
-       // 
-       //     do
-       //     {
-       //         var control = queue.Dequeue();
-       // 
-       //         yield return control;
-       // 
-       //         foreach (var child in control.Controls.OfType<Control>())
-       //             queue.Enqueue(child);
-       // 
-       //     } while (queue.Count > 0);
-       // 
-       // }
         #endregion
 
         #region Accessors

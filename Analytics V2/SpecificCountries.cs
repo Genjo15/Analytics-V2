@@ -34,8 +34,6 @@ namespace Analytics_V2
             SpecificCountriesListBox.DataSource = _SpecificCountriesList;
         }
 
-
-
         #endregion
 
 
