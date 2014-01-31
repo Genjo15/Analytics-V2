@@ -53,7 +53,6 @@ namespace Analytics_V2
             _SpecificToolsList.Add("Datachecking");
             _SpecificToolsList.Add("Data Inspector");
             _SpecificToolsList.Add("Gestion de fichiers");
-            _SpecificToolsList.Add("Productions Mediaset");
             _SpecificToolsList.Add("XML Editor (beta)");
         }
 

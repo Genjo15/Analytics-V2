@@ -135,11 +135,6 @@
             this.ProgressGroupBox.Location = new System.Drawing.Point(5, 5);
             this.ProgressGroupBox.Name = "ProgressGroupBox";
             this.ProgressGroupBox.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.ProfessionalSystem;
-            // 
-            // ProgressGroupBox.Panel
-            // 
-            this.ProgressGroupBox.Panel.AutoScroll = true;
-            this.ProgressGroupBox.Panel.Padding = new System.Windows.Forms.Padding(5);
             this.ProgressGroupBox.Size = new System.Drawing.Size(475, 159);
             this.ProgressGroupBox.TabIndex = 0;
             this.ProgressGroupBox.Values.Heading = "Progress";

@@ -318,10 +318,9 @@
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.MainBoardSplitContainer1);
             this.Controls.Add(this.MenuStrip);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MainMenuStrip = this.MenuStrip;
-            this.MaximizeBox = false;
             this.Name = "Main";
+            this.Resize += new System.EventHandler(this.Main_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2.Panel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2.Panel2)).EndInit();
             this.MainBoardSplitContainer2.Panel2.ResumeLayout(false);

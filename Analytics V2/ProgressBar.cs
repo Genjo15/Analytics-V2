@@ -33,18 +33,29 @@ namespace Analytics_V2
         public ProgressBar(String name)
         {
             InitializeComponent();
+
             this.Dock = System.Windows.Forms.DockStyle.Top;
+            //this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            //| System.Windows.Forms.AnchorStyles.Left)
+            //| System.Windows.Forms.AnchorStyles.Right)));
+
+            
+
+
             ProgressBarGroupBox.Values.Heading = name;
             _UpdateProgressBarDel = new processOnProgressBar(UpdateProgressBar);
             _UpdateRichTextBoxDel = new processOnRichTextBox(UpdateRichTextBox);
 
             _MinimiseExpandButtonTooltip = new ToolTip();
-            _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimizeButton, "Show details");
+            _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimize, "Show details");
 
 
             _Expand = false;
-            this.Height = 54;
-            ProgressBarGroupBox.Height = 54;
+            //this.Height = 54;
+            //ProgressBarGroupBox.Height = 54;
+
+            this.Height = 47;
+            ProgressBarGroupBox.Height = 47;
             
         }
 
@@ -60,8 +71,6 @@ namespace Analytics_V2
 
         private void UpdateProgressBar(float progress)
         {
-            //if ((int)progress > 100)
-            //    progress = 100;
             Bar.Value = (int)progress;
 
 
@@ -102,22 +111,23 @@ namespace Analytics_V2
         {
             if (!_Expand)
             {
-                ExpandMinimizeButton.Image = global::Analytics_V2.Properties.Resources.ArrowUp;
-                _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimizeButton, "Hide details");
-                this.Height = 251;
-                ProgressBarGroupBox.Height = 251;
+                ExpandMinimize.StateCommon.Back.Image = global::Analytics_V2.Properties.Resources.Arrow_Up;
+                _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimize, "Hide details");
+                this.Height = 244;
+                ProgressBarGroupBox.Height = 244;
                 _Expand = true;
             }
 
             else if (_Expand)
             {
-                ExpandMinimizeButton.Image = global::Analytics_V2.Properties.Resources.ArrowDown;
-                _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimizeButton, "Show details");
-                this.Height = 54;
-                ProgressBarGroupBox.Height = 54;
+                ExpandMinimize.StateCommon.Back.Image = global::Analytics_V2.Properties.Resources.Arrow_Down;
+                _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimize, "Show details");
+                this.Height = 47;
+               ProgressBarGroupBox.Height = 47;
                 _Expand = false;
             }
         }
+
 
         #endregion
 
@@ -134,6 +144,8 @@ namespace Analytics_V2
         }
 
         #endregion
+
+
 
         
 

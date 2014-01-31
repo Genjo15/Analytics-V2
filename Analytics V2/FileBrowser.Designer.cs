@@ -44,6 +44,8 @@
             this.ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.NewDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageList = new System.Windows.Forms.ImageList(this.components);
             this.BrowserHeader = new ComponentFactory.Krypton.Toolkit.KryptonHeader();
             ((System.ComponentModel.ISupportInitialize)(this.BrowserGroupBox)).BeginInit();
@@ -98,76 +100,89 @@
             this.PasteToolStripMenuItem,
             this.ToolStripSeparator2,
             this.DeleteToolStripMenuItem,
-            this.RenameToolStripMenuItem});
+            this.RenameToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.NewDirectoryToolStripMenuItem});
             this.ContextMenuStrip.Name = "contextMenuStrip1";
-            this.ContextMenuStrip.Size = new System.Drawing.Size(142, 198);
+            this.ContextMenuStrip.Size = new System.Drawing.Size(150, 226);
             // 
             // EditToolStripMenuItem
             // 
             this.EditToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
-            this.EditToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.EditToolStripMenuItem.Text = "Edit";
             // 
             // ToolStripSeparator1
             // 
             this.ToolStripSeparator1.Name = "ToolStripSeparator1";
-            this.ToolStripSeparator1.Size = new System.Drawing.Size(138, 6);
+            this.ToolStripSeparator1.Size = new System.Drawing.Size(146, 6);
             // 
             // FullCollapseToolStripMenuItem
             // 
             this.FullCollapseToolStripMenuItem.Name = "FullCollapseToolStripMenuItem";
-            this.FullCollapseToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.FullCollapseToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.FullCollapseToolStripMenuItem.Text = "Full Collapse";
             // 
             // FullExpandToolStripMenuItem
             // 
             this.FullExpandToolStripMenuItem.Name = "FullExpandToolStripMenuItem";
-            this.FullExpandToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.FullExpandToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.FullExpandToolStripMenuItem.Text = "Full Expand";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(138, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(146, 6);
             // 
             // CutToolStripMenuItem
             // 
             this.CutToolStripMenuItem.Name = "CutToolStripMenuItem";
-            this.CutToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.CutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.CutToolStripMenuItem.Text = "Cut";
             // 
             // CopyToolStripMenuItem
             // 
             this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
-            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.CopyToolStripMenuItem.Text = "Copy";
             // 
             // PasteToolStripMenuItem
             // 
             this.PasteToolStripMenuItem.Enabled = false;
             this.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem";
-            this.PasteToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.PasteToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.PasteToolStripMenuItem.Text = "Paste";
             // 
             // ToolStripSeparator2
             // 
             this.ToolStripSeparator2.Name = "ToolStripSeparator2";
-            this.ToolStripSeparator2.Size = new System.Drawing.Size(138, 6);
+            this.ToolStripSeparator2.Size = new System.Drawing.Size(146, 6);
             // 
             // DeleteToolStripMenuItem
             // 
             this.DeleteToolStripMenuItem.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem";
-            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.DeleteToolStripMenuItem.Text = "Delete";
             // 
             // RenameToolStripMenuItem
             // 
             this.RenameToolStripMenuItem.Enabled = false;
             this.RenameToolStripMenuItem.Name = "RenameToolStripMenuItem";
-            this.RenameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.RenameToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.RenameToolStripMenuItem.Text = "Rename";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(146, 6);
+            // 
+            // NewDirectoryToolStripMenuItem
+            // 
+            this.NewDirectoryToolStripMenuItem.Name = "NewDirectoryToolStripMenuItem";
+            this.NewDirectoryToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.NewDirectoryToolStripMenuItem.Text = "New Directory";
             // 
             // ImageList
             // 
@@ -225,5 +240,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         internal System.Windows.Forms.ToolStripMenuItem FullCollapseToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem FullExpandToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        internal System.Windows.Forms.ToolStripMenuItem NewDirectoryToolStripMenuItem;
     }
 }
