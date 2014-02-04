@@ -61,12 +61,10 @@ namespace Analytics_V2
 
         public void PopulateTreeView()
         {
-            TreeView.Nodes.Clear();
-            //_ExpandedNodes.Clear();
-            
+            TreeView.Nodes.Clear();        
 
-            //_Root = new DirectoryInfo(@"C:\Users\CHHIMA\Desktop\Analytics");
-            _Root = new DirectoryInfo(_Path);
+            _Root = new DirectoryInfo(@"C:\Users\CHHIMA\Desktop\Analytics");
+            //_Root = new DirectoryInfo(_Path);
 
             if (Directory.Exists(_Root.FullName))
             {
@@ -90,7 +88,11 @@ namespace Analytics_V2
                 ExpandNode(TreeView.Nodes[0], pathList);
             }
 
-            TreeView.Sort();
+            //TreeView.Sort();
+            //TreeView.TreeViewNodeSorter = new NodeSorter();
+
+            SortByName(TreeView.Nodes[0]);
+            SortByType(TreeView.Nodes[0]);
         }
 
         private void ExpandNode(TreeNode parent, List<string> pathsList)
@@ -165,19 +167,132 @@ namespace Analytics_V2
 
         public void RemoveNodePath(TreeNode node)
         {
-           //foreach (string element in _ExpandedNodes)
-           //{
             for (int i = 0; i < _ExpandedNodes.Count; i++)
             {
                 if (node.FullPath.Equals(_ExpandedNodes[i]))
                     _ExpandedNodes.Remove(_ExpandedNodes[i]);
             }
-            //}
+        }
+
+        /******************************************************\
+         * Ensure that created item is visible (scroll to it) *
+        \******************************************************/
+
+        public void ScrollToCreatedItem(string itemPath)
+        {
+            BrowseAndSeek(TreeView.Nodes[0], itemPath);
+        }
+
+        private void BrowseAndSeek(TreeNode parent, string itemPath)
+        {
+            foreach (TreeNode element in parent.Nodes)
+            {
+                if (element.FullPath.Equals(itemPath))
+                {
+                    //element.EnsureVisible();          ////
+                    //TreeView.SelectedNode = element;  // For information (several ways to do that)
+                    TreeView.TopNode = element;
+                    if (element.Parent != null && element.Parent != TreeView.Nodes[0])
+                        TreeView.TopNode = element.Parent;
+                    //CheckParentForVisibility(element);
+
+                }
+                else BrowseAndSeek(element, itemPath);
+            }
+        }
+
+        //private void CheckParentForVisibility(TreeNode node)
+        //{
+        //    for(int i =0; i<4;i++)
+        //    {
+        //        if (node.Parent != null && node.Parent != TreeView.Nodes[0])
+        //        {
+        //            TreeView.TopNode = node.Parent;
+        //            CheckParentForVisibility(node.Parent);
+        //        }
+        //    }
+        //}
+
+        /*****************************\
+         * Sort (by type or by name) *
+        \*****************************/
+
+        private void SortByType(TreeNode node)
+        {
+            foreach (TreeNode n in node.Nodes)
+            {
+                //SortByName(n);
+                SortByType(n);
+            }
+            try
+            {
+                TreeNode temp = null;
+                List<TreeNode> sortedNodes = new List<TreeNode>();
+                while (node.Nodes.Count > 0)
+                {
+                    foreach (TreeNode n in node.Nodes)
+                        if (temp == null || n.ImageIndex < temp.ImageIndex)
+                            temp = n;
+                    node.Nodes.Remove(temp);
+                    sortedNodes.Add(temp);
+                    temp = null;
+                }
+                node.Nodes.Clear();
+                foreach (TreeNode a in sortedNodes)
+                    node.Nodes.Add(a);
+            }
+            catch { }
+        }
+
+        private void SortByName(TreeNode node)
+        {
+            foreach (TreeNode n in node.Nodes)
+                SortByName(n);
+            try
+            {
+                TreeNode temp = null;
+                List<TreeNode> sortedNodes = new List<TreeNode>();
+                while (node.Nodes.Count > 0)
+                {
+                    foreach (TreeNode n in node.Nodes)
+                        if (temp == null || n.Text[0] < temp.Text[0])
+                            temp = n;
+                    node.Nodes.Remove(temp);
+                    sortedNodes.Add(temp);
+                    temp = null;
+                }
+                node.Nodes.Clear();
+                foreach (TreeNode a in sortedNodes)
+                    node.Nodes.Add(a);
+            }
+            catch { }
         }
 
         #endregion
-
-        
-
     }
+
+
+    // TO KEEP JUST IN CASE (override the NodeSorter)
+    //public class NodeSorter : System.Collections.IComparer
+    //{
+    //    public int Compare(object x, object y)
+    //    {
+    //        TreeNode node1 = (TreeNode)x;
+    //        TreeNode node2 = (TreeNode)y;
+    //        int result = 0;
+    //        //if (node1.Level == 1)
+    //        //{
+    //        //    return Convert.ToInt32(node1.Tag).CompareTo(Convert.ToInt32(node2.Tag));
+    //        //}
+    //        //else
+    //        //{
+    //        //    return node1.Index.CompareTo(node2.Index);
+    //        //}
+    //
+    //        result = Convert.ToInt32(node1.ImageIndex).CompareTo(Convert.ToInt32(node2.ImageIndex));
+    //
+    //
+    //        return result;
+    //    }
+    //}
 }

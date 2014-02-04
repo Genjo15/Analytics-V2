@@ -135,6 +135,23 @@ namespace Analytics_V2
    
         }
 
+        /************************\
+         * Display Folder name  *
+        \************************/
+
+        public void DisplayFolderName(String name)
+        {
+            this.SummarySplitContainer1.Panel1.Controls.Clear();
+
+            // Display the name of the folder
+            KryptonHeader header = new KryptonHeader();
+            header.Dock = System.Windows.Forms.DockStyle.Top;
+            header.Text = name;
+            header.Values.Description = null;
+            header.Values.Image = null;
+
+            this.SummarySplitContainer1.Panel1.Controls.Add(header);
+        }
 
         /**************************************************************\
          * Create a new tab                                           *

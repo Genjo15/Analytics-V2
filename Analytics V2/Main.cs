@@ -80,7 +80,6 @@ namespace Analytics_V2
 
             _UpdateProgressBarDel = new processOnMainThread(UpdateProgressBar);
             _UpdateRichTextBoxDel = new processOnMainThread2(UpdateRichTextBox);
-            //_CreateLogsGridViewDel = new processOnMainThread3(CreateLogsGridView);
             _AddLogsGridViewDel = new processOnMainThread3(AddLogsGridView);
         }
 
@@ -213,6 +212,9 @@ namespace Analytics_V2
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = true;
                     LaunchToolStripButton.Enabled = false;
+
+                    // Display folder name.
+                    _Navigator.DisplayFolderName(_FileBrowser.TreeView.SelectedNode.Text);
                 }
 
                 else
@@ -607,7 +609,7 @@ namespace Analytics_V2
 
             _FileBrowser.TreeView.LabelEdit = false;
 
-            if (e.Label.Trim().Length == 0 || File.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()) ||  Directory.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()))
+            if (e.Label == null || e.Label.Trim().Length == 0 || File.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()) ||  Directory.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()))
             //if (e.Label.Trim().Length == 0)
                 e.CancelEdit = true;
 
@@ -662,29 +664,28 @@ namespace Analytics_V2
 
                 directory = Directory.CreateDirectory(path);
                 _FileBrowser.PopulateTreeView();
+                _FileBrowser.ScrollToCreatedItem(path);
 
-                // Begin Edit on the created directory
-                // FetchAndEditCreatedDirectory(_FileBrowser.TreeView.Nodes[0], path);
+                //Begin Edit on the created directory TO IMPLEMENT
+                //FetchAndEditCreatedDirectory(_FileBrowser.TreeView.Nodes[0], path);
             }
 
             catch (Exception ex) { Console.WriteLine(ex); }
            
         }
 
-        //private void FetchAndEditCreatedDirectory(TreeNode parent, string path)
-        //{
-        //    foreach (TreeNode element in parent.Nodes)
-        //    {
-        //        if (element.FullPath.Equals(path))
-        //        {
-        //            _FileBrowser.TreeView.LabelEdit = true;
-        //            element.BeginEdit();
-        //            break;
-        //        }
-        //        else FetchAndEditCreatedDirectory(element, path);
-        //        break;
-        //    } 
-        //}
+        private void FetchAndEditCreatedDirectory(TreeNode parent, string path)
+        {
+            foreach (TreeNode element in parent.Nodes)
+            {
+                if (element.FullPath.Equals(path))
+                {
+                    _FileBrowser.TreeView.LabelEdit = true;
+                    element.BeginEdit();
+                }
+                else FetchAndEditCreatedDirectory(element, path);
+            } 
+        }
 
 
         /**************************\
