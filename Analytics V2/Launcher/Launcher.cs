@@ -37,7 +37,6 @@ namespace Analytics_V2
 
         private Delegate _UpdateProgressBar;  // Delegate (for invoking the method which update the progress bar).
         private Delegate _UpdateRichTextBox;  // Delegate (for invoking the method which update the RTB).
-        //private Delegate _CreateLogsGridView; // Delegate (for creating the grid view with the combo box).
         private Delegate _AddLogsGridView; // Delegate (for adding the grid view with the combo box).
    
         #endregion

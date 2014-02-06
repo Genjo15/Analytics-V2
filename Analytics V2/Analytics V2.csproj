@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -191,45 +191,45 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="ControlDiffReview.cs">
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Launcher\Log\ControlDiffReview.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlDiffReview.Designer.cs">
+    <Compile Include="Launcher\Log\ControlDiffReview.Designer.cs">
       <DependentUpon>ControlDiffReview.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileBrowser.cs">
+    <Compile Include="Main\FileBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FileBrowser.Designer.cs">
+    <Compile Include="Main\FileBrowser.Designer.cs">
       <DependentUpon>FileBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Launcher.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="LogsGrid.cs">
+    <Compile Include="Launcher\Launcher.cs" />
+    <Compile Include="Launcher\Log\Log.cs" />
+    <Compile Include="Launcher\Log\LogsGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LogsGrid.Designer.cs">
+    <Compile Include="Launcher\Log\LogsGrid.Designer.cs">
       <DependentUpon>LogsGrid.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main.cs">
+    <Compile Include="Main\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main.Designer.cs">
+    <Compile Include="Main\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Navigator.cs">
+    <Compile Include="Main\Navigator.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Navigator.Designer.cs">
+    <Compile Include="Main\Navigator.Designer.cs">
       <DependentUpon>Navigator.cs</DependentUpon>
     </Compile>
-    <Compile Include="Process.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="ProgressBar.cs">
+    <Compile Include="Configuration\Process.cs" />
+    <Compile Include="Main\Program.cs" />
+    <Compile Include="Launcher\ProgressBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProgressBar.Designer.cs">
+    <Compile Include="Launcher\ProgressBar.Designer.cs">
       <DependentUpon>ProgressBar.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -243,35 +243,35 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="SpecificCountries.cs">
+    <Compile Include="Misc\SpecificCountries.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SpecificCountries.Designer.cs">
+    <Compile Include="Misc\SpecificCountries.Designer.cs">
       <DependentUpon>SpecificCountries.cs</DependentUpon>
     </Compile>
-    <Compile Include="SpecificTools.cs">
+    <Compile Include="Misc\SpecificTools.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SpecificTools.Designer.cs">
+    <Compile Include="Misc\SpecificTools.Designer.cs">
       <DependentUpon>SpecificTools.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ControlDiffReview.resx">
+    <EmbeddedResource Include="Launcher\Log\ControlDiffReview.resx">
       <DependentUpon>ControlDiffReview.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileBrowser.resx">
+    <EmbeddedResource Include="Main\FileBrowser.resx">
       <DependentUpon>FileBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogsGrid.resx">
+    <EmbeddedResource Include="Launcher\Log\LogsGrid.resx">
       <DependentUpon>LogsGrid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
+    <EmbeddedResource Include="Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Navigator.resx">
+    <EmbeddedResource Include="Main\Navigator.resx">
       <DependentUpon>Navigator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProgressBar.resx">
+    <EmbeddedResource Include="Launcher\ProgressBar.resx">
       <DependentUpon>ProgressBar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
@@ -280,10 +280,10 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="SpecificCountries.resx">
+    <EmbeddedResource Include="Misc\SpecificCountries.resx">
       <DependentUpon>SpecificCountries.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SpecificTools.resx">
+    <EmbeddedResource Include="Misc\SpecificTools.resx">
       <DependentUpon>SpecificTools.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Analytics V2_CléTemporaire.pfx" />
