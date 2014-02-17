@@ -669,6 +669,25 @@ namespace Analytics_V2
                         UpdateRichTextBox("fail", "FAIL");
                     }
                     break;
+
+                case "DUPLICATES":
+                    UpdateRichTextBox("function", "DUPLICATES..... ");
+                    try
+                    {
+                        Text.RemoveDuplicate duplicatesProcess = new Text.RemoveDuplicate(_TabData, dataTable, _Config.Get_DataSeparator());
+                        _TabData = duplicatesProcess.Run();
+                        _Logs += "\r\n== DUPLICATES ==\r\n";
+                        foreach (String logline in duplicatesProcess.Log)
+                            _Logs += logline + "\r\n";
+                        duplicatesProcess = null;
+                        UpdateRichTextBox("complete", "Complete!");
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== DUPLICATES ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                    }
+                    break;
             }
             GC.Collect();
         }

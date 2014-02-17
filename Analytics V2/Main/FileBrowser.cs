@@ -63,8 +63,8 @@ namespace Analytics_V2
         {
             TreeView.Nodes.Clear();        
 
-            _Root = new DirectoryInfo(@"C:\Users\CHHIMA\Desktop\Analytics");
-            //_Root = new DirectoryInfo(_Path);
+            //_Root = new DirectoryInfo(@"C:\Users\CHHIMA\Desktop\Analytics");
+            _Root = new DirectoryInfo(_Path);
 
             if (Directory.Exists(_Root.FullName))
             {

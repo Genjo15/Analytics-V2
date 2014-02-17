@@ -410,6 +410,16 @@ namespace Analytics_V2
                     break;
                 }
 
+                case "DUPLICATES":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("-> Duplicated line removed index: ");
+
+                    AnalyzeProcessLog("== DUPLICATES ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
+
+                    break;
+                }
+
                 case "DATEFORMAT":
                 {
                     DirectoryInfo root = new DirectoryInfo(_DatamodRootPath);
@@ -536,6 +546,7 @@ namespace Analytics_V2
                                 || (line.Contains(error) && error.Equals(", was deleted: ") && processToAnalyze.Contains("LINEDEL"))
                                 || (line.Contains(error) && error.Equals(" - Unknown Channel Id: ") && processToAnalyze.Contains("DataChecking"))
                                 || (line.Contains(error) && error.Equals(" - Unknown Typology Id: ") && processToAnalyze.Contains("DataChecking"))
+                                || (line.Contains(error) && error.Equals("-> Duplicated line removed index: ") && processToAnalyze.Contains("DUPLICATES"))
                                 )
                             {
                                 warningCounter--;
@@ -583,6 +594,14 @@ namespace Analytics_V2
             else if (processToAnalyze.Contains("LINEDEL") && informationCounter > 0)
             {
                 commentsCell.Value = "Lines deleted : " + informationCounter;
+                checkCell.Value = "INFO";
+                checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
+                commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
+            }
+
+            else if (processToAnalyze.Contains("DUPLICATES") && informationCounter > 0)
+            {
+                commentsCell.Value = "Duplicated lines removed : " + informationCounter;
                 checkCell.Value = "INFO";
                 checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;

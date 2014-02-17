@@ -57,6 +57,7 @@
             this.HelpStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.StatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2.Panel2)).BeginInit();
@@ -277,7 +278,8 @@
             resources.ApplyResources(this.MenuStrip, "MenuStrip");
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStripMenuItem,
-            this.HelpStripMenuItem});
+            this.HelpStripMenuItem,
+            this.StatusToolStripMenuItem});
             this.MenuStrip.Name = "MenuStrip";
             // 
             // FileToolStripMenuItem
@@ -310,6 +312,14 @@
             // 
             resources.ApplyResources(this.AboutToolStripMenuItem, "AboutToolStripMenuItem");
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            // 
+            // StatusToolStripMenuItem
+            // 
+            this.StatusToolStripMenuItem.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
+            this.StatusToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.StatusToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            resources.ApplyResources(this.StatusToolStripMenuItem, "StatusToolStripMenuItem");
+            this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
             // 
             // Main
             // 
@@ -384,6 +394,7 @@
         private System.Windows.Forms.ToolStripButton ControlsToolStripButton;
         private System.Windows.Forms.ToolStripButton HeaderConsistencyToolStripButton;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem StatusToolStripMenuItem;
 
 
 
