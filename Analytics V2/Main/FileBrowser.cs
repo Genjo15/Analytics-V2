@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using ComponentFactory.Krypton.Toolkit;
 
 namespace Analytics_V2
 {
@@ -43,7 +44,25 @@ namespace Analytics_V2
                 _Path = _Request.Get_Path("ADM");
                 _Request.Close();
             }
-            catch (Exception ex) { Console.WriteLine(ex); }
+
+            catch (Exception ex) 
+            {
+                var result = KryptonMessageBox.Show("Path introuvable, veuillez le définir manuellement", "Path introuvable",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+
+                if (result == DialogResult.OK)
+                {
+                    FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+                    openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+                    DialogResult result2 = openFolderDialog.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        _Path = openFolderDialog.SelectedPath;
+                    }          
+                }
+            }
         }
 
         #endregion

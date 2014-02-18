@@ -48,7 +48,7 @@ namespace Analytics_V2
         private void FillSpecificCountriesList()
         {
             _SpecificCountriesList.Add("Canada - Quebec QH");
-            _SpecificCountriesList.Add("Czech Republic");
+            //_SpecificCountriesList.Add("Czech Republic");
             _SpecificCountriesList.Add("Finland");
             _SpecificCountriesList.Add("Ireland");
             _SpecificCountriesList.Add("Italy Sky");
@@ -70,9 +70,9 @@ namespace Analytics_V2
                                            canadaProcess.Run();
                                            break;
 
-                case "Czech Republic": Czech_ReProcessing.CzechReProcessing czechRepublicProcess = new Czech_ReProcessing.CzechReProcessing();
-                                       czechRepublicProcess.Run();
-                                       break;
+                //case "Czech Republic": Czech_ReProcessing.CzechReProcessing czechRepublicProcess = new Czech_ReProcessing.CzechReProcessing();
+                //                       czechRepublicProcess.Run();
+                //                       break;
 
                 case "Finland": Finland.Finland finlandProcess = new Finland.Finland();
                                 finlandProcess.Run();

@@ -41,6 +41,9 @@ namespace Analytics_V2
         private String _PreviousNodeName; // Previous node name.
         private String _LogsPath;         // Logs path.
 
+        //private Authentication _Session; // User session.
+        ConnectionScreen _Session;
+
         private delegate void processOnMainThread(int[] tab);                               // Delegate type.
         private processOnMainThread _UpdateProgressBarDel;                                  // Delegate for updating the progress bar.
         private delegate void processOnMainThread2(String[] tab);                           // Delegate type2.
@@ -62,6 +65,8 @@ namespace Analytics_V2
             _Navigator = new Navigator();
             _SpecificCountries = new SpecificCountries();
             _SpecificTools = new SpecificTools();
+            _Session = new ConnectionScreen("user");
+            _Session.CheckSavedPUC(System.Environment.MachineName);
 
             InitializeInterface();
 
@@ -100,6 +105,7 @@ namespace Analytics_V2
 
         private void InitializeInterface()
         {
+            _Session.Dock = DockStyle.Fill;
             this.MainBoardSplitContainer2.Panel1.Controls.Add(_FileBrowser);
             _FileBrowser.PopulateTreeView();
             this.MainBoardSplitContainer3.Panel1.Controls.Add(_Navigator);
@@ -129,6 +135,10 @@ namespace Analytics_V2
             _Navigator.NavigatorControl.SelectedPageChanged += new System.EventHandler(NavigatorControl_SelectedPageChanged);
             _SpecificCountries.SpecificCountriesListBox.ListBox.DoubleClick += new System.EventHandler(SpecificCountriesListBox_DoubleClick);
             _SpecificTools.SpecificToolsListBox.ListBox.DoubleClick += new System.EventHandler(SpecificToolsListBox_DoubleClick);
+            _Session.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            _Session.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+
+            this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
         }
 
 
@@ -790,7 +800,7 @@ namespace Analytics_V2
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.InitialDirectory = @"C:\Users\CHHIMA\Desktop\Configs Analytics";
+            openFileDialog.InitialDirectory = @"C:\";
             openFileDialog.Multiselect = true;
             // openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
 
@@ -853,6 +863,48 @@ namespace Analytics_V2
             Close();
         }
 
+        /******************************************************************\
+         * Event of clicking of the element "Connect as" of the MenuStrip *
+         *  - Display connection screen.                                  *
+         *  - Cancel button handler.                                      *
+         *  - Connect button handler (perform authenticate)               *
+         *       |-> if authenticated : Connected as....                  *
+         *       |-> else, still connected as user                        *
+        \******************************************************************/
+
+        private void ConnectAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            KryptonForm connectForm = new KryptonForm();
+            connectForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            connectForm.StartPosition = FormStartPosition.CenterScreen;
+            connectForm.Size = new System.Drawing.Size(360, 110);
+            connectForm.Controls.Add(_Session);
+            connectForm.ShowDialog();  
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            Form form = _Session.ParentForm;
+            form.Close();
+        }
+
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+            Boolean authentication = false;
+
+            if(_Session.SaveConnectionCheckBox.Checked == false)
+                authentication = _Session.Authenticate();
+            else if (_Session.SaveConnectionCheckBox.Checked == true)
+                authentication = _Session.AuthenticateAndRemember();
+
+            if (authentication)
+            {
+                this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
+                Form form = _Session.ParentForm;
+                form.Close();
+            }
+        }
+
         /***************************************************************\
          * Event of resizing the form (for correcting a graphical bug) *
         \***************************************************************/
@@ -878,5 +930,7 @@ namespace Analytics_V2
         }
 
         #endregion
+
+
     }
 }

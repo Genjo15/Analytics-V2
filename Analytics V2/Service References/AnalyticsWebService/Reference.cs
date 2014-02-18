@@ -67,6 +67,26 @@ namespace Analytics_V2.AnalyticsWebService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Insert", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         bool Insert(string puc, string type, string pays, string data, string datamod, int timeprocess);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Authenticate", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        string Authenticate(string login, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_password_id", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        int Get_password_id(string login, string password);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Insert_user", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        bool Insert_user(string machine, int access_type);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_access_type", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        string Get_access_type(string user_name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Update_access_type_id", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        object Update_access_type_id(string user_name, int access_type_id);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -146,6 +166,26 @@ namespace Analytics_V2.AnalyticsWebService {
         
         public bool Insert(string puc, string type, string pays, string data, string datamod, int timeprocess) {
             return base.Channel.Insert(puc, type, pays, data, datamod, timeprocess);
+        }
+        
+        public string Authenticate(string login, string password) {
+            return base.Channel.Authenticate(login, password);
+        }
+        
+        public int Get_password_id(string login, string password) {
+            return base.Channel.Get_password_id(login, password);
+        }
+        
+        public bool Insert_user(string machine, int access_type) {
+            return base.Channel.Insert_user(machine, access_type);
+        }
+        
+        public string Get_access_type(string user_name) {
+            return base.Channel.Get_access_type(user_name);
+        }
+        
+        public object Update_access_type_id(string user_name, int access_type_id) {
+            return base.Channel.Update_access_type_id(user_name, access_type_id);
         }
     }
 }

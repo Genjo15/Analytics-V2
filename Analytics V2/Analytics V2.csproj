@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>10</ApplicationRevision>
+    <ApplicationRevision>11</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -192,6 +192,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Authentication\Authentication.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Authentication\Authentication.Designer.cs">
+      <DependentUpon>Authentication.cs</DependentUpon>
+    </Compile>
     <Compile Include="Launcher\Log\ControlDiffReview.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -255,6 +261,9 @@
     <Compile Include="Misc\SpecificTools.Designer.cs">
       <DependentUpon>SpecificTools.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Authentication\Authentication.resx">
+      <DependentUpon>Authentication.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Launcher\Log\ControlDiffReview.resx">
       <DependentUpon>ControlDiffReview.cs</DependentUpon>
     </EmbeddedResource>

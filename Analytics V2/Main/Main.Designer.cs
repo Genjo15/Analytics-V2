@@ -36,19 +36,9 @@
             this.MainBoardSplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ToolBarGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.ToolBarToolStrip = new System.Windows.Forms.ToolStrip();
-            this.NewFileToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.SaveToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.EditToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.SuppressToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.RefreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.LaunchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.PreProcessToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ProcessToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ControlsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.HeaderConsistencyToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.Manager = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
@@ -58,6 +48,17 @@
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ConnectAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewFileToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.SaveToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.EditToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.SuppressToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.RefreshToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.LaunchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.PreProcessToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ProcessToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ControlsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.HeaderConsistencyToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer2.Panel2)).BeginInit();
@@ -92,10 +93,6 @@
             resources.ApplyResources(this.MainBoardSplitContainer2, "MainBoardSplitContainer2");
             this.MainBoardSplitContainer2.Name = "MainBoardSplitContainer2";
             // 
-            // MainBoardSplitContainer2.Panel1
-            // 
-            resources.ApplyResources(this.MainBoardSplitContainer2.Panel1, "MainBoardSplitContainer2.Panel1");
-            // 
             // MainBoardSplitContainer2.Panel2
             // 
             this.MainBoardSplitContainer2.Panel2.Controls.Add(this.MainBoardSplitContainer3);
@@ -107,14 +104,9 @@
             resources.ApplyResources(this.MainBoardSplitContainer3, "MainBoardSplitContainer3");
             this.MainBoardSplitContainer3.Name = "MainBoardSplitContainer3";
             // 
-            // MainBoardSplitContainer3.Panel1
-            // 
-            resources.ApplyResources(this.MainBoardSplitContainer3.Panel1, "MainBoardSplitContainer3.Panel1");
-            // 
             // MainBoardSplitContainer3.Panel2
             // 
             this.MainBoardSplitContainer3.Panel2.Controls.Add(this.MainBoardSplitContainer4);
-            resources.ApplyResources(this.MainBoardSplitContainer3.Panel2, "MainBoardSplitContainer3.Panel2");
             this.MainBoardSplitContainer3.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
             // 
             // MainBoardSplitContainer4
@@ -173,6 +165,85 @@
             this.ToolBarToolStrip.Name = "ToolBarToolStrip";
             this.ToolBarToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             // 
+            // ToolStripSeparator1
+            // 
+            this.ToolStripSeparator1.Name = "ToolStripSeparator1";
+            resources.ApplyResources(this.ToolStripSeparator1, "ToolStripSeparator1");
+            // 
+            // ToolStripSeparator2
+            // 
+            this.ToolStripSeparator2.Name = "ToolStripSeparator2";
+            resources.ApplyResources(this.ToolStripSeparator2, "ToolStripSeparator2");
+            // 
+            // ToolStripSeparator3
+            // 
+            this.ToolStripSeparator3.Name = "ToolStripSeparator3";
+            resources.ApplyResources(this.ToolStripSeparator3, "ToolStripSeparator3");
+            // 
+            // ToolStripSeparator4
+            // 
+            this.ToolStripSeparator4.Name = "ToolStripSeparator4";
+            resources.ApplyResources(this.ToolStripSeparator4, "ToolStripSeparator4");
+            // 
+            // Manager
+            // 
+            this.Manager.GlobalPaletteMode = ComponentFactory.Krypton.Toolkit.PaletteModeManager.Office2010Silver;
+            // 
+            // MenuStrip
+            // 
+            resources.ApplyResources(this.MenuStrip, "MenuStrip");
+            this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileToolStripMenuItem,
+            this.HelpStripMenuItem,
+            this.StatusToolStripMenuItem});
+            this.MenuStrip.Name = "MenuStrip";
+            // 
+            // FileToolStripMenuItem
+            // 
+            this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ConnectAsToolStripMenuItem,
+            this.ExitToolStripMenuItem});
+            resources.ApplyResources(this.FileToolStripMenuItem, "FileToolStripMenuItem");
+            this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
+            // 
+            // ExitToolStripMenuItem
+            // 
+            resources.ApplyResources(this.ExitToolStripMenuItem, "ExitToolStripMenuItem");
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            // 
+            // HelpStripMenuItem
+            // 
+            this.HelpStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.HelpToolStripMenuItem,
+            this.AboutToolStripMenuItem});
+            resources.ApplyResources(this.HelpStripMenuItem, "HelpStripMenuItem");
+            this.HelpStripMenuItem.Name = "HelpStripMenuItem";
+            // 
+            // HelpToolStripMenuItem
+            // 
+            resources.ApplyResources(this.HelpToolStripMenuItem, "HelpToolStripMenuItem");
+            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
+            // 
+            // AboutToolStripMenuItem
+            // 
+            resources.ApplyResources(this.AboutToolStripMenuItem, "AboutToolStripMenuItem");
+            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            // 
+            // StatusToolStripMenuItem
+            // 
+            this.StatusToolStripMenuItem.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
+            this.StatusToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.StatusToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            resources.ApplyResources(this.StatusToolStripMenuItem, "StatusToolStripMenuItem");
+            this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
+            // 
+            // ConnectAsToolStripMenuItem
+            // 
+            this.ConnectAsToolStripMenuItem.Name = "ConnectAsToolStripMenuItem";
+            resources.ApplyResources(this.ConnectAsToolStripMenuItem, "ConnectAsToolStripMenuItem");
+            this.ConnectAsToolStripMenuItem.Click += new System.EventHandler(this.ConnectAsToolStripMenuItem_Click);
+            // 
             // NewFileToolStripButton
             // 
             resources.ApplyResources(this.NewFileToolStripButton, "NewFileToolStripButton");
@@ -196,32 +267,17 @@
             this.SuppressToolStripButton.Name = "SuppressToolStripButton";
             this.SuppressToolStripButton.Click += new System.EventHandler(this.SuppressToolStripButton_Click);
             // 
-            // ToolStripSeparator1
-            // 
-            this.ToolStripSeparator1.Name = "ToolStripSeparator1";
-            resources.ApplyResources(this.ToolStripSeparator1, "ToolStripSeparator1");
-            // 
             // RefreshToolStripButton
             // 
             resources.ApplyResources(this.RefreshToolStripButton, "RefreshToolStripButton");
             this.RefreshToolStripButton.Name = "RefreshToolStripButton";
             this.RefreshToolStripButton.Click += new System.EventHandler(this.RefreshToolStripButton_Click);
             // 
-            // ToolStripSeparator2
-            // 
-            this.ToolStripSeparator2.Name = "ToolStripSeparator2";
-            resources.ApplyResources(this.ToolStripSeparator2, "ToolStripSeparator2");
-            // 
             // LaunchToolStripButton
             // 
             resources.ApplyResources(this.LaunchToolStripButton, "LaunchToolStripButton");
             this.LaunchToolStripButton.Name = "LaunchToolStripButton";
             this.LaunchToolStripButton.Click += new System.EventHandler(this.LaunchToolStripButton_Click);
-            // 
-            // ToolStripSeparator3
-            // 
-            this.ToolStripSeparator3.Name = "ToolStripSeparator3";
-            resources.ApplyResources(this.ToolStripSeparator3, "ToolStripSeparator3");
             // 
             // PreProcessToolStripButton
             // 
@@ -263,63 +319,6 @@
             resources.ApplyResources(this.HeaderConsistencyToolStripButton, "HeaderConsistencyToolStripButton");
             this.HeaderConsistencyToolStripButton.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
             this.HeaderConsistencyToolStripButton.Name = "HeaderConsistencyToolStripButton";
-            // 
-            // ToolStripSeparator4
-            // 
-            this.ToolStripSeparator4.Name = "ToolStripSeparator4";
-            resources.ApplyResources(this.ToolStripSeparator4, "ToolStripSeparator4");
-            // 
-            // Manager
-            // 
-            this.Manager.GlobalPaletteMode = ComponentFactory.Krypton.Toolkit.PaletteModeManager.Office2010Silver;
-            // 
-            // MenuStrip
-            // 
-            resources.ApplyResources(this.MenuStrip, "MenuStrip");
-            this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileToolStripMenuItem,
-            this.HelpStripMenuItem,
-            this.StatusToolStripMenuItem});
-            this.MenuStrip.Name = "MenuStrip";
-            // 
-            // FileToolStripMenuItem
-            // 
-            this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitToolStripMenuItem});
-            resources.ApplyResources(this.FileToolStripMenuItem, "FileToolStripMenuItem");
-            this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
-            // 
-            // ExitToolStripMenuItem
-            // 
-            resources.ApplyResources(this.ExitToolStripMenuItem, "ExitToolStripMenuItem");
-            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
-            // 
-            // HelpStripMenuItem
-            // 
-            this.HelpStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.HelpToolStripMenuItem,
-            this.AboutToolStripMenuItem});
-            resources.ApplyResources(this.HelpStripMenuItem, "HelpStripMenuItem");
-            this.HelpStripMenuItem.Name = "HelpStripMenuItem";
-            // 
-            // HelpToolStripMenuItem
-            // 
-            resources.ApplyResources(this.HelpToolStripMenuItem, "HelpToolStripMenuItem");
-            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
-            // 
-            // AboutToolStripMenuItem
-            // 
-            resources.ApplyResources(this.AboutToolStripMenuItem, "AboutToolStripMenuItem");
-            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            // 
-            // StatusToolStripMenuItem
-            // 
-            this.StatusToolStripMenuItem.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
-            this.StatusToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.StatusToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.StatusToolStripMenuItem, "StatusToolStripMenuItem");
-            this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
             // 
             // Main
             // 
@@ -394,7 +393,8 @@
         private System.Windows.Forms.ToolStripButton ControlsToolStripButton;
         private System.Windows.Forms.ToolStripButton HeaderConsistencyToolStripButton;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator4;
-        private System.Windows.Forms.ToolStripMenuItem StatusToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ConnectAsToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem StatusToolStripMenuItem;
 
 
 
