@@ -274,8 +274,10 @@ namespace Analytics_V2
                 while (node.Nodes.Count > 0)
                 {
                     foreach (TreeNode n in node.Nodes)
-                        if (temp == null || n.Text[0] < temp.Text[0])
-                            temp = n;
+                        //if (temp == null || n.Text[0] < temp.Text[0])
+                        //    temp = n;
+                        if (temp == null || String.Compare(n.Text,temp.Text,true)<0)
+                                temp = n;
                     node.Nodes.Remove(temp);
                     sortedNodes.Add(temp);
                     temp = null;
