@@ -41,15 +41,17 @@ namespace Analytics_V2
         private String _PreviousNodeName; // Previous node name.
         private String _LogsPath;         // Logs path.
 
-        //private Authentication _Session; // User session.
-        ConnectionScreen _Session;
+        private Authentication _Session;         // Authentication instance.
+        private Administration _Administration;  // The Administration module UC.
+        private KryptonForm _AdministrationForm; // Form hosting the Administration UC.
+         
 
-        private delegate void processOnMainThread(int[] tab);                               // Delegate type.
-        private processOnMainThread _UpdateProgressBarDel;                                  // Delegate for updating the progress bar.
-        private delegate void processOnMainThread2(String[] tab);                           // Delegate type2.
-        private processOnMainThread2 _UpdateRichTextBoxDel;                                 // Delegate for updating the RTB.
+        private delegate void processOnMainThread(int[] tab);                                                     // Delegate type.
+        private processOnMainThread _UpdateProgressBarDel;                                                        // Delegate for updating the progress bar.
+        private delegate void processOnMainThread2(String[] tab);                                                 // Delegate type2.
+        private processOnMainThread2 _UpdateRichTextBoxDel;                                                       // Delegate for updating the RTB.
         private delegate void processOnMainThread3(int i, string str, string str2, List<Process> pl, int number); // Delegate type3.
-        private processOnMainThread3 _AddLogsGridViewDel;                                             // Delegate for adding the logs grid view.
+        private processOnMainThread3 _AddLogsGridViewDel;                                                         // Delegate for adding the logs grid view.
 
         #endregion
 
@@ -65,8 +67,9 @@ namespace Analytics_V2
             _Navigator = new Navigator();
             _SpecificCountries = new SpecificCountries();
             _SpecificTools = new SpecificTools();
-            _Session = new ConnectionScreen("user");
+            _Session = new Authentication("user");
             _Session.CheckSavedPUC(System.Environment.MachineName);
+            _Administration = new Administration();
 
             InitializeInterface();
 
@@ -96,6 +99,7 @@ namespace Analytics_V2
 
         /******************************************\
          * Initialize interface :                 *
+         *  - Create Administration Form          *
          *  - Add UC File Browser.                *
          *  - Add UC Navigator.                   *
          *  - Add UC Specifics tools & countries. *
@@ -106,6 +110,15 @@ namespace Analytics_V2
         private void InitializeInterface()
         {
             _Session.Dock = DockStyle.Fill;
+            _AdministrationForm = new KryptonForm();
+            _AdministrationForm.Text = "Administration";
+            _AdministrationForm.StartPosition = FormStartPosition.CenterScreen;
+            _AdministrationForm.Icon = global::Analytics_V2.Properties.Resources.Administration ;
+            _AdministrationForm.Size = new System.Drawing.Size(600, 400);
+            _AdministrationForm.Controls.Add(_Administration);
+            _AdministrationForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideAdministrationForm);
+            
+
             this.MainBoardSplitContainer2.Panel1.Controls.Add(_FileBrowser);
             _FileBrowser.PopulateTreeView();
             this.MainBoardSplitContainer3.Panel1.Controls.Add(_Navigator);
@@ -137,10 +150,10 @@ namespace Analytics_V2
             _SpecificTools.SpecificToolsListBox.ListBox.DoubleClick += new System.EventHandler(SpecificToolsListBox_DoubleClick);
             _Session.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             _Session.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+            _Session.PasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(PasswordTextBox_KeyDown);
 
             this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
         }
-
 
         #endregion
 
@@ -649,10 +662,10 @@ namespace Analytics_V2
             _FileBrowser.TreeView.ExpandAll();
         }
 
-        /****************************************************\
-         * Events of right click on a Treenode --> New File *
-         *  - Create a new file.                            *
-        \****************************************************/
+        /******************************************************\
+         * Events of right click on a Treenode --> New Folder *
+         *  - Create a new file.                              *
+        \******************************************************/
 
         private void NewDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -890,9 +903,20 @@ namespace Analytics_V2
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
+            Connect();
+        }
+
+        private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode.Equals(Keys.Enter))
+                Connect();
+        }
+
+        private void Connect()
+        {
             Boolean authentication = false;
 
-            if(_Session.SaveConnectionCheckBox.Checked == false)
+            if (_Session.SaveConnectionCheckBox.Checked == false)
                 authentication = _Session.Authenticate();
             else if (_Session.SaveConnectionCheckBox.Checked == true)
                 authentication = _Session.AuthenticateAndRemember();
@@ -903,6 +927,43 @@ namespace Analytics_V2
                 Form form = _Session.ParentForm;
                 form.Close();
             }
+        }
+
+        /**********************************************************************************\
+         * Event which occurs when the status textbox has been modified of the MenuStrip  *
+         *  - Display/Hide the administration module buton access.                        *
+        \**********************************************************************************/
+
+        private void StatusToolStripMenuItem_TextChanged(object sender, EventArgs e)
+        {
+            if (_Session.GetAccessType().Equals("superadmin"))
+            {
+                ToolStripSeparator5.Visible = true;
+                AdministrationToolStripButton.Visible = true;
+            }
+
+            else
+            {
+                ToolStripSeparator5.Visible = false;
+                AdministrationToolStripButton.Visible = false;
+            }
+        }
+
+        /****************************************************************\
+         * Event which occurs when the Administration buton is clicked  *
+         *  - Open the administration module.                           *
+        \****************************************************************/
+
+        private void AdministrationToolStripButton_Click(object sender, EventArgs e)
+        {
+            _AdministrationForm.Show();
+            _Administration.LoadUsers();
+        }
+
+        private void HideAdministrationForm(object sender, FormClosingEventArgs e)
+        {
+            _AdministrationForm.Hide();
+            e.Cancel = true;
         }
 
         /***************************************************************\
@@ -930,7 +991,5 @@ namespace Analytics_V2
         }
 
         #endregion
-
-
     }
 }

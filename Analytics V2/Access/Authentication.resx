@@ -117,29 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Remove" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Remove.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Arrow_Down" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Arrow_Down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Administration" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Administration.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="OK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\OK.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Add.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Arrow_Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Arrow_Up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Logo2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="OK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\OK1.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="HeaderGroup.ValuesPrimary.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADr4AAA6+AepCscAAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfeAhEPKiu+DsYw
+        AAAEiUlEQVRIS71Va0ybVRg+P/2DIu6CGwwkG4zbohtoDAq6MBZ2J2Ym/jAqKtuI0W2wuUyXuEh0Xn4w
+        YDAERnZzXAqjMKBcWoZUBJGIogR0Q0a/tkCBUiht+b72ezw9SwtfKIwt0R9v2nOec97nfd73Pe9HAJD/
+        2lZE0N8xhD71II1lPqDSwRl0GqySvaWCXZbEZDCTwuNVyD1Sjjxqss8bMWcXyc4mPbYrdIhTaJGsHqO+
+        xWX9LAne+0NPst4rRcHRmyg8VoUrp24hY1cedlQNYZ9qBHub9dhFyRKp7WjQYcJmX9KXR+BOt4acT76B
+        3MPlKKHRt17vRlHyNRwo7sV+9TheqdfhUPsYvu414jVK+CpVFFunw4jFM9EikvsEJTQ9MnADo268dIxH
+        vGoUsfVadI/bJPdk98zkxVqOYSMWYZFPyQbXP0qy3i3BBarAZp5j2ICJJ/LhWcTUOqPVYsw6H621TQmb
+        WsmK32mwkRiKx1GiGcEh8etezJqsJCelDHmpMvzdNcz2T3RNUOccy3liox662fkoJz4+Ak3wE8wmTqUy
+        om96p0hCow57aL0Wdpqb5OontSg4Jqd2kx2wiyDRNRySaM73KfV4q21UclGz+UnoYkOZcRGrGTbDO4hT
+        yU5KlPGb0X2ekYxzU0zFpfRqXDld6wad3eOMzHnx7K+TEpKxN3dT52ugjQ6ANioAjuFB5ms7bYIDNKiX
+        aXO41DDASvPvrEXxiWpcoO/BuXbum2luz/1uRH6/yeOjmy7KgvGrM+BCfTAe5o3vL1cQv1YeB1tGmBoJ
+        iXPR164h2akKFB6X49qndSt6yS4nFoWcaDZ5YW6LD86kpJPHlAI0lvniL+gCK/knczdyj7Yg/6NqlH3R
+        /HBEdZWEo3UyR63DxBsJngvPq0KA289gOi8ExWlVyDksQ8U5JYwj02TKMLOiGTd5No1oowOhj/KH4e39
+        0nSJxl8IX78GQkskHK2UjKavnBLkf1hJ55YMme/cQE/zXxIiB1dG+DpvOM2hlTFMtNkIF76KdlwYNBu9
+        FteEV/iCV4VDuL3VDWanlKL4ZA2K0uTMXDVw/vING8Arw+idCPANvm6MC3sKupeCoU98fjGJY/gK4RVr
+        6YV1EG33x8mldDkuflDBJsCtnB/mSUQH4ZsCKUko+OaNEFSRDLPUVhLtc+uh2fQ4+Dv9buWSFNh7DjES
+        oS2WXeLnRKK83AV1eY9URXMw+EZ/CD8lQOjYQyf9ZLzzvHarH5sA5tJiz2PFlQqhMwl8/WoIPyct6i7R
+        YSO8MoTWLhDi3ZMSXBcXzhSYMjOWH5Buoo69lIimThVGi1oGcfpPYh/6jqpcD/uPETDl+cJ4tZLwA31k
+        uuA84SLXMoKpbz/z2IVLtqbQ9Tp4xdM0LTT3jX7gm4IgtEbSvSD0entBty0A3BZfaLdtYCkyZX/5cB8t
+        lyJ732mqaBVVtJkWOQT2Vn+MX8yg7ekDXUwwdC8EQRPijVl52aN9fl1E4mQHEdppgdVxEGfvMmeWphqi
+        j38WhvcPwj6qf+BDfeCBhW/jUf//LyT/AsqZAZndRbgMAAAAAElFTkSuQmCC
+</value>
   </data>
 </root>

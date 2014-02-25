@@ -191,11 +191,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Authentication\Authentication.cs">
+    <Compile Include="Access\Administration.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Authentication\Authentication.Designer.cs">
+    <Compile Include="Access\Administration.Designer.cs">
+      <DependentUpon>Administration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Access\Authentication.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Access\Authentication.Designer.cs">
       <DependentUpon>Authentication.cs</DependentUpon>
     </Compile>
     <Compile Include="Launcher\Log\ControlDiffReview.cs">
@@ -261,7 +267,10 @@
     <Compile Include="Misc\SpecificTools.Designer.cs">
       <DependentUpon>SpecificTools.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Authentication\Authentication.resx">
+    <EmbeddedResource Include="Access\Administration.resx">
+      <DependentUpon>Administration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Access\Authentication.resx">
       <DependentUpon>Authentication.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Launcher\Log\ControlDiffReview.resx">
@@ -366,6 +375,21 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Administration.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Remove.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OK.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OK1.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

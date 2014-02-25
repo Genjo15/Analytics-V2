@@ -299,6 +299,68 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="Update_User">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="oldUser" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="newUser" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="access_type_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_UserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Update_UserResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_Users">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get_UsersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_UsersResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Delete_User">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Delete_UserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Delete_UserResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_User">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="access_type_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_UserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Add_UserResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="Get_PathSoapIn">
@@ -409,6 +471,30 @@
   <wsdl:message name="Update_access_type_idSoapOut">
     <wsdl:part name="parameters" element="tns:Update_access_type_idResponse" />
   </wsdl:message>
+  <wsdl:message name="Update_UserSoapIn">
+    <wsdl:part name="parameters" element="tns:Update_User" />
+  </wsdl:message>
+  <wsdl:message name="Update_UserSoapOut">
+    <wsdl:part name="parameters" element="tns:Update_UserResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_UsersSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Users" />
+  </wsdl:message>
+  <wsdl:message name="Get_UsersSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_UsersResponse" />
+  </wsdl:message>
+  <wsdl:message name="Delete_UserSoapIn">
+    <wsdl:part name="parameters" element="tns:Delete_User" />
+  </wsdl:message>
+  <wsdl:message name="Delete_UserSoapOut">
+    <wsdl:part name="parameters" element="tns:Delete_UserResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_UserSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_User" />
+  </wsdl:message>
+  <wsdl:message name="Add_UserSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_UserResponse" />
+  </wsdl:message>
   <wsdl:portType name="AnalyticsSoap">
     <wsdl:operation name="Get_Path">
       <wsdl:input message="tns:Get_PathSoapIn" />
@@ -481,6 +567,22 @@
     <wsdl:operation name="Update_access_type_id">
       <wsdl:input message="tns:Update_access_type_idSoapIn" />
       <wsdl:output message="tns:Update_access_type_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Update_User">
+      <wsdl:input message="tns:Update_UserSoapIn" />
+      <wsdl:output message="tns:Update_UserSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Users">
+      <wsdl:input message="tns:Get_UsersSoapIn" />
+      <wsdl:output message="tns:Get_UsersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete_User">
+      <wsdl:input message="tns:Delete_UserSoapIn" />
+      <wsdl:output message="tns:Delete_UserSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_User">
+      <wsdl:input message="tns:Add_UserSoapIn" />
+      <wsdl:output message="tns:Add_UserSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="AnalyticsSoap" type="tns:AnalyticsSoap">
@@ -647,6 +749,42 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="Update_User">
+      <soap:operation soapAction="http://tempuri.org/Update_User" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Users">
+      <soap:operation soapAction="http://tempuri.org/Get_Users" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_User">
+      <soap:operation soapAction="http://tempuri.org/Delete_User" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_User">
+      <soap:operation soapAction="http://tempuri.org/Add_User" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="AnalyticsSoap12" type="tns:AnalyticsSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -805,6 +943,42 @@
     </wsdl:operation>
     <wsdl:operation name="Update_access_type_id">
       <soap12:operation soapAction="http://tempuri.org/Update_access_type_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_User">
+      <soap12:operation soapAction="http://tempuri.org/Update_User" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Users">
+      <soap12:operation soapAction="http://tempuri.org/Get_Users" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_User">
+      <soap12:operation soapAction="http://tempuri.org/Delete_User" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_User">
+      <soap12:operation soapAction="http://tempuri.org/Add_User" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

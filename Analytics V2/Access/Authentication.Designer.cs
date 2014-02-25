@@ -1,6 +1,6 @@
 ﻿namespace Analytics_V2
 {
-    partial class ConnectionScreen
+    partial class Authentication
     {
         /// <summary> 
         /// Variable nécessaire au concepteur.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectionScreen));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Authentication));
             this.HeaderGroup = new ComponentFactory.Krypton.Toolkit.KryptonHeaderGroup();
             this.CancelButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.SaveConnectionCheckBox = new ComponentFactory.Krypton.Toolkit.KryptonCheckBox();
