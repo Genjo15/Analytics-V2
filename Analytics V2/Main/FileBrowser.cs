@@ -21,7 +21,6 @@ namespace Analytics_V2
         private DirectoryInfo[] _Directories;                     // Array of directories.
         private FileInfo[] _Files;                                // Array of files.
         private List<string> _ExpandedNodes;                      // List of all expanded nodes.
-        private AnalyticsWebService.AnalyticsSoapClient _Request; // Webservice instance.
         private string _Path;
 
 
@@ -31,38 +30,13 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public FileBrowser()
+        public FileBrowser(string path)
         {
             InitializeComponent();
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             _ExpandedNodes = new List<string>();
-            _Request = new AnalyticsWebService.AnalyticsSoapClient();
-
-            try
-            {
-                _Request.Open();
-                _Path = _Request.Get_Path("ADM");
-                _Request.Close();
-            }
-
-            catch (Exception ex) 
-            {
-                var result = KryptonMessageBox.Show("Path introuvable, veuillez le définir manuellement", "Path introuvable",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Exclamation);
-
-                if (result == DialogResult.OK)
-                {
-                    FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
-                    openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
-
-                    DialogResult result2 = openFolderDialog.ShowDialog();
-                    if (result == DialogResult.OK)
-                    {
-                        _Path = openFolderDialog.SelectedPath;
-                    }          
-                }
-            }
+            _Path = path;
+            
         }
 
         #endregion
@@ -123,7 +97,6 @@ namespace Analytics_V2
                 {
                     if (child.FullPath.Equals(savedNode))
                         child.Expand();
-                        //MessageBox.Show("To expand : " + child.FullPath);
                 }
 
                 ExpandNode(child, pathsList);
@@ -139,12 +112,18 @@ namespace Analytics_V2
 
         private void AddFileToNode(DirectoryInfo directory, TreeNode InputNode)
         {
-            _Files = directory.GetFiles();
+            try
+            {
+                _Files = directory.GetFiles();
+            }
+
+            catch (Exception ex) { }
 
             if (_Files.Length > 0)
                 foreach (FileInfo file in _Files)
                 {
-                    if (file.Name.Split('.')[1].Equals("xml"))
+                    //if (!String.IsNullOrEmpty(file.Name.Split('.')[1]) && file.Name.Split('.')[1].Equals("xml"))
+                    if(file.Name.Contains(".xml"))
                     {
                         TreeNode node = InputNode.Nodes.Add(file.Name);
                         node.Name = file.Name;
@@ -161,18 +140,23 @@ namespace Analytics_V2
 
         private void AddDirectoryToNode(DirectoryInfo directory, TreeNode InputNode)
         {
-              _Directories = directory.GetDirectories();
-       
-              if(_Directories.Length > 0)
-              foreach (DirectoryInfo dir in _Directories)
-              {
-                   TreeNode node = InputNode.Nodes.Add(dir.Name);
-                   node.ImageIndex = node.SelectedImageIndex = 1;
-                   node.Name = dir.Name;
+            try
+            {
+                _Directories = directory.GetDirectories();
+            }
 
-                   AddDirectoryToNode(dir, node);
-                   AddFileToNode(dir, node);
-              }
+            catch (Exception ex) { }
+       
+            if(_Directories.Length > 0)
+                foreach (DirectoryInfo dir in _Directories)
+                {
+                    TreeNode node = InputNode.Nodes.Add(dir.Name);
+                    node.ImageIndex = node.SelectedImageIndex = 1;
+                    node.Name = dir.Name;
+
+                    AddDirectoryToNode(dir, node);
+                    AddFileToNode(dir, node);
+                }
         }
 
         /********************************************\
@@ -287,6 +271,11 @@ namespace Analytics_V2
                     node.Nodes.Add(a);
             }
             catch { }
+        }
+
+        public void SetPath(string path)
+        {
+            _Path = path;
         }
 
         #endregion

@@ -5,5 +5,8 @@
     <Setting Name="hc_config" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\HC\hc.cfg</Value>
     </Setting>
+    <Setting Name="local_path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

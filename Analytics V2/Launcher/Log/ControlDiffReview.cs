@@ -89,7 +89,8 @@ namespace Analytics_V2
             if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK NO DIFFUSION"))
             {
                 ReinitializeRTBs();
-                alertsRichTextBox.AppendText(_NoDiffAlertsLogs);
+                if (!string.IsNullOrEmpty(_NoDiffAlertsLogs))
+                    alertsRichTextBox.AppendText(_NoDiffAlertsLogs);
                 if (!string.IsNullOrEmpty(_NoDiffCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _NoDiffCriticalAlertsLogs);
             }
@@ -97,7 +98,8 @@ namespace Analytics_V2
             else if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK NUMBER OF DIFFUSIONS"))
             {
                 ReinitializeRTBs();
-                alertsRichTextBox.AppendText(_DiffAlertsLogs);
+                if (!string.IsNullOrEmpty(_DiffAlertsLogs))
+                    alertsRichTextBox.AppendText(_DiffAlertsLogs);
                 if (!string.IsNullOrEmpty(_DiffCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _DiffCriticalAlertsLogs);
             }
@@ -105,7 +107,8 @@ namespace Analytics_V2
             else if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK DURATION"))
             {
                 ReinitializeRTBs();
-                alertsRichTextBox.AppendText(_DurationAlertsLogs);
+                if (!string.IsNullOrEmpty(_DurationAlertsLogs))
+                    alertsRichTextBox.AppendText(_DurationAlertsLogs);
                 if (!string.IsNullOrEmpty(_DurationCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _DurationCriticalAlertsLogs);
             }
@@ -113,7 +116,8 @@ namespace Analytics_V2
             else if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK TOTAL AUDIENCE"))
             {
                 ReinitializeRTBs();
-                alertsRichTextBox.AppendText(_TotalAudienceAlertsLogs);
+                if (!string.IsNullOrEmpty(_TotalAudienceAlertsLogs))
+                    alertsRichTextBox.AppendText(_TotalAudienceAlertsLogs);
                 if (!string.IsNullOrEmpty(_TotalAudienceCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _TotalAudienceCriticalAlertsLogs);
             }
@@ -121,13 +125,15 @@ namespace Analytics_V2
             else if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK TARGET AUDIENCE"))
             {
                 ReinitializeRTBs();
-                alertsRichTextBox.AppendText(_TargetAudienceAlertsLogs);
+                if (!string.IsNullOrEmpty(_TargetAudienceAlertsLogs))
+                    alertsRichTextBox.AppendText(_TargetAudienceAlertsLogs);
             }
 
             else if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK INDICATOR AUDIENCE"))
             {
                 ReinitializeRTBs();
-                alertsRichTextBox.AppendText(_IndicatorAudienceAlertsLogs);
+                if (!string.IsNullOrEmpty(_IndicatorAudienceAlertsLogs))
+                    alertsRichTextBox.AppendText(_IndicatorAudienceAlertsLogs);
                 if (!string.IsNullOrEmpty(_IndicatorAudienceCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _IndicatorAudienceCriticalAlertsLogs);
             }

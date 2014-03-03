@@ -179,6 +179,73 @@ namespace Analytics_V2
             }
         }
 
+
+        /******************************************************************\
+         * Check if user has the right to perform some action :           *
+         *                                                                *
+         *                               |  USER  |  ADMIN  |  SUPERADMIN *
+         *                               ----------------------------------
+         *  Launch Config in Prod        |  YES   |   YES   |     YES     *
+         *  Launch Config in PreProd     |  NO    |   YES   |     YES     * 
+         *  Create Config (P/PP)         |  NO    |   YES   |     YES     * 
+         *  Edit/Save Config (P/PP)      |  NO    |   YES   |     YES     * 
+         *  Suppress Config (P/PP)       |  NO    |   YES   |     YES     * 
+         *  Move Config (P/PP)           |  NO    |   YES   |     YES     * 
+         *  Rename Config (P/PP)         |  NO    |   YES   |     YES     * 
+         *  Copy/Cut/Paste Config (P/PP) |  NO    |   YES   |     YES     * 
+         *  --------------------------------------------------------------
+         *  Create Folder (P/PP)         |  NO    |   YES   |     YES     * 
+         *  Suppress Folder (P/PP)       |  NO    |   YES   |     YES     * 
+         *  Move Folder (P/PP)           |  NO    |   YES   |     YES     * 
+         *  Rename Folder (P/PP)         |  NO    |   YES   |     YES     * 
+         *  --------------------------------------------------------------
+         *  Personnal TreeView                                            *
+         *  (all actions listed above    |  YES   |   YES   |     YES     * 
+         *  --------------------------------------------------------------
+         *  Administration Module        |  NO    |   NO    |     YES     *
+         *                                                                *
+        \*****************************************************************/
+
+
+        public Boolean CheckIfAccessGranted(string actionType)
+        {
+            Boolean accessGranted = false;
+
+            switch (actionType)
+            {
+                case "newDirectory" :
+                case "dragDrop":
+                case "newConfig":
+                case "rename":
+                case "suppress":
+                case "edit":
+                case "cut":
+                case "copy":
+                case "launchConfigPreProd" :
+                    switch (_AccessType)
+                    {
+                        case "user": accessGranted = false; break;
+                        case "admin": accessGranted = true; break;
+                        case "superadmin": accessGranted = true; break;
+                    }
+                    break;
+
+                default: 
+                    accessGranted = false;
+                    break;
+                         
+            }
+
+            if (!accessGranted)
+            {
+                var result = KryptonMessageBox.Show("Access Denied !!", "Access Denied",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation);
+            }
+
+            return accessGranted;
+        }
+
         #endregion
 
         #region Accessors

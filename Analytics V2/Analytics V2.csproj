@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>15</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -267,6 +267,12 @@
     <Compile Include="Misc\SpecificTools.Designer.cs">
       <DependentUpon>SpecificTools.cs</DependentUpon>
     </Compile>
+    <Compile Include="Access\Settings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Access\Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Access\Administration.resx">
       <DependentUpon>Administration.cs</DependentUpon>
     </EmbeddedResource>
@@ -303,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Misc\SpecificTools.resx">
       <DependentUpon>SpecificTools.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Access\Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Analytics V2_CléTemporaire.pfx" />
     <None Include="app.config" />
@@ -390,6 +399,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\OK1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

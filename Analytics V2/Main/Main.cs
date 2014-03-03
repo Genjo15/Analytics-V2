@@ -12,6 +12,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Threading;
+using System.Xml.Linq;
 
 namespace Analytics_V2
 {
@@ -22,8 +23,9 @@ namespace Analytics_V2
         #region Variables
 
         private FileBrowser _FileBrowser;             ////
+        private FileBrowser _LocalFileBrowser;        //
         private Navigator _Navigator;                 //
-        private SpecificCountries _SpecificCountries; // User Controls
+        private SpecificCountries _SpecificCountries; // Main User Controls
         private SpecificTools _SpecificTools;         //
 
         private List<Config> _ConfigsList;     // List of configs.
@@ -43,7 +45,9 @@ namespace Analytics_V2
 
         private Authentication _Session;         // Authentication instance.
         private Administration _Administration;  // The Administration module UC.
+        private Settings _Settings;              // The Settings module UC.
         private KryptonForm _AdministrationForm; // Form hosting the Administration UC.
+        private KryptonForm _SettingsForm;       // Form hosting the Settings UC.
          
 
         private delegate void processOnMainThread(int[] tab);                                                     // Delegate type.
@@ -63,14 +67,15 @@ namespace Analytics_V2
         {
             InitializeComponent();
 
-            _FileBrowser = new FileBrowser();
+            _FileBrowser = new FileBrowser(InitializePath());
+            _LocalFileBrowser = new FileBrowser(Properties.Settings.Default.local_path);
             _Navigator = new Navigator();
             _SpecificCountries = new SpecificCountries();
             _SpecificTools = new SpecificTools();
             _Session = new Authentication("user");
             _Session.CheckSavedPUC(System.Environment.MachineName);
             _Administration = new Administration();
-
+            _Settings = new Settings();
             InitializeInterface();
 
             _ConfigsList = new List<Config>();        
@@ -117,10 +122,23 @@ namespace Analytics_V2
             _AdministrationForm.Size = new System.Drawing.Size(600, 400);
             _AdministrationForm.Controls.Add(_Administration);
             _AdministrationForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideAdministrationForm);
-            
 
-            this.MainBoardSplitContainer2.Panel1.Controls.Add(_FileBrowser);
+            _Settings.Dock = DockStyle.Fill;
+            _SettingsForm = new KryptonForm();
+            _SettingsForm.Text = "Settings";
+            _SettingsForm.StartPosition = FormStartPosition.CenterScreen;
+            _SettingsForm.Icon = global::Analytics_V2.Properties.Resources.Settings;
+            _SettingsForm.Size = new System.Drawing.Size(680, 320);
+            _SettingsForm.Controls.Add(_Settings);
+            _SettingsForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideSettingsForm);
+
+            this.FileBrowserNavigator.Pages[0].Controls.Add(_FileBrowser);
+            this.FileBrowserNavigator.Pages[0].Tag = _FileBrowser;
             _FileBrowser.PopulateTreeView();
+            this.FileBrowserNavigator.Pages[1].Controls.Add(_LocalFileBrowser);
+            this.FileBrowserNavigator.Pages[1].Tag = _LocalFileBrowser;
+            _LocalFileBrowser.PopulateTreeView();
+
             this.MainBoardSplitContainer3.Panel1.Controls.Add(_Navigator);
             this.MainBoardSplitContainer4.Panel1.Controls.Add(_SpecificCountries);
             this.MainBoardSplitContainer4.Panel2.Controls.Add(_SpecificTools);
@@ -145,6 +163,26 @@ namespace Analytics_V2
             _FileBrowser.TreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
             _FileBrowser.TreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(KeepExpandedNode);
             _FileBrowser.TreeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(RemoveExpandedNode);
+
+            _LocalFileBrowser.TreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            _LocalFileBrowser.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+            _LocalFileBrowser.CutToolStripMenuItem.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
+            _LocalFileBrowser.PasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
+            _LocalFileBrowser.EditToolStripMenuItem.Click += new System.EventHandler(this.EditToolStripMenuItem_Click);
+            _LocalFileBrowser.TreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseDoubleClick);
+            _LocalFileBrowser.DeleteToolStripMenuItem.Click += new System.EventHandler(this.SuppressToolStripButton_Click);
+            _LocalFileBrowser.RenameToolStripMenuItem.Click += new System.EventHandler(this.RenameToolStripMenuItem_Click);
+            _LocalFileBrowser.FullCollapseToolStripMenuItem.Click += new System.EventHandler(this.FullCollapseToolStripMenu_Click);
+            _LocalFileBrowser.FullExpandToolStripMenuItem.Click += new System.EventHandler(this.FullExpandToolStripMenuItem_Click);
+            _LocalFileBrowser.NewDirectoryToolStripMenuItem.Click += new System.EventHandler(this.NewDirectoryToolStripMenuItem_Click);
+            _LocalFileBrowser.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
+            _LocalFileBrowser.TreeView.KeyDown += new KeyEventHandler(this.TreeView_KeyDown);
+            _LocalFileBrowser.TreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            _LocalFileBrowser.TreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            _LocalFileBrowser.TreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            _LocalFileBrowser.TreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(KeepExpandedNode);
+            _LocalFileBrowser.TreeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(RemoveExpandedNode);
+
             _Navigator.NavigatorControl.SelectedPageChanged += new System.EventHandler(NavigatorControl_SelectedPageChanged);
             _SpecificCountries.SpecificCountriesListBox.ListBox.DoubleClick += new System.EventHandler(SpecificCountriesListBox_DoubleClick);
             _SpecificTools.SpecificToolsListBox.ListBox.DoubleClick += new System.EventHandler(SpecificToolsListBox_DoubleClick);
@@ -153,6 +191,45 @@ namespace Analytics_V2
             _Session.PasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(PasswordTextBox_KeyDown);
 
             this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
+        }
+
+        /***************************************\
+         * Get Path of configs from WebService *
+        \***************************************/
+
+        private String InitializePath()
+        {
+            AnalyticsWebService.AnalyticsSoapClient request; // Webservice instance.
+            string path = null;
+
+            request = new AnalyticsWebService.AnalyticsSoapClient();
+
+            try
+            {
+                request.Open();
+                path = request.Get_Path("ADM");
+                request.Close();
+            }
+
+            catch (Exception ex)
+            {
+                var result = KryptonMessageBox.Show("Path introuvable, veuillez le définir manuellement", "Path introuvable",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+
+                if (result == DialogResult.OK)
+                {
+                    FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+                    openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+                    DialogResult result2 = openFolderDialog.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        path = openFolderDialog.SelectedPath;
+                    }
+                }
+            }
+            return path;
         }
 
         #endregion
@@ -171,14 +248,16 @@ namespace Analytics_V2
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
         {
             Boolean configExists = false;
+            TreeView treeView = ((TreeView)(sender));
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
 
-            _FileBrowser.TreeView.SelectedNode = _FileBrowser.TreeView.GetNodeAt(e.X, e.Y);
+            treeView.SelectedNode = treeView.GetNodeAt(e.X, e.Y);
             
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                if (_FileBrowser.TreeView.SelectedNode != null &&_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+                if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 2)
                 {
-                    XmlReader ok = XmlReader.Create(_FileBrowser.TreeView.SelectedNode.FullPath);
+                    XmlReader ok = XmlReader.Create(treeView.SelectedNode.FullPath);
 
                     try
                     {
@@ -194,16 +273,16 @@ namespace Analytics_V2
                         // Check if the config already exists in the list of config
                         if (_ConfigsList.Count > 0)
                             foreach (Config element in _ConfigsList)
-                                if (element.Get_Path().Equals(_FileBrowser.TreeView.SelectedNode.FullPath))
+                                if (element.Get_Path().Equals(treeView.SelectedNode.FullPath))
                                     configExists = true;
 
                         // Create the config
                         if (!configExists)
-                            _ConfigsList.Add(new Config(_FileBrowser.TreeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], _FileBrowser.TreeView.SelectedNode.FullPath));
+                            _ConfigsList.Add(new Config(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], treeView.SelectedNode.FullPath));
 
                         // Retrieve the selected config.
                         IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
-                                                                   where item.Get_Path().Equals(_FileBrowser.TreeView.SelectedNode.FullPath)
+                                                                   where item.Get_Path().Equals(treeView.SelectedNode.FullPath)
                                                                    select item;
 
                         // Display the summary of the config.
@@ -219,7 +298,7 @@ namespace Analytics_V2
                         ok.Close();
 
                         // Disable buttons
-                        EditToolStripButton.Enabled = false;
+                        //EditToolStripButton.Enabled = false;
                         SuppressToolStripButton.Enabled = true;
                         LaunchToolStripButton.Enabled = false;
 
@@ -229,7 +308,7 @@ namespace Analytics_V2
                     }
                 }
 
-                else if (_FileBrowser.TreeView.SelectedNode != null && _FileBrowser.TreeView.SelectedNode.ImageIndex == 1)
+                else if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 1)
                 {
                     // Enable buttons
                     EditToolStripButton.Enabled = false;
@@ -237,7 +316,7 @@ namespace Analytics_V2
                     LaunchToolStripButton.Enabled = false;
 
                     // Display folder name.
-                    _Navigator.DisplayFolderName(_FileBrowser.TreeView.SelectedNode.Text);
+                    _Navigator.DisplayFolderName(treeView.SelectedNode.Text);
                 }
 
                 else
@@ -252,20 +331,20 @@ namespace Analytics_V2
             // Display/hide possibilities regarding if it's a file or a directory.
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                if (_FileBrowser.TreeView.SelectedNode != null && _FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+                if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 2)
                 {
                     try
                     {
                         // Check the validity of the XML
-                        XmlReader ok = XmlReader.Create(_FileBrowser.TreeView.SelectedNode.FullPath);
+                        XmlReader ok = XmlReader.Create(treeView.SelectedNode.FullPath);
                         while (ok.Read()) { }
                         ok.Close();
 
-                        _FileBrowser.RenameToolStripMenuItem.Enabled = true;
-                        _FileBrowser.DeleteToolStripMenuItem.Enabled = true;
-                        _FileBrowser.EditToolStripMenuItem.Enabled = true;
-                        _FileBrowser.CutToolStripMenuItem.Enabled = true;
-                        _FileBrowser.CopyToolStripMenuItem.Enabled = true;
+                        fileBrowser.RenameToolStripMenuItem.Enabled = true;
+                        fileBrowser.DeleteToolStripMenuItem.Enabled = true;
+                        fileBrowser.EditToolStripMenuItem.Enabled = true;
+                        fileBrowser.CutToolStripMenuItem.Enabled = true;
+                        fileBrowser.CopyToolStripMenuItem.Enabled = true;
                     }
 
                     catch (Exception exception)
@@ -276,22 +355,22 @@ namespace Analytics_V2
                     }
                 }
 
-                else if (_FileBrowser.TreeView.SelectedNode != null && _FileBrowser.TreeView.SelectedNode.ImageIndex == 1)
+                else if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 1)
                 {
-                    _FileBrowser.RenameToolStripMenuItem.Enabled = true;
-                    _FileBrowser.DeleteToolStripMenuItem.Enabled = true;
-                    _FileBrowser.EditToolStripMenuItem.Enabled = false;
-                    _FileBrowser.CutToolStripMenuItem.Enabled = false;
-                    _FileBrowser.CopyToolStripMenuItem.Enabled = false;
+                    fileBrowser.RenameToolStripMenuItem.Enabled = true;
+                    fileBrowser.DeleteToolStripMenuItem.Enabled = true;
+                    fileBrowser.EditToolStripMenuItem.Enabled = false;
+                    fileBrowser.CutToolStripMenuItem.Enabled = false;
+                    fileBrowser.CopyToolStripMenuItem.Enabled = false;
                 }
 
                 else 
                 {
-                    _FileBrowser.RenameToolStripMenuItem.Enabled = false;
-                    _FileBrowser.DeleteToolStripMenuItem.Enabled = false;
-                    _FileBrowser.EditToolStripMenuItem.Enabled = false;
-                    _FileBrowser.CutToolStripMenuItem.Enabled = false;
-                    _FileBrowser.CopyToolStripMenuItem.Enabled = false;
+                    fileBrowser.RenameToolStripMenuItem.Enabled = false;
+                    fileBrowser.DeleteToolStripMenuItem.Enabled = false;
+                    fileBrowser.EditToolStripMenuItem.Enabled = false;
+                    fileBrowser.CutToolStripMenuItem.Enabled = false;
+                    fileBrowser.CopyToolStripMenuItem.Enabled = false;
                 }
             }
         }
@@ -331,10 +410,8 @@ namespace Analytics_V2
 
         private void RefreshToolStripButton_Click(object sender, EventArgs e)
         {
-            _FileBrowser.PopulateTreeView();
+            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
             _ConfigsList.Clear();
-           //foreach (ProgressBar pb in _ProgressBarsList)
-           //    pb.Refresh();
         }
 
         /*****************************************************************************\
@@ -345,35 +422,66 @@ namespace Analytics_V2
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("copy"))
+                    Copy(treeView);
+            }
+
+            else 
+                Copy(treeView);           
+        }
+
+        private void Copy(TreeView treeView)
+        {
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
             _IsCopy = true;
-            _SourcePath = _FileBrowser.TreeView.SelectedNode.FullPath;
-            _PreviousNodeName = _FileBrowser.TreeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-            _FileBrowser.PasteToolStripMenuItem.Enabled = true;
+            _SourcePath = treeView.SelectedNode.FullPath;
+            _PreviousNodeName = treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
+            fileBrowser.PasteToolStripMenuItem.Enabled = true;
         }
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
 
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("cut"))
+                    Cut(treeView);
+            }
+
+            else
+                Cut(treeView); 
+        }
+
+        private void Cut(TreeView treeView)
+        {
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
             _IsCopy = false;
-            _SourcePath = _FileBrowser.TreeView.SelectedNode.FullPath;
-            _PreviousNodeName = _FileBrowser.TreeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-            _FileBrowser.PasteToolStripMenuItem.Enabled = true;
+            _SourcePath = treeView.SelectedNode.FullPath;
+            _PreviousNodeName = treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
+            fileBrowser.PasteToolStripMenuItem.Enabled = true;
         }
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
+            if (treeView.SelectedNode.ImageIndex == 2)
             {
-                if (File.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + _PreviousNodeName + ".xml"))
-                    _TargetPath = _FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + _PreviousNodeName + "-COPY.xml";
-                else _TargetPath = _FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + _PreviousNodeName + ".xml";
+                if (File.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + _PreviousNodeName + ".xml"))
+                    _TargetPath = treeView.SelectedNode.Parent.FullPath + "\\" + _PreviousNodeName + "-COPY.xml";
+                else _TargetPath = treeView.SelectedNode.Parent.FullPath + "\\" + _PreviousNodeName + ".xml";
             }
 
             else
             {
-                if (File.Exists(_FileBrowser.TreeView.SelectedNode.FullPath + "\\" + _PreviousNodeName + ".xml"))
-                    _TargetPath = _FileBrowser.TreeView.SelectedNode.FullPath + "\\" + _PreviousNodeName + "-COPY.xml";
-                else _TargetPath = _FileBrowser.TreeView.SelectedNode.FullPath + "\\" + _PreviousNodeName + ".xml";
+                if (File.Exists(treeView.SelectedNode.FullPath + "\\" + _PreviousNodeName + ".xml"))
+                    _TargetPath = treeView.SelectedNode.FullPath + "\\" + _PreviousNodeName + "-COPY.xml";
+                else _TargetPath = treeView.SelectedNode.FullPath + "\\" + _PreviousNodeName + ".xml";
             }
 
             Console.WriteLine("Target : " + _TargetPath);
@@ -382,9 +490,10 @@ namespace Analytics_V2
             else if(!_IsCopy)
                 File.Move(_SourcePath, _TargetPath);
 
-            _FileBrowser.PopulateTreeView();
-            _FileBrowser.PasteToolStripMenuItem.Enabled = false;
+            fileBrowser.PopulateTreeView();
+            fileBrowser.PasteToolStripMenuItem.Enabled = false;
         }
+
 
         /******************************************************************************\
          * Events of clicking of the element edit of the MenuStrip                    *
@@ -395,26 +504,42 @@ namespace Analytics_V2
 
         private void EditToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditConfig();
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("edit"))
+                    EditConfig(treeView);
+            }
+
+            else
+                EditConfig(treeView);   
         }
 
         private void EditToolStripButton_Click(object sender, EventArgs e)
         {
-            EditConfig();
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("edit"))
+                    EditConfig(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+            }
+
+            else
+                EditConfig(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
         }
 
-        private void EditConfig()
+        private void EditConfig(TreeView treeView)
         {
             Boolean tabExists = false;
 
-            if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+            if (treeView.SelectedNode.ImageIndex == 2)
             {
                 foreach (KryptonPage element in _Navigator.NavigatorControl.Pages)
                 {
-                    if (_FileBrowser.TreeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0].Equals(element.Text.Split(new string[] { "*" }, StringSplitOptions.None)[0]))
+                    if (treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0].Equals(element.Text.Split(new string[] { "*" }, StringSplitOptions.None)[0]))
                         tabExists = true;
                     for (int i = 0; i < _Navigator.NavigatorControl.Pages.Count; i++)
-                        if (_FileBrowser.TreeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0].Equals(_Navigator.NavigatorControl.Pages[i].Text.Split(new string[] { "*" }, StringSplitOptions.None)[0]))
+                        if (treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0].Equals(_Navigator.NavigatorControl.Pages[i].Text.Split(new string[] { "*" }, StringSplitOptions.None)[0]))
                         {
                             _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[i];
 
@@ -426,7 +551,7 @@ namespace Analytics_V2
 
                 if (!tabExists)
                 {
-                    _Navigator.AddTab(_FileBrowser.TreeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], _FileBrowser.TreeView.SelectedNode.FullPath);
+                    _Navigator.AddTab(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], treeView.SelectedNode.FullPath);
                     _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[_Navigator.NavigatorControl.Pages.Count - 1];
                     SaveToolStripButton.Enabled = false;
                     var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
@@ -438,6 +563,7 @@ namespace Analytics_V2
 
         /**************************************************************\
          * Events when the RTB is modified / When tab has changed     *
+         * (Inform the user if the config has been modified or not    *
          *   - modify the label of the tab/                           *
          *   - enable/disable the save button.                        *
         \**************************************************************/
@@ -470,7 +596,6 @@ namespace Analytics_V2
 
         private void SaveToolStripButton_Click(object sender, EventArgs e)
         {
-
             Encoding encoding;
             String treatedString;
             StreamWriter writer;
@@ -572,45 +697,60 @@ namespace Analytics_V2
          * Events of clicking of the element suppress of the MenuStrip *
          * (or right click on a tree node --> Delete)                  *    
          * (or Keys Delete)                                            *
-         *  - Ask confirmation then suppress the config.               *
+         *  - Ask confirmation then suppress the config/director       *
         \***************************************************************/
 
         private void SuppressToolStripButton_Click(object sender, EventArgs e)
         {
-            Delete();
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("suppress"))
+                    Delete(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+            }
+
+            else
+                Delete(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
         }
 
         private void TreeView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
-                Delete();
+            TreeView treeView = ((TreeView)sender);
+            
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("suppress") && (e.KeyCode == Keys.Delete))
+                        Delete(treeView);
+            }
+
+            else if (e.KeyCode == Keys.Delete)
+                    Delete(treeView);
         }
 
-        private void Delete()
+        private void Delete(TreeView treeView)
         {
-            if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+            if (treeView.SelectedNode.ImageIndex == 2)
             {
-                var result = KryptonMessageBox.Show("Do you really want to delete the following configuration?  : \n\n                        " + _FileBrowser.TreeView.SelectedNode.Text + "\n\nNote that this action is IRREVERSIBLE.", "Delete this file",
+                var result = KryptonMessageBox.Show("Do you really want to delete the following configuration?  : \n\n                        " + treeView.SelectedNode.Text + "\n\nNote that this action is IRREVERSIBLE.", "Delete this file",
                          MessageBoxButtons.YesNo,
                          MessageBoxIcon.Warning);
 
                 if (result == DialogResult.Yes)
                 {
-                    File.Delete(_FileBrowser.TreeView.SelectedNode.FullPath);
-                    _FileBrowser.PopulateTreeView();
+                    File.Delete(treeView.SelectedNode.FullPath);
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
                 }
             }
 
-            else if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 1)
+            else if (treeView.SelectedNode.ImageIndex == 1)
             {
-                var result = KryptonMessageBox.Show("Do you really want to delete the following Directory?  : \n\n                        " + _FileBrowser.TreeView.SelectedNode.Text + "\n\nNote that this action is IRREVERSIBLE.", "Delete this folder",
+                var result = KryptonMessageBox.Show("Do you really want to delete the following Directory?  : \n\n                        " + treeView.SelectedNode.Text + "\n\nNote that this action is IRREVERSIBLE.", "Delete this folder",
                          MessageBoxButtons.YesNo,
                          MessageBoxIcon.Warning);
 
                 if (result == DialogResult.Yes)
                 {
-                    Directory.Delete(_FileBrowser.TreeView.SelectedNode.FullPath, true);
-                    _FileBrowser.PopulateTreeView();
+                    Directory.Delete(treeView.SelectedNode.FullPath, true);
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
                 }
             }
         }
@@ -622,26 +762,41 @@ namespace Analytics_V2
 
         private void RenameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _FileBrowser.TreeView.LabelEdit = true;
-            _FileBrowser.TreeView.SelectedNode.BeginEdit();
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("rename"))
+                {
+                    treeView.LabelEdit = true;
+                    treeView.SelectedNode.BeginEdit();
+                }
+            }
+
+            else
+            {
+                treeView.LabelEdit = true;
+                treeView.SelectedNode.BeginEdit();
+            }        
         }
 
         private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            _SourcePath = _FileBrowser.TreeView.SelectedNode.FullPath;
+            TreeView treeView = ((TreeView)sender);
+            _SourcePath = treeView.SelectedNode.FullPath;
 
-            _FileBrowser.TreeView.LabelEdit = false;
+            treeView.LabelEdit = false;
 
-            if (e.Label == null || e.Label.Trim().Length == 0 || File.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()) ||  Directory.Exists(_FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()))
+            if (e.Label == null || e.Label.Trim().Length == 0 || File.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()) || Directory.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()))
             //if (e.Label.Trim().Length == 0)
                 e.CancelEdit = true;
 
             else
             {
-                _TargetPath = _FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim();
-                if(_FileBrowser.TreeView.SelectedNode != null && _FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+                _TargetPath = treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim();
+                if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 2)
                     File.Move(_SourcePath, _TargetPath);
-                else if(_FileBrowser.TreeView.SelectedNode != null && _FileBrowser.TreeView.SelectedNode.ImageIndex == 1)
+                else if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 1)
                     Directory.Move(_SourcePath, _TargetPath);
             }
         }
@@ -653,48 +808,118 @@ namespace Analytics_V2
 
         private void FullCollapseToolStripMenu_Click(object sender, EventArgs e)
         {
-            _FileBrowser.TreeView.CollapseAll();
-            _FileBrowser.TreeView.Nodes[0].Expand();
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+            treeView.CollapseAll();
+            treeView.Nodes[0].Expand();
         }
 
         private void FullExpandToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _FileBrowser.TreeView.ExpandAll();
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+            treeView.ExpandAll();
         }
 
-        /******************************************************\
-         * Events of right click on a Treenode --> New Folder *
-         *  - Create a new file.                              *
-        \******************************************************/
+        /*****************************************************************\
+         * Events of clicking the element create config of the MenuStrip *
+         *  - Create a new file.                                         *
+        \*****************************************************************/
+
+        private void NewFileToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("newConfig"))
+                    NewFile();
+            }
+
+            else
+                NewFile();
+        }
+
+        private void NewFile()
+        {
+            try
+            {
+                //XmlDocument doc = new XmlDocument();
+                string path = "";
+
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                    path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Parent.FullPath + "\\New Config.xml";
+
+                else
+                {
+                    path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath + "\\New Config.xml";
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Expand();
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).AddNodePath(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode);
+                }
+
+                //File.Create(path).Close();
+
+                XmlDocument xmlDoc = new XmlDocument();
+                XmlDeclaration xmlDeclaration = xmlDoc.CreateXmlDeclaration("1.0", "iso-8859-1", "yes");
+                XmlElement rootNode = xmlDoc.CreateElement("region");
+                xmlDoc.InsertBefore(xmlDeclaration, xmlDoc.DocumentElement);
+                xmlDoc.AppendChild(rootNode);
+
+                XmlWriter writer = XmlWriter.Create(path, null);
+                xmlDoc.Save(writer);
+                writer.Close();
+
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).ScrollToCreatedItem(path);
+            }
+
+            catch (Exception ex) { Console.WriteLine(ex); }
+        }
+
+        /********************************************************\
+         * Events of right click on a Treenode --> New Folder   *
+         *  - Create a new folder.                              *
+        \********************************************************/
 
         private void NewDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("newDirectory"))
+                    NewDirectory(treeView);
+            }
+
+            else
+                NewDirectory(treeView);
+        }
+
+        private void NewDirectory(TreeView treeView)
+        {
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
+
             try
             {
                 DirectoryInfo directory;
 
-                string path="";
+                string path = "";
 
-                if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
-                    path = _FileBrowser.TreeView.SelectedNode.Parent.FullPath + "\\Nouveau Dossier";
+                if (treeView.SelectedNode.ImageIndex == 2)
+                    path = treeView.SelectedNode.Parent.FullPath + "\\Nouveau Dossier";
 
                 else //if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 1)
                 {
-                    path = _FileBrowser.TreeView.SelectedNode.FullPath + "\\Nouveau Dossier";
-                    _FileBrowser.TreeView.SelectedNode.Expand();
-                    _FileBrowser.AddNodePath(_FileBrowser.TreeView.SelectedNode);
+                    path = treeView.SelectedNode.FullPath + "\\Nouveau Dossier";
+                    treeView.SelectedNode.Expand();
+                    fileBrowser.AddNodePath(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode);
                 }
 
                 directory = Directory.CreateDirectory(path);
-                _FileBrowser.PopulateTreeView();
-                _FileBrowser.ScrollToCreatedItem(path);
+                fileBrowser.PopulateTreeView();
+                fileBrowser.ScrollToCreatedItem(path);
 
                 //Begin Edit on the created directory TO IMPLEMENT
                 //FetchAndEditCreatedDirectory(_FileBrowser.TreeView.Nodes[0], path);
             }
 
             catch (Exception ex) { Console.WriteLine(ex); }
-           
         }
 
         private void FetchAndEditCreatedDirectory(TreeNode parent, string path)
@@ -703,7 +928,7 @@ namespace Analytics_V2
             {
                 if (element.FullPath.Equals(path))
                 {
-                    _FileBrowser.TreeView.LabelEdit = true;
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.LabelEdit = true;
                     element.BeginEdit();
                 }
                 else FetchAndEditCreatedDirectory(element, path);
@@ -727,12 +952,28 @@ namespace Analytics_V2
 
         private void TreeView_DragDrop(object sender, DragEventArgs e)
         {
+            TreeView treeView = ((TreeView)sender);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("dragDrop"))
+                    Drop(treeView, e);
+            }
+
+            else
+                Drop(treeView, e);          
+        }
+
+        private void Drop(TreeView treeView, DragEventArgs e)
+        {
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
+
             TreeNode newNode;
 
             if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
             {
-                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-                TreeNode destinationNode = ((TreeView)sender).GetNodeAt(pt);
+                Point pt = treeView.PointToClient(new Point(e.X, e.Y));
+                TreeNode destinationNode = treeView.GetNodeAt(pt);
                 newNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
                 _PreviousNodeName = newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
 
@@ -758,16 +999,16 @@ namespace Analytics_V2
                 {
                     try
                     {
-                        if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
+                        if (treeView.SelectedNode.ImageIndex == 2)
                             File.Move(_SourcePath, _TargetPath);
-                        else if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 1)
+                        else if (treeView.SelectedNode.ImageIndex == 1)
                             Directory.Move(_SourcePath, _TargetPath.Replace(".xml", ""));
                     }
                     catch (Exception ex) { Console.WriteLine(ex); }
                 }
             }
 
-            _FileBrowser.PopulateTreeView();
+            fileBrowser.PopulateTreeView();
         }
 
         /****************************************************************************************\
@@ -800,16 +1041,32 @@ namespace Analytics_V2
 
         private void LaunchToolStripButton_Click(object sender, EventArgs e)
         {
-            LaunchConfig();
+            if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath.Contains("Recettes"))
+            {
+                if(_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                    LaunchConfig(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+            }
+
+            else
+                LaunchConfig(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
         }
 
         private void TreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (_FileBrowser.TreeView.SelectedNode.ImageIndex == 2)
-                LaunchConfig();
+            if (((TreeView)(sender)).SelectedNode.ImageIndex == 2)
+            {
+                if (((TreeView)(sender)).SelectedNode.FullPath.Contains("Recettes"))
+                {
+                    if(_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                        LaunchConfig(((TreeView)(sender)));
+                }
+
+                else
+                    LaunchConfig(((TreeView)(sender)));
+            }
         }
 
-        private void LaunchConfig()
+        private void LaunchConfig(TreeView treeView)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -829,7 +1086,7 @@ namespace Analytics_V2
 
                 // Retrieve the selected config.
                 IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
-                                                           where item.Get_Path().Equals(_FileBrowser.TreeView.SelectedNode.FullPath)
+                                                           where item.Get_Path().Equals(treeView.SelectedNode.FullPath)
                                                            select item;
 
                 // Create a launcher and associated UC.
@@ -839,7 +1096,7 @@ namespace Analytics_V2
 
                     _ProgressBarsList.Add(new ProgressBar(set.Get_Name())); // Create a new ProgressBar Control & add it to the list of PB
                     _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]); // Add the created PB in the panel.
-                    _LogsList.Add(new Log(set.Get_Name(),set.Get_TargetsNumber())); // Create a new Log Control & add it to the list of Logs.
+                    _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber())); // Create a new Log Control & add it to the list of Logs.
                     _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab()); // Add the log tab to the logsNavigator.
                     _Navigator.LogsNavigator.SelectedIndex = 0;
                     _LogsList[_LogsList.Count - 1].Get_NavigatorTab().ButtonSpecs[0].Click += new EventHandler(_Navigator.CloseLogsNavigatorTab);
@@ -938,21 +1195,22 @@ namespace Analytics_V2
         {
             if (_Session.GetAccessType().Equals("superadmin"))
             {
-                ToolStripSeparator5.Visible = true;
+                ToolStripSeparator6.Visible = true;
                 AdministrationToolStripButton.Visible = true;
             }
 
             else
             {
-                ToolStripSeparator5.Visible = false;
+                ToolStripSeparator6.Visible = false;
                 AdministrationToolStripButton.Visible = false;
             }
         }
 
-        /****************************************************************\
-         * Event which occurs when the Administration buton is clicked  *
-         *  - Open the administration module.                           *
-        \****************************************************************/
+        /*****************************************************************\
+         * Event which occurs when the Administration button is clicked  *
+         *  - Open the administration module.                            *
+         *  - Also the handler when closing form                         *
+        \*****************************************************************/
 
         private void AdministrationToolStripButton_Click(object sender, EventArgs e)
         {
@@ -963,6 +1221,27 @@ namespace Analytics_V2
         private void HideAdministrationForm(object sender, FormClosingEventArgs e)
         {
             _AdministrationForm.Hide();
+            e.Cancel = true;
+        }
+
+        /****************************************************************\
+         * Event which occurs when the Settings button is clicked       *
+         *  - Open the Settings module.                                 *
+         *  - Also the handler when closing form                        *
+        \****************************************************************/
+
+        private void SettingsToolStripButton_Click(object sender, EventArgs e)
+        {
+            _SettingsForm.Show();
+
+        }
+
+        private void HideSettingsForm(object sender, FormClosingEventArgs e)
+        {
+            _SettingsForm.Hide();
+            _LocalFileBrowser.SetPath(Properties.Settings.Default.local_path);
+            _LocalFileBrowser.PopulateTreeView();
+
             e.Cancel = true;
         }
 
@@ -982,12 +1261,12 @@ namespace Analytics_V2
 
         private void KeepExpandedNode(object sender, TreeViewCancelEventArgs e)
         {
-            _FileBrowser.AddNodePath(e.Node);
+            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).AddNodePath(e.Node);
         }
 
         private void RemoveExpandedNode(object sender, TreeViewCancelEventArgs e)
         {
-            _FileBrowser.RemoveNodePath(e.Node);
+            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).RemoveNodePath(e.Node);
         }
 
         #endregion
