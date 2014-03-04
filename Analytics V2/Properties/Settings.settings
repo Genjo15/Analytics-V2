@@ -8,5 +8,11 @@
     <Setting Name="local_path" Type="System.String" Scope="User">
       <Value Profile="(Default)">D:\\</Value>
     </Setting>
+    <Setting Name="interpretation_template" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\Process Templates</Value>
+    </Setting>
+    <Setting Name="xml_template" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\Recettes\Template_XML.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

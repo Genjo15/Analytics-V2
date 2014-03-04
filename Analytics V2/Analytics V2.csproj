@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>15</ApplicationRevision>
+    <ApplicationRevision>30</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -68,6 +68,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Minion.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Calcul">
@@ -188,6 +191,9 @@
     </Reference>
     <Reference Include="XMLEditor">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XMLEditor\V2\XMLEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="XMLLoader">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XMLLoader\XMLLoader.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +423,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Switch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Analytics.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Analytics.ico" />
+    <Content Include="Minion.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

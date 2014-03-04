@@ -47,5 +47,31 @@ namespace Analytics_V2.Properties {
                 this["local_path"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\MIMAS\\BUREAUTIQUE\\GROUPES\\Direction de l\'International\\POLE INFORMATIQUE\\Develo" +
+            "ppement Internes\\References Applications\\Analytics\\Process Templates")]
+        public string interpretation_template {
+            get {
+                return ((string)(this["interpretation_template"]));
+            }
+            set {
+                this["interpretation_template"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\MIMAS\\BUREAUTIQUE\\GROUPES\\Direction de l\'International\\POLE INFORMATIQUE\\Develo" +
+            "ppement Internes\\References Applications\\Analytics\\Recettes\\Template_XML.xml")]
+        public string xml_template {
+            get {
+                return ((string)(this["xml_template"]));
+            }
+            set {
+                this["xml_template"] = value;
+            }
+        }
     }
 }

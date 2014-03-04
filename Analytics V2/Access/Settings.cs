@@ -28,6 +28,7 @@ namespace Analytics_V2
 
             PersonnalPathTextBox.Text = Properties.Settings.Default.local_path;
             HCTextBox.Text = Properties.Settings.Default.hc_config;
+            XMLTemplateTextBox.Text = Properties.Settings.Default.interpretation_template;
         }
 
         #endregion
@@ -69,6 +70,26 @@ namespace Analytics_V2
 
                 Properties.Settings.Default.Save();
                 HCTextBox.Text = Properties.Settings.Default.hc_config;
+
+                var result2 = KryptonMessageBox.Show("Saved !", "Saved",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+            }
+        }
+
+        // Change XML interpretation template path
+        private void XMLTemplateButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+            openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            DialogResult result = openFolderDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                Properties.Settings.Default.interpretation_template = openFolderDialog.SelectedPath;
+
+                Properties.Settings.Default.Save();
+                XMLTemplateTextBox.Text = Properties.Settings.Default.interpretation_template;
 
                 var result2 = KryptonMessageBox.Show("Saved !", "Saved",
                                 MessageBoxButtons.OK,

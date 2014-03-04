@@ -183,7 +183,8 @@ namespace Analytics_V2
             _LocalFileBrowser.TreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(KeepExpandedNode);
             _LocalFileBrowser.TreeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(RemoveExpandedNode);
 
-            _Navigator.NavigatorControl.SelectedPageChanged += new System.EventHandler(NavigatorControl_SelectedPageChanged);
+            _Navigator.NavigatorControl.SelectedPageChanged += NavigatorControl_SelectedPageChanged;
+
             _SpecificCountries.SpecificCountriesListBox.ListBox.DoubleClick += new System.EventHandler(SpecificCountriesListBox_DoubleClick);
             _SpecificTools.SpecificToolsListBox.ListBox.DoubleClick += new System.EventHandler(SpecificToolsListBox_DoubleClick);
             _Session.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
@@ -269,6 +270,7 @@ namespace Analytics_V2
                         EditToolStripButton.Enabled = true;
                         SuppressToolStripButton.Enabled = true;
                         LaunchToolStripButton.Enabled = true;
+                        //SaveToolStripButton.Enabled = false;
 
                         // Check if the config already exists in the list of config
                         if (_ConfigsList.Count > 0)
@@ -301,6 +303,7 @@ namespace Analytics_V2
                         //EditToolStripButton.Enabled = false;
                         SuppressToolStripButton.Enabled = true;
                         LaunchToolStripButton.Enabled = false;
+                        //SaveToolStripButton.Enabled = false;
 
                         KryptonMessageBox.Show("Error !! The selected configuration is INVALID : \n\n                        " + exception.ToString(), "invalid XML",
                               MessageBoxButtons.OK,
@@ -314,6 +317,7 @@ namespace Analytics_V2
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = true;
                     LaunchToolStripButton.Enabled = false;
+                    //SaveToolStripButton.Enabled = false;
 
                     // Display folder name.
                     _Navigator.DisplayFolderName(treeView.SelectedNode.Text);
@@ -325,6 +329,7 @@ namespace Analytics_V2
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = false;
                     LaunchToolStripButton.Enabled = false;
+                    //SaveToolStripButton.Enabled = false;
                 }
             }
 
@@ -440,7 +445,9 @@ namespace Analytics_V2
             _IsCopy = true;
             _SourcePath = treeView.SelectedNode.FullPath;
             _PreviousNodeName = treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-            fileBrowser.PasteToolStripMenuItem.Enabled = true;
+            //fileBrowser.PasteToolStripMenuItem.Enabled = true;
+            _FileBrowser.PasteToolStripMenuItem.Enabled = true;
+            _LocalFileBrowser.PasteToolStripMenuItem.Enabled = true;
         }
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -463,7 +470,9 @@ namespace Analytics_V2
             _IsCopy = false;
             _SourcePath = treeView.SelectedNode.FullPath;
             _PreviousNodeName = treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-            fileBrowser.PasteToolStripMenuItem.Enabled = true;
+            //fileBrowser.PasteToolStripMenuItem.Enabled = true;
+            _FileBrowser.PasteToolStripMenuItem.Enabled = true;
+            _LocalFileBrowser.PasteToolStripMenuItem.Enabled = true;
         }
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -491,7 +500,9 @@ namespace Analytics_V2
                 File.Move(_SourcePath, _TargetPath);
 
             fileBrowser.PopulateTreeView();
-            fileBrowser.PasteToolStripMenuItem.Enabled = false;
+            //fileBrowser.PasteToolStripMenuItem.Enabled = false;
+            _FileBrowser.PasteToolStripMenuItem.Enabled = false;
+            _LocalFileBrowser.PasteToolStripMenuItem.Enabled = false;
         }
 
 
@@ -500,6 +511,7 @@ namespace Analytics_V2
          * (or right click on a tree node --> Edit)                                   *    
          *  - Create a new tab with the content of the xml file (+ its event handler) *
          *  - Open it if it already exists                                            *
+         *  - Add contextmenu item.                                                   *
         \******************************************************************************/
 
         private void EditToolStripMenuItem_Click(object sender, EventArgs e)
@@ -542,48 +554,23 @@ namespace Analytics_V2
                         if (treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0].Equals(_Navigator.NavigatorControl.Pages[i].Text.Split(new string[] { "*" }, StringSplitOptions.None)[0]))
                         {
                             _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[i];
-
-                            if (_Navigator.NavigatorControl.SelectedPage.Text.Contains('*'))
-                                SaveToolStripButton.Enabled = true;
-                            else SaveToolStripButton.Enabled = false;
                         }
                 }
 
                 if (!tabExists)
                 {
+                    _Navigator.ContextMenuStrip.Items.Add(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0]);
                     _Navigator.AddTab(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], treeView.SelectedNode.FullPath);
                     _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[_Navigator.NavigatorControl.Pages.Count - 1];
-                    SaveToolStripButton.Enabled = false;
-                    var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
-                    foreach (var richTextBox in childrens)
-                        richTextBox.TextChanged += new EventHandler(RichTextBoxTextChanged);
                 }
             }
         }
 
-        /**************************************************************\
-         * Events when the RTB is modified / When tab has changed     *
-         * (Inform the user if the config has been modified or not    *
-         *   - modify the label of the tab/                           *
-         *   - enable/disable the save button.                        *
-        \**************************************************************/
-
-        private void RichTextBoxTextChanged(object sender, EventArgs e)
-        {
-            if (!_Navigator.NavigatorControl.SelectedPage.Text.Contains('*'))
-                _Navigator.NavigatorControl.SelectedPage.Text = _Navigator.NavigatorControl.SelectedPage.Text + "*";
-            SaveToolStripButton.Enabled = true;
-        }
-
-        private void NavigatorControl_SelectedPageChanged(object sender, EventArgs e)
-        {
-            if (_Navigator.NavigatorControl.SelectedPage.Text.Contains('*'))
-                SaveToolStripButton.Enabled = true;
-            else SaveToolStripButton.Enabled = false;
-        }
-
         /**********************************************************************\
-         * Event of clicking on the element "Save" of the MenuStrip           *
+         * Event of clicking on the element "Save" of the MenuStrip           * 
+         * CREATION MODE :                                                    * 
+         *   - Call the Save function                                         * 
+         * NORMAL MODE :                                                      * 
          *   - Retrieve the selected config tab (for the encoding).           *
          *   - Retrieve the encoding.                                         *
          *   - Retrieve the richtextbox text.                                 *
@@ -596,65 +583,131 @@ namespace Analytics_V2
 
         private void SaveToolStripButton_Click(object sender, EventArgs e)
         {
-            Encoding encoding;
-            String treatedString;
-            StreamWriter writer;
-
-            // Retrieve the selected config tab (for the encoding).
-            IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
-                                                       where item.Get_Name().Equals(_Navigator.NavigatorControl.SelectedPage.Text.Split(new string[] { "*" }, StringSplitOptions.None)[0])
-                                                       select item;
-
-            // Retrieve the encoding.
-            foreach (Config set in retrieveConfigQuerry)
+            // Case of creation mode
+            if ((Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
             {
-                encoding = Encoding.GetEncoding(set.Get_XmlEncoding());
-
-                // Retrieve the richtextbox text
-                var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
-                foreach (var richTextBox in childrens)
+                var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
+                foreach (XMLLoader.XMLForm element in childrens)
                 {
-                    treatedString = richTextBox.Text;
+                    element.saveXML((string)element.Tag);
 
-                    // Some replacement before saving (especially xml char like '"', '&', '<' and '>').
-                    treatedString = XmlTreatment(treatedString);
-
-                    XmlReader ok = XmlReader.Create(new StringReader(treatedString));
-             
-                    try
-                    {
-                        // Check Validity of the xml
-                        while (ok.Read()) { }
-                        ok.Close();
-
-                        // Create the streamwriter and save
-                        writer = new StreamWriter(richTextBox.Tag.ToString(), false, encoding);
-                        writer.WriteLine(treatedString);
-                        writer.Close();
-                    }
-
-                    catch (Exception ex)
-                    {
-                        ok.Close();
-
-                        var result = KryptonMessageBox.Show("Warning !! There is an error in the xml: \n\n                        " + ex + "\n\nSave anyway?", "invalid XML",
-                              MessageBoxButtons.YesNo,
-                              MessageBoxIcon.Warning);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            // Create the streamwriter and save anyway.
-                            writer = new StreamWriter(richTextBox.Tag.ToString(), false, encoding);
-                            writer.WriteLine(treatedString);
-                            writer.Close();
-                        }
-                    }
+                    var result = KryptonMessageBox.Show("Saved in :\n" + element.Tag.ToString(), "File saved.",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Information);
                 }
             }
 
-            // Edit labels and button on the menustrip.
-            _Navigator.NavigatorControl.SelectedPage.Text = _Navigator.NavigatorControl.SelectedPage.Text.Replace("*", "");
-            SaveToolStripButton.Enabled = false;
+            else
+            {
+                Encoding encoding;
+                String treatedString;
+                StreamWriter writer;
+            
+                // Retrieve the selected config tab (for the encoding).
+                IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
+                                                            where item.Get_Name().Equals(_Navigator.NavigatorControl.SelectedPage.Text)
+                                                            select item;
+            
+                // Retrieve the encoding.
+                foreach (Config set in retrieveConfigQuerry)
+                {
+                    encoding = Encoding.GetEncoding(set.Get_XmlEncoding());
+            
+                    // Retrieve the richtextbox text
+                    var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
+                    foreach (var richTextBox in childrens)
+                    {
+                        treatedString = richTextBox.Text;
+            
+                        // Some replacement before saving (especially xml char like '"', '&', '<' and '>').
+                        treatedString = XmlTreatment(treatedString);
+            
+                        XmlReader ok = XmlReader.Create(new StringReader(treatedString));
+            
+                        try
+                        {
+                            // Check Validity of the xml
+                            while (ok.Read()) { }
+                            ok.Close();
+            
+                            // Create the streamwriter and save
+                            writer = new StreamWriter(richTextBox.Tag.ToString(), false, encoding);
+                            writer.WriteLine(treatedString);
+                            writer.Close();
+            
+                            var result = KryptonMessageBox.Show("Saved in :\n" + richTextBox.Tag.ToString(), "File saved.",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        }
+            
+                        catch (Exception ex)
+                        {
+                            ok.Close();
+            
+                            var result2 = KryptonMessageBox.Show("Warning !! There is an error in the xml: \n\n                        " + ex + "\n\nSave anyway?", "invalid XML",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Warning);
+            
+                            if (result2 == DialogResult.Yes)
+                            {
+                                // Create the streamwriter and save anyway.
+                                writer = new StreamWriter(richTextBox.Tag.ToString(), false, encoding);
+                                writer.WriteLine(treatedString);
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+            }     
+            //else
+            //{
+            //    Encoding encoding;
+            //    String treatedString;
+            //    StreamWriter writer;
+            //
+            //    // Retrieve the selected config tab (for the encoding).
+            //    IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
+            //                                                where item.Get_Name().Equals(_Navigator.NavigatorControl.SelectedPage.Text)
+            //                                                select item;
+            //
+            //    // Retrieve the encoding.
+            //    foreach (Config set in retrieveConfigQuerry)
+            //    {
+            //        encoding = Encoding.GetEncoding(set.Get_XmlEncoding());
+            //
+            //        // Retrieve the richtextbox text
+            //        var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
+            //        foreach (var richTextBox in childrens)
+            //        {
+            //            treatedString = richTextBox.Text;
+            //
+            //            //Some replacement before saving (especially xml char like '"', '&', '<' and '>').
+            //            treatedString = XmlTreatment(treatedString);
+            //
+            //            XmlReader ok = XmlReader.Create(new StringReader(treatedString));
+            //
+            //            try
+            //            {
+            //                // Check Validity of the xml
+            //                while (ok.Read()) { }
+            //                ok.Close();
+            //
+            //                // Create the streamwriter and save
+            //
+            //                writer = new StreamWriter(richTextBox.Tag.ToString(), false, System.Text.Encoding.Default);
+            //                writer.WriteLine(treatedString);
+            //                writer.Close();
+            //                writer.Dispose();
+            //
+            //            }
+            //
+            //            catch (Exception ex)
+            //            {
+            //            }
+            //
+            //        }
+            //    }
+            //}
         }
 
         private String XmlTreatment(String str)
@@ -838,38 +891,61 @@ namespace Analytics_V2
 
         private void NewFile()
         {
-            try
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Fichiers XML | *.xml";
+            saveFileDialog.AddExtension = true;
+            if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null)
             {
-                //XmlDocument doc = new XmlDocument();
-                string path = "";
-
                 if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
-                    path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Parent.FullPath + "\\New Config.xml";
+                    saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Parent.FullPath;
+                else if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 1)
+                    saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath;
+            }
+            else saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.Nodes[0].FullPath;
 
-                else
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
                 {
-                    path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath + "\\New Config.xml";
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Expand();
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).AddNodePath(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode);
+                    StreamReader streamReader = new StreamReader(Properties.Settings.Default.xml_template, System.Text.Encoding.Default);
+                    string text = streamReader.ReadToEnd();
+                    streamReader.Close();
+                    streamReader.Dispose();
+
+                    StreamWriter streamWriter = new StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.Default);
+                    streamWriter.WriteLine(text);
+                    streamWriter.Close();
+                    streamWriter.Dispose();
                 }
 
-                //File.Create(path).Close();
+                // If no connection, create a virgin xml
+                catch (Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Unable to access file (maybe there is no network). An empty XML file will be created instead.", "No network",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
 
-                XmlDocument xmlDoc = new XmlDocument();
-                XmlDeclaration xmlDeclaration = xmlDoc.CreateXmlDeclaration("1.0", "iso-8859-1", "yes");
-                XmlElement rootNode = xmlDoc.CreateElement("region");
-                xmlDoc.InsertBefore(xmlDeclaration, xmlDoc.DocumentElement);
-                xmlDoc.AppendChild(rootNode);
+                    StreamWriter streamWriter = new StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.Default);
+                    streamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>");
+                    streamWriter.WriteLine("<region>");
+                    streamWriter.WriteLine("</region>");
+                    streamWriter.Close();
+                    streamWriter.Dispose();
+                }
 
-                XmlWriter writer = XmlWriter.Create(path, null);
-                xmlDoc.Save(writer);
-                writer.Close();
+                var result2 = KryptonMessageBox.Show("File Created in :\n" + saveFileDialog.FileName, "File Created.",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
 
+                // Refresh TreeView
                 ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
-                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).ScrollToCreatedItem(path);
-            }
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).ScrollToCreatedItem(saveFileDialog.FileName);
 
-            catch (Exception ex) { Console.WriteLine(ex); }
+                // Add Page to navigator
+                _Navigator.ContextMenuStrip.Items.Add(System.IO.Path.GetFileName(saveFileDialog.FileName).Replace(".xml",""));
+                _Navigator.AddTab(System.IO.Path.GetFileName(saveFileDialog.FileName).Replace(".xml", ""), saveFileDialog.FileName);
+                _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[_Navigator.NavigatorControl.Pages.Count - 1];
+            }
         }
 
         /********************************************************\
@@ -1254,6 +1330,34 @@ namespace Analytics_V2
             _Navigator.SummarySplitContainer1.SplitterDistance += 1;
             _Navigator.SummarySplitContainer1.SplitterDistance -= 1;
         }
+
+        /******************************************\
+         * Event of changing tab on the navigator *
+         * + Event which appears when the control has the focus *
+        \******************************************/
+
+        private void NavigatorControl_SelectedPageChanged(object sender, EventArgs e)
+        {
+            if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            {
+                SaveToolStripButton.Enabled = true;
+                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+            }
+            else
+            {
+                SaveToolStripButton.Enabled = false;
+                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            }
+        }
+
+
+        //private void NavigatorControl_GotFocus(object sender, EventArgs e)
+        //{
+        //    if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+        //        SaveToolStripButton.Enabled = true;
+        //    else
+        //        SaveToolStripButton.Enabled = false;
+        //}
 
         /******************************************************\
          * Method for keeping the nodes expanded when updated *

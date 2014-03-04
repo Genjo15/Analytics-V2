@@ -142,7 +142,9 @@ namespace Analytics_V2
         {
             try
             {
-                _Directories = directory.GetDirectories();
+                _Directories = directory.GetDirectories().Where(di => !di.Attributes.HasFlag(FileAttributes.System))
+                                                         .Where(di => !di.Attributes.HasFlag(FileAttributes.Hidden))
+                                                         .ToArray();
             }
 
             catch (Exception ex) { }

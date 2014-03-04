@@ -23,6 +23,7 @@ namespace Analytics_V2
 
         private List<KryptonHeaderGroup> _ProcessHeaderGroupList; // List of KryptonHeaderGroup.
         private KryptonGroupBox _WarningGroupBox;                 // Groupbox containing warning.
+        
 
 
 
@@ -37,8 +38,13 @@ namespace Analytics_V2
             InitializeComponent();
             _ProcessHeaderGroupList = new List<KryptonHeaderGroup>();
             CreateWarningGroupBox();
-            this.Dock = System.Windows.Forms.DockStyle.Fill;           
-        }
+            this.Dock = System.Windows.Forms.DockStyle.Fill;
+
+            NavigatorControl.Button.ContextButton.Click += ContextButton_Click;
+            ContextMenuStrip.ItemClicked += ContextMenuStrip_ItemClicked;
+            ContextMenuStrip.Items.Add("Summary");
+            switchButtonSpec.Click += switchButtonSpec_Click;
+                 }
 
         #endregion
 
@@ -154,7 +160,7 @@ namespace Analytics_V2
         }
 
         /**************************************************************\
-         * Create a new tab                                           *
+         * Create a new tab (for editing, NORMAL mode)                *
          *   - Add the component.                                     *
          *   - Display the content of the xml                         *
          *   - Manage the event when clicking on "Close".             *
@@ -163,15 +169,39 @@ namespace Analytics_V2
         public void AddTab(String tabName, String path)
         {
             KryptonPage navigatorTab = new KryptonPage();
-            KryptonRichTextBox richTextBox = new KryptonRichTextBox();
             ButtonSpecAny closeButton = new ButtonSpecAny();
+            XMLLoader.XMLForm XMLLoader = new XMLLoader.XMLForm();
+            
+            try
+            {
+                XMLLoader.Dock = DockStyle.Fill;
+                XMLLoader.init(Properties.Settings.Default.interpretation_template);
+                XMLLoader.loadXML(path);
+                XMLLoader.Tag = path;
+                navigatorTab.Tag = true;
+                navigatorTab.Controls.Add(XMLLoader);
+                switchButtonSpec.ExtraText = "XML Mode";
+            }
 
-            richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            richTextBox.Name = tabName + "RichTextBox";
-            richTextBox.Text = "";
-            richTextBox.Tag = path;
+            // If no connection, New tab (XML mode)
+            catch (Exception ex)
+            {
+                var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.", "No network",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
 
-            navigatorTab.Controls.Add(richTextBox);
+                KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                richTextBox.Name = tabName + "RichTextBox";
+                richTextBox.Text = "";
+                richTextBox.Tag = path;
+                navigatorTab.Tag = false;
+                switchButtonSpec.ExtraText = "Creation Mode";
+                navigatorTab.Controls.Add(richTextBox);
+                DisplayXml(richTextBox);
+            }
+            
+
             navigatorTab.Name = tabName + "Tab";
             navigatorTab.Text = tabName;
 
@@ -183,7 +213,6 @@ namespace Analytics_V2
             navigatorTab.ButtonSpecs[0].Tag = navigatorTab;
 
             NavigatorControl.Pages.Add(navigatorTab);
-            DisplayXml(richTextBox);
         }
 
 
@@ -196,76 +225,84 @@ namespace Analytics_V2
         {
             XmlTextReader reader = new XmlTextReader(richTextBox.Tag.ToString());
 
-            while (reader.Read())
+            try
             {
-                switch (reader.NodeType)
+                while (reader.Read())
                 {
-                    case XmlNodeType.XmlDeclaration:
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.XmlDeclaration:
 
-                        richTextBox.SelectionColor = Color.Blue;
-                        richTextBox.AppendText("<?xml " + reader.Value + "?>\n");
+                            richTextBox.SelectionColor = Color.Blue;
+                            richTextBox.AppendText("<?xml " + reader.Value + "?>\n");
 
-                        break;
+                            break;
 
-                    case XmlNodeType.Element:
+                        case XmlNodeType.Element:
 
-                        String nodeName = reader.Name;
-                        if (nodeName.Equals("Field"))
-                            richTextBox.AppendText("    ");
-                        else if (!nodeName.Equals("region"))
-                            richTextBox.AppendText("  ");
+                            String nodeName = reader.Name;
+                            if (nodeName.Equals("Field"))
+                                richTextBox.AppendText("    ");
+                            else if (!nodeName.Equals("region"))
+                                richTextBox.AppendText("  ");
 
-                        richTextBox.SelectionColor = Color.Blue;
-                        richTextBox.AppendText("<");
-                        richTextBox.SelectionColor = Color.Brown;
-                        richTextBox.AppendText(reader.Name);
-
-                        for (int attIndex = 0; attIndex < reader.AttributeCount; attIndex++)
-                        {
-                            reader.MoveToAttribute(attIndex);
+                            richTextBox.SelectionColor = Color.Blue;
+                            richTextBox.AppendText("<");
                             richTextBox.SelectionColor = Color.Brown;
-                            richTextBox.AppendText(" " + reader.Name);
-                            richTextBox.SelectionColor = Color.Blue;
-                            richTextBox.AppendText("=\"");
-                            richTextBox.SelectionColor = Color.Black;
-                            richTextBox.SelectionFont = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                            richTextBox.AppendText(reader.Value);
-                            richTextBox.SelectionFont = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                            richTextBox.SelectionColor = Color.Blue;
-                            richTextBox.AppendText("\"");
-                        }
+                            richTextBox.AppendText(reader.Name);
 
-                        richTextBox.SelectionColor = Color.Blue;
-                        if (nodeName.Equals("region") || nodeName.Equals("Function"))
+                            for (int attIndex = 0; attIndex < reader.AttributeCount; attIndex++)
+                            {
+                                reader.MoveToAttribute(attIndex);
+                                richTextBox.SelectionColor = Color.Brown;
+                                richTextBox.AppendText(" " + reader.Name);
+                                richTextBox.SelectionColor = Color.Blue;
+                                richTextBox.AppendText("=\"");
+                                richTextBox.SelectionColor = Color.Black;
+                                richTextBox.SelectionFont = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                                richTextBox.AppendText(reader.Value);
+                                richTextBox.SelectionFont = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                                richTextBox.SelectionColor = Color.Blue;
+                                richTextBox.AppendText("\"");
+                            }
+
+                            richTextBox.SelectionColor = Color.Blue;
+                            if (nodeName.Equals("region") || nodeName.Equals("Function"))
+                                richTextBox.AppendText(">\n");
+                            else richTextBox.AppendText(" />\n");
+                            if (nodeName.Equals("Encoding_OUTPUT"))
+                                richTextBox.AppendText("\n");
+                            break;
+
+                        case XmlNodeType.Comment:
+
+                            richTextBox.SelectionColor = Color.Gray;
+                            richTextBox.AppendText("  <!--" + reader.Value + "-->\n"); // To put if comment.
+                            break;
+
+                        case XmlNodeType.EndElement:
+
+                            richTextBox.SelectionColor = Color.Blue;
+                            if (reader.Name.Equals("Function"))
+                                richTextBox.AppendText("  ");
+                            richTextBox.AppendText("</");
+                            richTextBox.SelectionColor = Color.Brown;
+                            richTextBox.AppendText(reader.Name);
+                            richTextBox.SelectionColor = Color.Blue;
                             richTextBox.AppendText(">\n");
-                        else richTextBox.AppendText(" />\n");
-                        if (nodeName.Equals("Encoding_OUTPUT"))
-                            richTextBox.AppendText("\n");
-                        break;
-
-                    case XmlNodeType.Comment:
-
-                        richTextBox.SelectionColor = Color.Gray;
-                        richTextBox.AppendText("  <!--" + reader.Value + "-->\n"); // To put if comment.
-                        break;
-
-                    case XmlNodeType.EndElement:
-
-                        richTextBox.SelectionColor = Color.Blue;
-                        if (reader.Name.Equals("Function"))
-                            richTextBox.AppendText("  ");
-                        richTextBox.AppendText("</");
-                        richTextBox.SelectionColor = Color.Brown;
-                        richTextBox.AppendText(reader.Name);
-                        richTextBox.SelectionColor = Color.Blue;
-                        richTextBox.AppendText(">\n");
-                        if (reader.Name.Equals("Function"))
-                            richTextBox.AppendText("\n");
-                        break;
+                            if (reader.Name.Equals("Function"))
+                                richTextBox.AppendText("\n");
+                            break;
+                    }
                 }
+
+                reader.Close();
             }
 
-            reader.Close();
+            catch(Exception ex)
+            {
+                KryptonMessageBox.Show(ex.ToString());
+            }
         }
 
         #endregion
@@ -274,7 +311,8 @@ namespace Analytics_V2
 
         /**************************************************************\
          * Event for closing the tab                                  *
-         *   - Close the tab (depending on the config).            *
+         *   - Close the tab (depending on the config).               *
+         *   - Remove MenuItem from contextMenuStrip.                 *
         \**************************************************************/
 
         public void CloseNavigatorTab(object sender, EventArgs e)
@@ -294,7 +332,16 @@ namespace Analytics_V2
                         NavigatorControl.Pages.Remove(tab);
                 }
 
-                else NavigatorControl.Pages.Remove(tab);        
+                else NavigatorControl.Pages.Remove(tab);    
+    
+                foreach(ToolStripMenuItem element in ContextMenuStrip.Items)
+                {
+                    if (element.Text.Equals(tab.Text))
+                    {
+                        ContextMenuStrip.Items.Remove(element);
+                        break;
+                    }
+                }
             }
         }
 
@@ -310,6 +357,112 @@ namespace Analytics_V2
                 ButtonSpecAny buttonSpec = sender as ButtonSpecAny;
                 KryptonPage tab = buttonSpec.Tag as KryptonPage;
                 LogsNavigator.Pages.Remove(tab);
+            }
+        }
+
+        /**************************************************************\
+         * Event for clicking on an item of the contextMenuButton     *
+         *   - Open specific tab.                                     *
+        \**************************************************************/
+
+        private void ContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            foreach (KryptonPage page in NavigatorControl.Pages)
+            {
+                if(page.Text.Equals(e.ClickedItem.Text.ToString()))
+                    NavigatorControl.SelectedPage = page;
+            }
+        }
+
+        /**************************************************************\
+         * Event for clicking on the contextMenuButton the log tab    *
+         *   - Open the contextMenuStrip.                             *
+        \**************************************************************/
+
+        private void ContextButton_Click(object sender, EventArgs e)
+        {
+            ContextMenuStrip.Show(Cursor.Position);
+        }
+
+        /**************************************************************\
+         * Event for clicking on the switch button of the navigator : *
+         *    - Switch to creation mode if it's normal mode           *
+         *    - and vice & versa                                      *
+        \**************************************************************/
+
+        private void switchButtonSpec_Click(object sender, EventArgs e)
+        {
+            if (!NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            {
+                // If creation mode, switch to normal mode
+                if ((Boolean)NavigatorControl.SelectedPage.Tag)
+                {
+                    // Get path
+                    string path = "";
+                    var childrens = NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
+                    foreach (XMLLoader.XMLForm element in childrens)
+                    {
+                        path = (string)element.Tag;
+                    }
+                    
+                    NavigatorControl.SelectedPage.Tag = false;
+                    switchButtonSpec.ExtraText = "Creation Mode";
+                    NavigatorControl.SelectedPage.Controls.Clear();
+                  
+                    // Set New Control
+                    KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                    richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                    richTextBox.Text = "";
+                    richTextBox.Tag = path;
+
+                    NavigatorControl.SelectedPage.Controls.Add(richTextBox);
+                    DisplayXml(richTextBox);
+                }
+
+                // If normal mode, switch to creation mode
+                else if (!(Boolean)NavigatorControl.SelectedPage.Tag)
+                {
+                    // Get path
+                    string path = "";
+                    var childrens = NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
+                    foreach (KryptonRichTextBox element in childrens)
+                    {
+                        path = (string)element.Tag;
+                    }
+
+                    NavigatorControl.SelectedPage.Tag = true;
+                    switchButtonSpec.ExtraText = "XML Mode";
+                    NavigatorControl.SelectedPage.Controls.Clear();
+
+                    try
+                    {
+                        // Set New Control
+                        XMLLoader.XMLForm XMLLoader = new XMLLoader.XMLForm();
+                        XMLLoader.Dock = DockStyle.Fill;
+                        XMLLoader.init(Properties.Settings.Default.interpretation_template);
+                        XMLLoader.loadXML(path);
+                        XMLLoader.Tag = path;
+                        NavigatorControl.SelectedPage.Controls.Add(XMLLoader);
+                    }
+
+                    // If no connection, stay in XML mode
+                    catch (Exception ex)
+                    {
+                        var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.", "No network",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+
+                        KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                        richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                        richTextBox.Text = "";
+                        richTextBox.Tag = path;
+                        NavigatorControl.SelectedPage.Tag = false;
+                        switchButtonSpec.ExtraText = "Creation Mode";
+
+                        NavigatorControl.SelectedPage.Controls.Add(richTextBox);
+                        DisplayXml(richTextBox);
+                    }
+                }
             }
         }
 

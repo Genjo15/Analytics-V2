@@ -259,7 +259,6 @@
             // 
             // ToolStripSeparator5
             // 
-            this.ToolStripSeparator5.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.ToolStripSeparator5.Name = "ToolStripSeparator5";
             resources.ApplyResources(this.ToolStripSeparator5, "ToolStripSeparator5");
             // 

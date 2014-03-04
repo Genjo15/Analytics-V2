@@ -28,12 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Navigator));
             this.NavigatorControl = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.SummaryTab = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.SummarySplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.SummarySplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ProgressGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.LogsNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
+            this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
             ((System.ComponentModel.ISupportInitialize)(this.NavigatorControl)).BeginInit();
             this.NavigatorControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryTab)).BeginInit();
@@ -58,7 +62,10 @@
             // 
             // NavigatorControl
             // 
+            this.NavigatorControl.Button.ButtonSpecs.AddRange(new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator[] {
+            this.switchButtonSpec});
             this.NavigatorControl.Button.CloseButtonDisplay = ComponentFactory.Krypton.Navigator.ButtonDisplay.Hide;
+            this.NavigatorControl.Button.ContextButtonDisplay = ComponentFactory.Krypton.Navigator.ButtonDisplay.ShowEnabled;
             this.NavigatorControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NavigatorControl.Location = new System.Drawing.Point(0, 0);
             this.NavigatorControl.Name = "NavigatorControl";
@@ -77,7 +84,7 @@
             this.SummaryTab.LastVisibleSet = true;
             this.SummaryTab.MinimumSize = new System.Drawing.Size(50, 50);
             this.SummaryTab.Name = "SummaryTab";
-            this.SummaryTab.Size = new System.Drawing.Size(636, 365);
+            this.SummaryTab.Size = new System.Drawing.Size(636, 362);
             this.SummaryTab.Text = "Summary";
             this.SummaryTab.ToolTipTitle = "Page ToolTip";
             this.SummaryTab.UniqueName = "CA00E7C3B1BE40DC098B41518D86AA39";
@@ -98,7 +105,7 @@
             // 
             this.SummarySplitContainer1.Panel2.Controls.Add(this.SummarySplitContainer2);
             this.SummarySplitContainer1.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
-            this.SummarySplitContainer1.Size = new System.Drawing.Size(636, 365);
+            this.SummarySplitContainer1.Size = new System.Drawing.Size(636, 362);
             this.SummarySplitContainer1.SplitterDistance = 146;
             this.SummarySplitContainer1.TabIndex = 0;
             // 
@@ -123,8 +130,8 @@
             this.SummarySplitContainer2.Panel2.Padding = new System.Windows.Forms.Padding(5);
             this.SummarySplitContainer2.Panel2.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.ProfessionalSystem;
             this.SummarySplitContainer2.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
-            this.SummarySplitContainer2.Size = new System.Drawing.Size(485, 365);
-            this.SummarySplitContainer2.SplitterDistance = 169;
+            this.SummarySplitContainer2.Size = new System.Drawing.Size(485, 362);
+            this.SummarySplitContainer2.SplitterDistance = 166;
             this.SummarySplitContainer2.TabIndex = 0;
             // 
             // ProgressGroupBox
@@ -135,7 +142,7 @@
             this.ProgressGroupBox.Location = new System.Drawing.Point(5, 5);
             this.ProgressGroupBox.Name = "ProgressGroupBox";
             this.ProgressGroupBox.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.ProfessionalSystem;
-            this.ProgressGroupBox.Size = new System.Drawing.Size(475, 159);
+            this.ProgressGroupBox.Size = new System.Drawing.Size(475, 156);
             this.ProgressGroupBox.TabIndex = 0;
             this.ProgressGroupBox.Values.Heading = "Progress";
             // 
@@ -150,6 +157,19 @@
             this.LogsNavigator.Size = new System.Drawing.Size(475, 181);
             this.LogsNavigator.TabIndex = 0;
             this.LogsNavigator.Text = "kryptonNavigator1";
+            // 
+            // ContextMenuStrip
+            // 
+            this.ContextMenuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ContextMenuStrip.Name = "ContextMenuStrip";
+            this.ContextMenuStrip.Size = new System.Drawing.Size(61, 4);
+            // 
+            // switchButtonSpec
+            // 
+            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            this.switchButtonSpec.ExtraText = "Creation Mode";
+            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
+            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
             // 
             // Navigator
             // 
@@ -190,5 +210,7 @@
         internal ComponentFactory.Krypton.Toolkit.KryptonSplitContainer SummarySplitContainer2;
         internal ComponentFactory.Krypton.Toolkit.KryptonGroupBox ProgressGroupBox;
         internal ComponentFactory.Krypton.Navigator.KryptonNavigator LogsNavigator;
+        internal System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
+        internal ComponentFactory.Krypton.Navigator.ButtonSpecNavigator switchButtonSpec;
     }
 }
