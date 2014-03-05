@@ -35,7 +35,7 @@ namespace Analytics_V2
         private List<Launcher> _LaunchersList;       // List of launchers.
         private List<ProgressBar> _ProgressBarsList; // List of progress bars.
         private List<Log> _LogsList;                 // List of logs.
-        
+
 
         private Boolean _IsCopy;          // Boolean which indicates if it's a copy or a cut.
         private String _SourcePath;       // Source path.
@@ -270,7 +270,6 @@ namespace Analytics_V2
                         EditToolStripButton.Enabled = true;
                         SuppressToolStripButton.Enabled = true;
                         LaunchToolStripButton.Enabled = true;
-                        //SaveToolStripButton.Enabled = false;
 
                         // Check if the config already exists in the list of config
                         if (_ConfigsList.Count > 0)
@@ -300,10 +299,8 @@ namespace Analytics_V2
                         ok.Close();
 
                         // Disable buttons
-                        //EditToolStripButton.Enabled = false;
                         SuppressToolStripButton.Enabled = true;
                         LaunchToolStripButton.Enabled = false;
-                        //SaveToolStripButton.Enabled = false;
 
                         KryptonMessageBox.Show("Error !! The selected configuration is INVALID : \n\n                        " + exception.ToString(), "invalid XML",
                               MessageBoxButtons.OK,
@@ -317,7 +314,6 @@ namespace Analytics_V2
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = true;
                     LaunchToolStripButton.Enabled = false;
-                    //SaveToolStripButton.Enabled = false;
 
                     // Display folder name.
                     _Navigator.DisplayFolderName(treeView.SelectedNode.Text);
@@ -329,7 +325,6 @@ namespace Analytics_V2
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = false;
                     LaunchToolStripButton.Enabled = false;
-                    //SaveToolStripButton.Enabled = false;
                 }
             }
 
@@ -397,26 +392,13 @@ namespace Analytics_V2
                 {
                     buttonSpecHeaderGroup.Type = ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonExpand;
                     headerGroup.Size = new System.Drawing.Size(150, 23);
-                    //_LaunchButton.Location = new System.Drawing.Point(_LaunchButton.Location.X, _LaunchButton.Location.Y - 72);
                 }
                 else if (buttonSpecHeaderGroup.Type == ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonExpand)
                 {
                     buttonSpecHeaderGroup.Type = ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonMinimize;
                     headerGroup.Size = new System.Drawing.Size(150, 95);
-                    //_LaunchButton.Location = new System.Drawing.Point(_LaunchButton.Location.X, _LaunchButton.Location.Y + 72);
                 }
             }
-        }
-
-        /*************************************************************\
-         * Event of clicking of the element refresh of the MenuStrip *
-         *  - Refresh the TreeView.                                  *
-        \*************************************************************/
-
-        private void RefreshToolStripButton_Click(object sender, EventArgs e)
-        {
-            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
-            _ConfigsList.Clear();
         }
 
         /*****************************************************************************\
@@ -445,7 +427,7 @@ namespace Analytics_V2
             _IsCopy = true;
             _SourcePath = treeView.SelectedNode.FullPath;
             _PreviousNodeName = treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-            //fileBrowser.PasteToolStripMenuItem.Enabled = true;
+
             _FileBrowser.PasteToolStripMenuItem.Enabled = true;
             _LocalFileBrowser.PasteToolStripMenuItem.Enabled = true;
         }
@@ -470,7 +452,6 @@ namespace Analytics_V2
             _IsCopy = false;
             _SourcePath = treeView.SelectedNode.FullPath;
             _PreviousNodeName = treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-            //fileBrowser.PasteToolStripMenuItem.Enabled = true;
             _FileBrowser.PasteToolStripMenuItem.Enabled = true;
             _LocalFileBrowser.PasteToolStripMenuItem.Enabled = true;
         }
@@ -505,6 +486,82 @@ namespace Analytics_V2
             _LocalFileBrowser.PasteToolStripMenuItem.Enabled = false;
         }
 
+        /**************************\
+         * Events of drag 'n drop *
+        \**************************/
+
+        private void TreeView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void TreeView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void TreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            TreeView treeView = ((TreeView)sender);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("dragDrop"))
+                    Drop(treeView, e);
+            }
+
+            else
+                Drop(treeView, e);
+        }
+
+        private void Drop(TreeView treeView, DragEventArgs e)
+        {
+            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
+
+            TreeNode newNode;
+
+            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            {
+                Point pt = treeView.PointToClient(new Point(e.X, e.Y));
+                TreeNode destinationNode = treeView.GetNodeAt(pt);
+                newNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+                _PreviousNodeName = newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
+
+                _SourcePath = newNode.FullPath;
+
+                if (destinationNode.ImageIndex == 2)
+                {
+                    if (destinationNode.Parent.FullPath == newNode.Parent.FullPath)
+                        _TargetPath = _SourcePath;
+                    else if (File.Exists(destinationNode.Parent.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml"))
+                        _TargetPath = destinationNode.Parent.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + "-COPY.xml";
+                    else _TargetPath = destinationNode.Parent.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml";
+                }
+
+                else
+                {
+                    if (File.Exists(destinationNode.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml"))
+                        _TargetPath = destinationNode.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + "-COPY.xml";
+                    else _TargetPath = destinationNode.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml";
+                }
+
+                if (_TargetPath != _SourcePath)
+                {
+                    try
+                    {
+                        if (treeView.SelectedNode.ImageIndex == 2)
+                            File.Move(_SourcePath, _TargetPath);
+                        else if (treeView.SelectedNode.ImageIndex == 1)
+                            Directory.Move(_SourcePath, _TargetPath.Replace(".xml", ""));
+                    }
+                    catch (Exception ex) { Console.WriteLine(ex); }
+                }
+            }
+
+            fileBrowser.EditToolStripMenuItem.Enabled = false;
+            EditToolStripButton.Enabled = false;
+            fileBrowser.PopulateTreeView();
+        }
 
         /******************************************************************************\
          * Events of clicking of the element edit of the MenuStrip                    *
@@ -659,55 +716,6 @@ namespace Analytics_V2
                     }
                 }
             }     
-            //else
-            //{
-            //    Encoding encoding;
-            //    String treatedString;
-            //    StreamWriter writer;
-            //
-            //    // Retrieve the selected config tab (for the encoding).
-            //    IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
-            //                                                where item.Get_Name().Equals(_Navigator.NavigatorControl.SelectedPage.Text)
-            //                                                select item;
-            //
-            //    // Retrieve the encoding.
-            //    foreach (Config set in retrieveConfigQuerry)
-            //    {
-            //        encoding = Encoding.GetEncoding(set.Get_XmlEncoding());
-            //
-            //        // Retrieve the richtextbox text
-            //        var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
-            //        foreach (var richTextBox in childrens)
-            //        {
-            //            treatedString = richTextBox.Text;
-            //
-            //            //Some replacement before saving (especially xml char like '"', '&', '<' and '>').
-            //            treatedString = XmlTreatment(treatedString);
-            //
-            //            XmlReader ok = XmlReader.Create(new StringReader(treatedString));
-            //
-            //            try
-            //            {
-            //                // Check Validity of the xml
-            //                while (ok.Read()) { }
-            //                ok.Close();
-            //
-            //                // Create the streamwriter and save
-            //
-            //                writer = new StreamWriter(richTextBox.Tag.ToString(), false, System.Text.Encoding.Default);
-            //                writer.WriteLine(treatedString);
-            //                writer.Close();
-            //                writer.Dispose();
-            //
-            //            }
-            //
-            //            catch (Exception ex)
-            //            {
-            //            }
-            //
-            //        }
-            //    }
-            //}
         }
 
         private String XmlTreatment(String str)
@@ -744,6 +752,52 @@ namespace Analytics_V2
                 str = regex9.Replace(str, "$1&gt;$3");
 
             return str;
+        }
+
+        /****************************************************\
+         * Events of right click on a Treenode --> Rename   *
+         *  - Rename the configuration.                     *
+        \****************************************************/
+
+        private void RenameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("rename"))
+                {
+                    treeView.LabelEdit = true;
+                    treeView.SelectedNode.BeginEdit();
+                }
+            }
+
+            else
+            {
+                treeView.LabelEdit = true;
+                treeView.SelectedNode.BeginEdit();
+            }
+        }
+
+        private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            TreeView treeView = ((TreeView)sender);
+            _SourcePath = treeView.SelectedNode.FullPath;
+
+            treeView.LabelEdit = false;
+
+            if (e.Label == null || e.Label.Trim().Length == 0 || File.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()) || Directory.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()))
+                //if (e.Label.Trim().Length == 0)
+                e.CancelEdit = true;
+
+            else
+            {
+                _TargetPath = treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim();
+                if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 2)
+                    File.Move(_SourcePath, _TargetPath);
+                else if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 1)
+                    Directory.Move(_SourcePath, _TargetPath);
+            }
         }
 
         /***************************************************************\
@@ -806,70 +860,6 @@ namespace Analytics_V2
                     ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
                 }
             }
-        }
-
-        /****************************************************\
-         * Events of right click on a Treenode --> Rename   *
-         *  - Rename the configuration.                     *
-        \****************************************************/
-
-        private void RenameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
-
-            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
-            {
-                if (_Session.CheckIfAccessGranted("rename"))
-                {
-                    treeView.LabelEdit = true;
-                    treeView.SelectedNode.BeginEdit();
-                }
-            }
-
-            else
-            {
-                treeView.LabelEdit = true;
-                treeView.SelectedNode.BeginEdit();
-            }        
-        }
-
-        private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
-        {
-            TreeView treeView = ((TreeView)sender);
-            _SourcePath = treeView.SelectedNode.FullPath;
-
-            treeView.LabelEdit = false;
-
-            if (e.Label == null || e.Label.Trim().Length == 0 || File.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()) || Directory.Exists(treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim()))
-            //if (e.Label.Trim().Length == 0)
-                e.CancelEdit = true;
-
-            else
-            {
-                _TargetPath = treeView.SelectedNode.Parent.FullPath + "\\" + e.Label.Trim();
-                if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 2)
-                    File.Move(_SourcePath, _TargetPath);
-                else if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 1)
-                    Directory.Move(_SourcePath, _TargetPath);
-            }
-        }
-
-        /***********************************************************************\
-         * Events of right click on a Treenode --> Full Collapse / Full Expand *
-         *  - Full Collapse / Expand.                                          *
-        \***********************************************************************/
-
-        private void FullCollapseToolStripMenu_Click(object sender, EventArgs e)
-        {
-            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
-            treeView.CollapseAll();
-            treeView.Nodes[0].Expand();
-        }
-
-        private void FullExpandToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
-            treeView.ExpandAll();
         }
 
         /*****************************************************************\
@@ -1012,81 +1002,6 @@ namespace Analytics_V2
         }
 
 
-        /**************************\
-         * Events of drag 'n drop *
-        \**************************/
-
-        private void TreeView_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        private void TreeView_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private void TreeView_DragDrop(object sender, DragEventArgs e)
-        {
-            TreeView treeView = ((TreeView)sender);
-
-            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
-            {
-                if (_Session.CheckIfAccessGranted("dragDrop"))
-                    Drop(treeView, e);
-            }
-
-            else
-                Drop(treeView, e);          
-        }
-
-        private void Drop(TreeView treeView, DragEventArgs e)
-        {
-            FileBrowser fileBrowser = ((FileBrowser)(((KryptonGroupBox)(((Panel)treeView.Parent).Parent)).Parent));
-
-            TreeNode newNode;
-
-            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
-            {
-                Point pt = treeView.PointToClient(new Point(e.X, e.Y));
-                TreeNode destinationNode = treeView.GetNodeAt(pt);
-                newNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-                _PreviousNodeName = newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0];
-
-                _SourcePath = newNode.FullPath;
-
-                if (destinationNode.ImageIndex == 2)
-                {
-                    if (destinationNode.Parent.FullPath == newNode.Parent.FullPath)
-                        _TargetPath = _SourcePath;
-                    else if (File.Exists(destinationNode.Parent.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml"))
-                        _TargetPath = destinationNode.Parent.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + "-COPY.xml";
-                    else _TargetPath = destinationNode.Parent.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml";
-                }
-
-                else
-                {
-                    if (File.Exists(destinationNode.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml"))
-                        _TargetPath = destinationNode.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + "-COPY.xml";
-                    else _TargetPath = destinationNode.FullPath + "\\" + newNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0] + ".xml";
-                }
-
-                if (_TargetPath != _SourcePath)
-                {
-                    try
-                    {
-                        if (treeView.SelectedNode.ImageIndex == 2)
-                            File.Move(_SourcePath, _TargetPath);
-                        else if (treeView.SelectedNode.ImageIndex == 1)
-                            Directory.Move(_SourcePath, _TargetPath.Replace(".xml", ""));
-                    }
-                    catch (Exception ex) { Console.WriteLine(ex); }
-                }
-            }
-
-            fileBrowser.PopulateTreeView();
-        }
-
         /****************************************************************************************\
          * Events of double clicking an element of the specific countries list / Specific tools *
          *  - launch the specific process.                                                      *
@@ -1197,16 +1112,6 @@ namespace Analytics_V2
         private void AddLogsGridView(int id, string outputFile, string inputFile, List<Process> processList, int targetsNumber)
         {
             Invoke(_LogsList[id].Get_AddLogsGridViewDel(), outputFile, inputFile, processList, targetsNumber);
-        }
-
-        /**********************************************************\
-         * Event of clicking of the element exit of the MenuStrip *
-         *  - Close the form.                                     *
-        \**********************************************************/
-
-        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         /******************************************************************\
@@ -1321,6 +1226,10 @@ namespace Analytics_V2
             e.Cancel = true;
         }
 
+
+        /*************************************************   MISC   ****************************************************/
+
+
         /***************************************************************\
          * Event of resizing the form (for correcting a graphical bug) *
         \***************************************************************/
@@ -1350,14 +1259,23 @@ namespace Analytics_V2
             }
         }
 
+        /***********************************************************************\
+         * Events of right click on a Treenode --> Full Collapse / Full Expand *
+         *  - Full Collapse / Expand.                                          *
+        \***********************************************************************/
 
-        //private void NavigatorControl_GotFocus(object sender, EventArgs e)
-        //{
-        //    if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
-        //        SaveToolStripButton.Enabled = true;
-        //    else
-        //        SaveToolStripButton.Enabled = false;
-        //}
+        private void FullCollapseToolStripMenu_Click(object sender, EventArgs e)
+        {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+            treeView.CollapseAll();
+            treeView.Nodes[0].Expand();
+        }
+
+        private void FullExpandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+            treeView.ExpandAll();
+        }
 
         /******************************************************\
          * Method for keeping the nodes expanded when updated *
@@ -1371,6 +1289,27 @@ namespace Analytics_V2
         private void RemoveExpandedNode(object sender, TreeViewCancelEventArgs e)
         {
             ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).RemoveNodePath(e.Node);
+        }
+
+        /*************************************************************\
+         * Event of clicking of the element refresh of the MenuStrip *
+         *  - Refresh the TreeView.                                  *
+        \*************************************************************/
+
+        private void RefreshToolStripButton_Click(object sender, EventArgs e)
+        {
+            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
+            _ConfigsList.Clear();
+        }
+
+        /**********************************************************\
+         * Event of clicking of the element exit of the MenuStrip *
+         *  - Close the form.                                     *
+        \**********************************************************/
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
         #endregion
