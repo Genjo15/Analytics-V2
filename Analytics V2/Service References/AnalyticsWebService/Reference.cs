@@ -103,6 +103,50 @@ namespace Analytics_V2.AnalyticsWebService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add_User", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         object Add_User(string user, int access_type_id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_histo_id_user", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        int Get_histo_id_user(string user);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add_histo_user", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        bool Add_histo_user(string user);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_histo_id_config", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        int Get_histo_id_config(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add_histo_config", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        bool Add_histo_config(string name, string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add_histo_modif_per_config", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        object Add_histo_modif_per_config(int idStatus, int idConfig, int idUser, string modificationDate, int linesDeleted, int linesAdded, string configBefore, string configAfter, string pathAtModif);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_histo_modif_per_config", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet Get_histo_modif_per_config(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_all_histo_modif_per_config", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet Get_all_histo_modif_per_config();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_histo_modif_per_config_specific", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet Get_histo_modif_per_config_specific(int ID);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Update_histo_config_path", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        object Update_histo_config_path(string oldPath, string newPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Update_histo_config_name", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        object Update_histo_config_name(string oldName, string newName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Delete_histo_configuration", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        object Delete_histo_configuration(string path);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -218,6 +262,50 @@ namespace Analytics_V2.AnalyticsWebService {
         
         public object Add_User(string user, int access_type_id) {
             return base.Channel.Add_User(user, access_type_id);
+        }
+        
+        public int Get_histo_id_user(string user) {
+            return base.Channel.Get_histo_id_user(user);
+        }
+        
+        public bool Add_histo_user(string user) {
+            return base.Channel.Add_histo_user(user);
+        }
+        
+        public int Get_histo_id_config(string path) {
+            return base.Channel.Get_histo_id_config(path);
+        }
+        
+        public bool Add_histo_config(string name, string path) {
+            return base.Channel.Add_histo_config(name, path);
+        }
+        
+        public object Add_histo_modif_per_config(int idStatus, int idConfig, int idUser, string modificationDate, int linesDeleted, int linesAdded, string configBefore, string configAfter, string pathAtModif) {
+            return base.Channel.Add_histo_modif_per_config(idStatus, idConfig, idUser, modificationDate, linesDeleted, linesAdded, configBefore, configAfter, pathAtModif);
+        }
+        
+        public System.Data.DataSet Get_histo_modif_per_config(string name) {
+            return base.Channel.Get_histo_modif_per_config(name);
+        }
+        
+        public System.Data.DataSet Get_all_histo_modif_per_config() {
+            return base.Channel.Get_all_histo_modif_per_config();
+        }
+        
+        public System.Data.DataSet Get_histo_modif_per_config_specific(int ID) {
+            return base.Channel.Get_histo_modif_per_config_specific(ID);
+        }
+        
+        public object Update_histo_config_path(string oldPath, string newPath) {
+            return base.Channel.Update_histo_config_path(oldPath, newPath);
+        }
+        
+        public object Update_histo_config_name(string oldName, string newName) {
+            return base.Channel.Update_histo_config_name(oldName, newName);
+        }
+        
+        public object Delete_histo_configuration(string path) {
+            return base.Channel.Delete_histo_configuration(path);
         }
     }
 }

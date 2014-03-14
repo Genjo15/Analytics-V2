@@ -49,8 +49,11 @@
             this.ControlsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.HeaderConsistencyToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.HistoryToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.AdministrationToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.ConfigStatementToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ToolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.MainBoardSplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.FileBrowserNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.common = new ComponentFactory.Krypton.Navigator.KryptonPage();
@@ -149,8 +152,11 @@
             this.ControlsToolStripButton,
             this.HeaderConsistencyToolStripButton,
             this.ToolStripSeparator5,
+            this.HistoryToolStripButton,
             this.AdministrationToolStripButton,
-            this.ToolStripSeparator6});
+            this.ToolStripSeparator6,
+            this.ConfigStatementToolStripButton,
+            this.ToolStripSeparator7});
             this.ToolBarToolStrip.Name = "ToolBarToolStrip";
             this.ToolBarToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             // 
@@ -262,6 +268,13 @@
             this.ToolStripSeparator5.Name = "ToolStripSeparator5";
             resources.ApplyResources(this.ToolStripSeparator5, "ToolStripSeparator5");
             // 
+            // HistoryToolStripButton
+            // 
+            resources.ApplyResources(this.HistoryToolStripButton, "HistoryToolStripButton");
+            this.HistoryToolStripButton.Image = global::Analytics_V2.Properties.Resources.TimeMachine;
+            this.HistoryToolStripButton.Name = "HistoryToolStripButton";
+            this.HistoryToolStripButton.Click += new System.EventHandler(this.HistoryToolStripButton_Click);
+            // 
             // AdministrationToolStripButton
             // 
             this.AdministrationToolStripButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -274,6 +287,18 @@
             this.ToolStripSeparator6.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.ToolStripSeparator6.Name = "ToolStripSeparator6";
             resources.ApplyResources(this.ToolStripSeparator6, "ToolStripSeparator6");
+            // 
+            // ConfigStatementToolStripButton
+            // 
+            this.ConfigStatementToolStripButton.Image = global::Analytics_V2.Properties.Resources.ConfigStatement;
+            resources.ApplyResources(this.ConfigStatementToolStripButton, "ConfigStatementToolStripButton");
+            this.ConfigStatementToolStripButton.Name = "ConfigStatementToolStripButton";
+            this.ConfigStatementToolStripButton.Click += new System.EventHandler(this.ConfigStatementToolStripButton_Click);
+            // 
+            // ToolStripSeparator7
+            // 
+            this.ToolStripSeparator7.Name = "ToolStripSeparator7";
+            resources.ApplyResources(this.ToolStripSeparator7, "ToolStripSeparator7");
             // 
             // MainBoardSplitContainer2
             // 
@@ -486,6 +511,9 @@
         internal ComponentFactory.Krypton.Navigator.KryptonPage local;
         private System.Windows.Forms.ToolStripButton SettingsToolStripButton;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator6;
+        private System.Windows.Forms.ToolStripButton HistoryToolStripButton;
+        private System.Windows.Forms.ToolStripButton ConfigStatementToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator ToolStripSeparator7;
 
 
 

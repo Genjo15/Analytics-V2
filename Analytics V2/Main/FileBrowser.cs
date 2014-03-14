@@ -54,6 +54,7 @@ namespace Analytics_V2
 
         public void PopulateTreeView()
         {
+            //this.TreeView.BeginUpdate();
             TreeView.Nodes.Clear();        
 
             //_Root = new DirectoryInfo(@"C:\Users\CHHIMA\Desktop\Analytics");
@@ -86,6 +87,8 @@ namespace Analytics_V2
 
             SortByName(TreeView.Nodes[0]);
             SortByType(TreeView.Nodes[0]);
+
+            //this.TreeView.EndUpdate();
         }
 
         private void ExpandNode(TreeNode parent, List<string> pathsList)
@@ -123,7 +126,7 @@ namespace Analytics_V2
                 foreach (FileInfo file in _Files)
                 {
                     //if (!String.IsNullOrEmpty(file.Name.Split('.')[1]) && file.Name.Split('.')[1].Equals("xml"))
-                    if(file.Name.Contains(".xml"))
+                    if(file.Name.Contains(".xml") && !file.Name.Contains(".bak"))
                     {
                         TreeNode node = InputNode.Nodes.Add(file.Name);
                         node.Name = file.Name;

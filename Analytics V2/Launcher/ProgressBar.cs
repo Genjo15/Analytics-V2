@@ -20,6 +20,8 @@ namespace Analytics_V2
         private processOnProgressBar _UpdateProgressBarDel;             // Delegate for updating the progress bar.
         private delegate void processOnRichTextBox(String a, String b); // Delegate type 2.
         private processOnRichTextBox _UpdateRichTextBoxDel;             // Delegate for updating the RTB.
+        private delegate void processOnProgressBar2(string str);        // Delegate type 3.
+        private processOnProgressBar2 _DisplayConfigProcessTimeDel;     // Delegate for adding the config process time.
 
         private Boolean _Expand;                                   // Indicates id groupbox expanded or not.
         System.Windows.Forms.ToolTip _MinimiseExpandButtonTooltip; // Tooltip for the MinimiseExpand Button.
@@ -39,6 +41,7 @@ namespace Analytics_V2
             ProgressBarGroupBox.Values.Heading = name;
             _UpdateProgressBarDel = new processOnProgressBar(UpdateProgressBar);
             _UpdateRichTextBoxDel = new processOnRichTextBox(UpdateRichTextBox);
+            _DisplayConfigProcessTimeDel = new processOnProgressBar2(DisplayConfigProcessTime);
 
             _MinimiseExpandButtonTooltip = new ToolTip();
             _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimize, "Show details");
@@ -57,9 +60,12 @@ namespace Analytics_V2
 
         #region Methods
 
-        /*******************************\
-         * Update Progress Bar or RTB. *
-        \*******************************/
+        /**************************************************************\
+         * Update Progress Bar or RTB.                                *
+         *     - The progress bar and his header                      *
+         *     - Just the header (for adding the whole process time). *
+         *     - The RTB.                                             *
+        \**************************************************************/
 
         private void UpdateProgressBar(float progress)
         {
@@ -85,14 +91,25 @@ namespace Analytics_V2
 
                 case "complete":
                     ProcessSummaryRichTextBox.SelectionColor = Color.Green;
-                    ProcessSummaryRichTextBox.AppendText(message +"\n");
+                    ProcessSummaryRichTextBox.AppendText(message);
+                    break;
+
+                case "time":
+                    ProcessSummaryRichTextBox.SelectionColor = Color.CornflowerBlue;
+                    ProcessSummaryRichTextBox.AppendText(" - Time : " + message + "\n");
                     break;
 
                 case "fail":
                     ProcessSummaryRichTextBox.SelectionColor = Color.Red;
                     ProcessSummaryRichTextBox.AppendText(message + "\n");
                     break;
+
             }
+        }
+
+        private void DisplayConfigProcessTime(string time)
+        {
+            ProgressBarGroupBox.Values.Heading = ProgressBarGroupBox.Values.Heading + " - Time : " + time;
         }
 
         /**********************************************\
@@ -132,6 +149,11 @@ namespace Analytics_V2
         public Delegate Get_UpdateRichTextBoxDel()
         {
             return _UpdateRichTextBoxDel;
+        }
+
+        public Delegate Get_DisplayConfigTimeDel()
+        {
+            return _DisplayConfigProcessTimeDel;
         }
 
         #endregion

@@ -41,13 +41,15 @@
             this.CutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.NewDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageList = new System.Windows.Forms.ImageList(this.components);
             this.BrowserHeader = new ComponentFactory.Krypton.Toolkit.KryptonHeader();
+            this.ViewHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.BrowserGroupBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BrowserGroupBox.Panel)).BeginInit();
             this.BrowserGroupBox.Panel.SuspendLayout();
@@ -92,19 +94,21 @@
             this.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.EditToolStripMenuItem,
             this.ToolStripSeparator1,
+            this.ViewHistoryToolStripMenuItem,
+            this.toolStripSeparator5,
             this.FullCollapseToolStripMenuItem,
             this.FullExpandToolStripMenuItem,
             this.toolStripSeparator3,
             this.CutToolStripMenuItem,
             this.CopyToolStripMenuItem,
             this.PasteToolStripMenuItem,
-            this.ToolStripSeparator2,
+            this.toolStripSeparator2,
             this.DeleteToolStripMenuItem,
             this.RenameToolStripMenuItem,
             this.toolStripSeparator4,
             this.NewDirectoryToolStripMenuItem});
             this.ContextMenuStrip.Name = "contextMenuStrip1";
-            this.ContextMenuStrip.Size = new System.Drawing.Size(153, 248);
+            this.ContextMenuStrip.Size = new System.Drawing.Size(153, 276);
             // 
             // EditToolStripMenuItem
             // 
@@ -154,10 +158,10 @@
             this.PasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.PasteToolStripMenuItem.Text = "Paste";
             // 
-            // ToolStripSeparator2
+            // toolStripSeparator2
             // 
-            this.ToolStripSeparator2.Name = "ToolStripSeparator2";
-            this.ToolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // DeleteToolStripMenuItem
             // 
@@ -203,6 +207,17 @@
             this.BrowserHeader.Values.Heading = "Data Process";
             this.BrowserHeader.Values.Image = global::Analytics_V2.Properties.Resources.Logo;
             // 
+            // ViewHistoryToolStripMenuItem
+            // 
+            this.ViewHistoryToolStripMenuItem.Name = "ViewHistoryToolStripMenuItem";
+            this.ViewHistoryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ViewHistoryToolStripMenuItem.Text = "View History";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+            // 
             // FileBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -231,7 +246,7 @@
         internal System.Windows.Forms.TreeView TreeView;
         internal System.Windows.Forms.ToolStripMenuItem DeleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator1;
-        private System.Windows.Forms.ToolStripSeparator ToolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         internal System.Windows.Forms.ToolStripMenuItem CopyToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem PasteToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem;
@@ -243,5 +258,7 @@
         internal System.Windows.Forms.ToolStripMenuItem FullExpandToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         internal System.Windows.Forms.ToolStripMenuItem NewDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        internal System.Windows.Forms.ToolStripMenuItem ViewHistoryToolStripMenuItem;
     }
 }

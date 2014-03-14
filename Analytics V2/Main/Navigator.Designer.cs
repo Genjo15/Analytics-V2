@@ -31,13 +31,13 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Navigator));
             this.NavigatorControl = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
+            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
             this.SummaryTab = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.SummarySplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.SummarySplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ProgressGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.LogsNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
             ((System.ComponentModel.ISupportInitialize)(this.NavigatorControl)).BeginInit();
             this.NavigatorControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryTab)).BeginInit();
@@ -75,6 +75,13 @@
             this.NavigatorControl.Size = new System.Drawing.Size(638, 392);
             this.NavigatorControl.TabIndex = 0;
             this.NavigatorControl.Text = "kryptonNavigator1";
+            // 
+            // switchButtonSpec
+            // 
+            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            this.switchButtonSpec.ExtraText = "Creation Mode";
+            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
+            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
             // 
             // SummaryTab
             // 
@@ -163,13 +170,6 @@
             this.ContextMenuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.ContextMenuStrip.Name = "ContextMenuStrip";
             this.ContextMenuStrip.Size = new System.Drawing.Size(61, 4);
-            // 
-            // switchButtonSpec
-            // 
-            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
-            this.switchButtonSpec.ExtraText = "Creation Mode";
-            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
-            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
             // 
             // Navigator
             // 

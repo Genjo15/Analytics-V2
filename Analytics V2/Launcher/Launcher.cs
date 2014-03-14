@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Data;
 using System.IO;
+using System.Diagnostics;
 
 namespace Analytics_V2
 {
@@ -35,9 +36,10 @@ namespace Analytics_V2
         private String _DatamodPath;        // Datamod path.
         private String _CurrentFile;        // Current file.
 
-        private Delegate _UpdateProgressBar;  // Delegate (for invoking the method which update the progress bar).
-        private Delegate _UpdateRichTextBox;  // Delegate (for invoking the method which update the RTB).
-        private Delegate _AddLogsGridView; // Delegate (for adding the grid view with the combo box).
+        private Delegate _UpdateProgressBar;         // Delegate (for invoking the method which update the progress bar).
+        private Delegate _UpdateRichTextBox;         // Delegate (for invoking the method which update the RTB).
+        private Delegate _AddLogsGridView;           // Delegate (for adding the grid view with the combo box).
+        private Delegate _DisplayConfigProcessTime;  // Delegate (for invoking the method which add the config process Time).
    
         #endregion
 
@@ -45,7 +47,7 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public Launcher(Config config, Boolean preProcess, Boolean process, Boolean control, Boolean headerConsistency, List<String> listInputFiles, String logsPath, Delegate del, Delegate del2, Delegate del3)
+        public Launcher(Config config, Boolean preProcess, Boolean process, Boolean control, Boolean headerConsistency, List<String> listInputFiles, String logsPath, Delegate del, Delegate del2, Delegate del3, Delegate del4)
         {
             _Config = config;
 
@@ -78,6 +80,7 @@ namespace Analytics_V2
             _UpdateProgressBar = del;
             _UpdateRichTextBox = del2;
             _AddLogsGridView = del3;
+            _DisplayConfigProcessTime = del4;
         }
 
         #endregion
@@ -88,6 +91,7 @@ namespace Analytics_V2
 
         /********************************************************************\
          * Run the config (method called when a thread starts)              *
+         *   - Time the whole process.                                      *
          *   - Perform Preprocess.                                          *
          *   - Treat each input file :                                      *
          *       - Convert the current treated file into a list of strings. *
@@ -102,7 +106,10 @@ namespace Analytics_V2
         internal void Run(int id)
         {
             float counter = 0;
+            Stopwatch launchStopwatch = new Stopwatch();
             _ID = id;
+
+            launchStopwatch.Start();
 
             UpdateProgressBar(counter);
 
@@ -112,7 +119,7 @@ namespace Analytics_V2
             if (_PreProcess)
             {
                 UpdateRichTextBox("title", "PRE-PROCESS");
-                foreach (Process process in _Config.Get_ProcessList())
+                foreach (Process process in _Config.Get_ProcessList().OrderBy(x=>x.Get_OrderId()))
                     if (process.Get_OrderId() < 0)
                     {
                         PreProcess(process.Get_Datatable());
@@ -137,7 +144,7 @@ namespace Analytics_V2
                 if (_Process)
                 {
                     UpdateRichTextBox("title", "PROCESS" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
-                    foreach (Process process in _Config.Get_ProcessList())
+                    foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
                         if (process.Get_OrderId() > 0 && process.Get_OrderId() < 100)
                         {
                             Process(process.Get_Datatable());
@@ -157,7 +164,7 @@ namespace Analytics_V2
                 if (_Control)
                 {
                     UpdateRichTextBox("title", "CONTROL" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
-                    foreach (Process process in _Config.Get_ProcessList())
+                    foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
                         if (process.Get_OrderId() > 100)
                         {
                             Control(process.Get_Datatable());
@@ -173,15 +180,32 @@ namespace Analytics_V2
                 // Write logs.
                 WriteLogs();
 
+
+                ////////////////////////
                 // Create LogsGrid, analyze it and add it to the control.
+
+                Stopwatch launchStopwatch2 = new Stopwatch();
+                launchStopwatch2.Start();
+
                 UpdateRichTextBox("title", "*** ANALYZE LOGS ***");
                 AddLogsGridView(_DatamodPath, originalProcessedFile);
                 counter = counter + (float)((float)1 / (float)_InputFiles.Count);
                 UpdateRichTextBox("complete", "      |-->Complete!");
                 UpdateProgressBar(counter);
 
-
+                launchStopwatch2.Stop();
+                TimeSpan ts2 = launchStopwatch2.Elapsed;
+                string elapsedTime2 = String.Format("{0:00}:{1:00}", ts2.Minutes, ts2.Seconds);
+                UpdateRichTextBox("time", elapsedTime2);
             }
+
+            // Display elapsed time
+            launchStopwatch.Stop();
+            TimeSpan ts = launchStopwatch.Elapsed;
+            //string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+
+            DisplayConfigProcessTime(elapsedTime);
         }
 
         /**************\
@@ -190,6 +214,9 @@ namespace Analytics_V2
 
         private void PreProcess(DataTable dataTable)
         {
+            Stopwatch launchStopwatch = new Stopwatch();
+            launchStopwatch.Start();
+
             switch (dataTable.TableName)
             {
                 case "XLS2TXT":
@@ -269,6 +296,11 @@ namespace Analytics_V2
                     break;
             }
             GC.Collect();
+
+            launchStopwatch.Stop();
+            TimeSpan ts = launchStopwatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+            UpdateRichTextBox("time", elapsedTime);
         }
 
         /***********\
@@ -277,6 +309,9 @@ namespace Analytics_V2
 
         private void Process(DataTable dataTable)
         {
+            Stopwatch launchStopwatch = new Stopwatch();
+            launchStopwatch.Start();
+
             switch (dataTable.TableName)
             {
                 case "REPLACE":
@@ -689,6 +724,11 @@ namespace Analytics_V2
                     break;
             }
             GC.Collect();
+
+            launchStopwatch.Stop();
+            TimeSpan ts = launchStopwatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+            UpdateRichTextBox("time", elapsedTime);
         }
 
         /***********\
@@ -697,6 +737,9 @@ namespace Analytics_V2
 
         private void Control(DataTable dataTable)
         {
+            Stopwatch launchStopwatch = new Stopwatch();
+            launchStopwatch.Start();
+
             switch (dataTable.TableName)
             {
                 case "DATACHECKER":
@@ -793,6 +836,11 @@ namespace Analytics_V2
             }
 
             GC.Collect();
+
+            launchStopwatch.Stop();
+            TimeSpan ts = launchStopwatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+            UpdateRichTextBox("time", elapsedTime);
         }
 
         /**********************\
@@ -820,6 +868,11 @@ namespace Analytics_V2
         {
             String[] test = new String[] { _ID.ToString(), type, message };
             _UpdateRichTextBox.DynamicInvoke(new Object[]{test});
+        }
+
+        private void DisplayConfigProcessTime(string time)
+        {
+            _DisplayConfigProcessTime.DynamicInvoke(_ID, time);
         }
 
         /***************************************\

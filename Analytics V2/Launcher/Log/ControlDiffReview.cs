@@ -25,8 +25,9 @@ namespace Analytics_V2
         private string _TargetAudienceAlertsLogs;
         private string _IndicatorAudienceAlertsLogs;
         private string _IndicatorAudienceCriticalAlertsLogs;
+        private string _CheckChannelAndDateAudienceCriticalAlertsLogs;
 
-        public ControlDiffReview(Dictionary<string, char> toHighlightDico, string noDiffAlerts, string noDiffCriticalAlerts, string diffAlerts, string diffCriticalAlerts, string durationAlerts, string durationCriticalAlerts, string totalAudienceAlerts, string totalAudienceCriticalAlerts, string targetAudienceAlerts, string indicatorAudienceAlerts, string indicatorAudienceCriticalAlerts, Boolean isQH)
+        public ControlDiffReview(Dictionary<string, char> toHighlightDico, string noDiffAlerts, string noDiffCriticalAlerts, string diffAlerts, string diffCriticalAlerts, string durationAlerts, string durationCriticalAlerts, string totalAudienceAlerts, string totalAudienceCriticalAlerts, string targetAudienceAlerts, string indicatorAudienceAlerts, string indicatorAudienceCriticalAlerts, string checkChannelAndDateAudienceCriticalAlerts, Boolean isQH)
         {
             InitializeComponent();
 
@@ -41,6 +42,7 @@ namespace Analytics_V2
             _TargetAudienceAlertsLogs = targetAudienceAlerts;
             _IndicatorAudienceAlertsLogs = indicatorAudienceAlerts;
             _IndicatorAudienceCriticalAlertsLogs = indicatorAudienceCriticalAlerts;
+            _CheckChannelAndDateAudienceCriticalAlertsLogs = checkChannelAndDateAudienceCriticalAlerts;
 
             if (!isQH)
             {
@@ -51,6 +53,7 @@ namespace Analytics_V2
             _ControlsList.Add("CHECK TOTAL AUDIENCE");
             _ControlsList.Add("CHECK TARGET AUDIENCE");
             _ControlsList.Add("CHECK INDICATOR AUDIENCE");
+            _ControlsList.Add("CHECK CHANNEL AND DATE AUDIENCE");
 
             foreach (string element in _ControlsList)
             {
@@ -72,6 +75,7 @@ namespace Analytics_V2
 
             checkDataGridView.AllowUserToAddRows = false;
 
+            // Append first time (for the view when the user directly open the UC)
             if (!isQH) alertsRichTextBox.Text = _NoDiffAlertsLogs;
             else alertsRichTextBox.Text = _TotalAudienceAlertsLogs;
             criticalAlertsRichTextBox.SelectionFont = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -79,9 +83,7 @@ namespace Analytics_V2
             if (!isQH && !string.IsNullOrEmpty(_NoDiffCriticalAlertsLogs))
                 criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _NoDiffCriticalAlertsLogs);
             else if(isQH && !string.IsNullOrEmpty(_TotalAudienceCriticalAlertsLogs))
-                criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _TotalAudienceCriticalAlertsLogs);
-
-           
+                criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _TotalAudienceCriticalAlertsLogs);     
         }
 
         private void checkDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -136,6 +138,13 @@ namespace Analytics_V2
                     alertsRichTextBox.AppendText(_IndicatorAudienceAlertsLogs);
                 if (!string.IsNullOrEmpty(_IndicatorAudienceCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _IndicatorAudienceCriticalAlertsLogs);
+            }
+
+            else if (checkDataGridView.Rows[e.RowIndex].Cells[0].Value.Equals("CHECK CHANNEL AND DATE AUDIENCE"))
+            {
+                ReinitializeRTBs();
+                if (!string.IsNullOrEmpty(_CheckChannelAndDateAudienceCriticalAlertsLogs))
+                    criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _CheckChannelAndDateAudienceCriticalAlertsLogs);
             }
         }
 

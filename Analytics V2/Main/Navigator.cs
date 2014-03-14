@@ -44,7 +44,7 @@ namespace Analytics_V2
             ContextMenuStrip.ItemClicked += ContextMenuStrip_ItemClicked;
             ContextMenuStrip.Items.Add("Summary");
             switchButtonSpec.Click += switchButtonSpec_Click;
-                 }
+        }
 
         #endregion
 

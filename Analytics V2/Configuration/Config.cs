@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComponentFactory.Krypton.Toolkit;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -12,6 +13,7 @@ using System.Xml.Linq;
 
 namespace Analytics_V2
 {
+    [Serializable]
     public class Config
     {
         /************************************************* Variables *************************************************/
@@ -60,6 +62,7 @@ namespace Analytics_V2
             SetWarning();
             GetHeader();
             CreateProcess();
+
         }
 
         public Config()
@@ -210,6 +213,7 @@ namespace Analytics_V2
                              orderId = item.Attribute("Order_ID"),
                          };
 
+            // Go through each <Function> </Function> blocks
             foreach (var processes in header)
             {
                 DataTable dataTable = new DataTable();
@@ -224,7 +228,7 @@ namespace Analytics_V2
                                  where item.Parent.Attribute("Name").Equals(processes.name) && item.Parent.Attribute("Order_ID").Equals(processes.orderId)
                                  select item;
 
-                // Fill the rest of the datatable
+                // Fill the rest of the datatable : go through each <Field>
                 foreach (XElement element in parameters)
                 {
                     // Case if the process is an unique treatment one.
@@ -360,8 +364,195 @@ namespace Analytics_V2
             return clonedConfig;
         }
 
-        #endregion
 
+        /**********************\
+         * Clone process list *
+        \**********************/
+
+        public List<Process> CloneProcessList()
+        {
+            List<Process> processList = new List<Process>();
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+
+            formatter.Serialize(stream, _ProcessList);
+            stream.Position = 0;
+            processList = (List<Process>)formatter.Deserialize(stream);
+
+            return processList;
+        }
+
+        /*****************************************************************\
+         * Check modifications                                           *
+         *    - Get new XML (as array of strings                         *
+         *    - Check differences between old & new file                 *
+         *    - Compute number of lines deleted                          *
+         *    - Compute number of lines added                            *
+         *    - Update historic in DB                                    *
+         *         . Check if user exists, else create one. Get user ID. *
+        \*****************************************************************/
+
+        public void CheckModification(string[] configBefore)
+        {
+            int linesDeleted = 0;
+            int linesAdded = 0;
+            Boolean lineHasBeenTreated = false;
+            Boolean treatWholeFunction = false;
+            string[] configAfter;
+
+            // Get new XML (as array of strings)
+            List<string> lines = new List<string>();
+            StreamReader reader = new StreamReader(_Path, Encoding.GetEncoding(_XmlEncoding));
+            while (reader.Peek() >= 0)
+            {
+                lines.Add(reader.ReadLine());
+            }
+            reader.Close();
+            configAfter = lines.ToArray();
+
+            // Check differences between old & new file
+            IEnumerable<String> onlyInOld = configBefore.Except(configAfter);
+            IEnumerable<String> onlyInNew = configAfter.Except(configBefore);
+
+            // Compute number of lines deleted
+            for (int i = 0; i < configBefore.Length; i++)
+            {
+                foreach (string str in onlyInOld)
+                {
+                    if (configBefore[i].Contains("<Function"))
+                        if (configBefore[i + 1] != null && configBefore[i + 1].Equals(str))
+                            treatWholeFunction = true;
+
+                    if (configBefore[i].Equals(str) && !lineHasBeenTreated)
+                    {
+                        lineHasBeenTreated = true;
+                        linesDeleted++;
+                    }
+                }
+
+                if (!lineHasBeenTreated)
+                {
+                    if (treatWholeFunction)
+                    {
+                        linesDeleted++;
+                        if (configBefore[i].Contains("</Function>"))
+                            treatWholeFunction = false;
+                    }
+                }
+                lineHasBeenTreated = false;
+            }
+
+            // Compute number of lines added
+            for (int i = 0; i < configAfter.Length; i++)
+            {
+                foreach (string str in onlyInNew)
+                {
+                    if (configAfter[i].Contains("<Function"))
+                        if (configAfter[i + 1] != null && configAfter[i + 1].Equals(str))
+                            treatWholeFunction = true;
+
+                    if (configAfter[i].Equals(str) && !lineHasBeenTreated)
+                    {
+                        lineHasBeenTreated = true;
+                        linesAdded++;
+                    }
+                }
+
+                if (!lineHasBeenTreated)
+                {
+                    if (treatWholeFunction)
+                    {
+                        linesAdded++;
+                        if (configAfter[i].Contains("</Function>"))
+                            treatWholeFunction = false;
+                    }
+                }
+                lineHasBeenTreated = false;
+            }
+           
+
+            // UPDATE CHRONICLES
+            UpdateChronicles(configBefore, configAfter, linesDeleted, linesAdded);
+        }
+
+        /***************************************************************************\
+         * Update Chronicles                                                       *
+         *    - Check if user exists, else create one. Get user ID.                *
+         *    - Check if config exists, else create one. Get config ID.            *
+         *    - Compute status ID.                                                 *
+         *    - Transform arrays into one unique string (for config before/after). *
+         *    - Add modif_per_config !                                             *
+        \***************************************************************************/
+
+        private void UpdateChronicles(string[] configBefore, string[] configAfter, int linesDeleted, int linesAdded)
+        {
+            string computer = null;
+            int idUser = 0;
+            int idConfig = 0;
+            int idStatus = 0;
+            System.DateTime dateOfModification = System.DateTime.Now;
+            string dateOfModificationTreated = dateOfModification.ToString("yyyy-MM-dd HH':'mm':'ss");
+
+            // Check if user exists, else create one. Get user ID.
+            try
+            {
+                computer = System.Environment.MachineName;
+                AnalyticsWebService.AnalyticsSoapClient session = new AnalyticsWebService.AnalyticsSoapClient();
+                idUser = session.Get_histo_id_user(computer);
+                if (idUser == 0)
+                {
+                    session.Add_histo_user(computer);
+                    idUser = session.Get_histo_id_user(computer);
+                }
+                session.Close();
+            }
+            catch (Exception ex) { KryptonMessageBox.Show(ex.ToString());}
+
+
+            // Check if config exists, else create one. Get config ID.
+            try
+            {
+                AnalyticsWebService.AnalyticsSoapClient session = new AnalyticsWebService.AnalyticsSoapClient();
+                idConfig = session.Get_histo_id_config(_Path);
+                if (idConfig == 0)
+                {
+                    session.Add_histo_config(_Name, _Path);
+                    idConfig = session.Get_histo_id_config(_Path);
+                }
+                session.Close();
+            }
+            catch (Exception ex) { KryptonMessageBox.Show(ex.ToString()); }
+
+            // Compute status ID.
+            if (_Path.Contains("Recettes"))
+                idStatus = 2;
+            else if (_Path.Contains("C:\\") || _Path.Contains("D:\\"))
+                idStatus = 3;
+            else idStatus = 1;
+
+            // Transform arrays into one unique string (for config before/after)
+            string before = null;
+            string after = null;
+            foreach (string line in configBefore)
+                before = before + line + "\n";
+            foreach (string line in configAfter)
+                after = after + line + "\n";
+
+            // Add modif_per_config
+            try
+            {
+                AnalyticsWebService.AnalyticsSoapClient session = new AnalyticsWebService.AnalyticsSoapClient();
+                session.Add_histo_modif_per_config(idStatus, idConfig, idUser, dateOfModificationTreated, linesDeleted, linesAdded, before, after, _Path);
+                session.Close();
+            }
+            catch (Exception ex) { KryptonMessageBox.Show(ex.ToString()); }
+
+
+
+        }
+
+
+        #endregion
 
         #region Accessors
 

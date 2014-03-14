@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>30</ApplicationRevision>
+    <ApplicationRevision>40</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -108,6 +108,10 @@
     <Reference Include="DataChecking">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\DataChecking\V2\DataChecking.dll</HintPath>
     </Reference>
+    <Reference Include="DataGridViewAutoFilter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\DataGridViewAutoFilter.dll</HintPath>
+    </Reference>
     <Reference Include="DateTime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\DateTime\DateTime.dll</HintPath>
@@ -151,7 +155,8 @@
     <Reference Include="Numbers">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Numbers\Numbers.dll</HintPath>
     </Reference>
-    <Reference Include="QH">
+    <Reference Include="QH, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\QH\QH.dll</HintPath>
     </Reference>
     <Reference Include="Remover">
@@ -202,6 +207,18 @@
     </Compile>
     <Compile Include="Access\Administration.Designer.cs">
       <DependentUpon>Administration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ConfigStatement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigStatement.Designer.cs">
+      <DependentUpon>ConfigStatement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\Chronicles.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\Chronicles.Designer.cs">
+      <DependentUpon>Chronicles.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Access\Authentication.cs">
@@ -279,11 +296,24 @@
     <Compile Include="Access\Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\WaitingScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\WaitingScreen.Designer.cs">
+      <DependentUpon>WaitingScreen.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Access\Administration.resx">
       <DependentUpon>Administration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Access\Authentication.resx">
       <DependentUpon>Authentication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\ConfigStatement.resx">
+      <DependentUpon>ConfigStatement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\Chronicles.resx">
+      <DependentUpon>Chronicles.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Launcher\Log\ControlDiffReview.resx">
       <DependentUpon>ControlDiffReview.cs</DependentUpon>
@@ -318,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Access\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\WaitingScreen.resx">
+      <DependentUpon>WaitingScreen.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Analytics V2_CléTemporaire.pfx" />
     <None Include="app.config" />
@@ -433,6 +466,16 @@
   <ItemGroup>
     <Content Include="Analytics.ico" />
     <Content Include="Minion.ico" />
+    <None Include="Resources\WaitingScreen.PNG" />
+    <None Include="Resources\ConfigStatement2.ico" />
+    <None Include="Resources\ConfigStatement.png" />
+    <None Include="Resources\TimeMachine2.ico" />
+    <None Include="Resources\TimeMachine.png" />
+    <None Include="Resources\History.png" />
+    <None Include="Resources\Clock.png" />
+    <None Include="Resources\Clock.ico" />
+    <None Include="Resources\History.ico" />
+    <None Include="Resources\Time Machine.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

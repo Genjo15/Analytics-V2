@@ -16,7 +16,8 @@ namespace Analytics_V2
 
         #region Variables
 
-        private string _AccessType;
+        private string  _AccessType;
+        private Boolean _NetworkAvailable; 
 
         #endregion
 
@@ -28,6 +29,7 @@ namespace Analytics_V2
         {
             InitializeComponent();
             _AccessType = accessType;
+            _NetworkAvailable = false;
         }
 
         #endregion
@@ -160,6 +162,7 @@ namespace Analytics_V2
 
         /******************************************************\
          * Check if PUC exists in DB (case of hardware lock): *
+         * Check also if connection available                 *
         \******************************************************/
 
         public void CheckSavedPUC(string PUC)
@@ -171,10 +174,12 @@ namespace Analytics_V2
                 if (_AccessType.Equals(""))
                     _AccessType = "user";
                 service.Close();
+                _NetworkAvailable = true;
             }
 
             catch (Exception ex)
             {
+                _NetworkAvailable = false;
                 _AccessType = "user";
             }
         }
@@ -251,6 +256,17 @@ namespace Analytics_V2
         #region Accessors
 
         public string GetAccessType() { return _AccessType; }
+        public Boolean GetNetworkAvailable() 
+        {
+            if (!_NetworkAvailable)
+            {
+                var result = KryptonMessageBox.Show("No connection found, please ensure that your connection is functionning.", "Connection Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Stop);
+            }
+
+            return _NetworkAvailable; 
+        }
         public void SetAccessType(string str) { _AccessType = str; }
 
         #endregion

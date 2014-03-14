@@ -361,6 +361,188 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="Get_histo_id_user">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_id_userResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Get_histo_id_userResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_histo_user">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_histo_userResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Add_histo_userResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_id_config">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="path" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_id_configResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Get_histo_id_configResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_histo_config">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="path" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_histo_configResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Add_histo_configResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_histo_modif_per_config">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="idStatus" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="idConfig" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="idUser" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="modificationDate" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="linesDeleted" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="linesAdded" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="configBefore" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="configAfter" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pathAtModif" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_histo_modif_per_configResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Add_histo_modif_per_configResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_modif_per_config">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_modif_per_configResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_histo_modif_per_configResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_all_histo_modif_per_config">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get_all_histo_modif_per_configResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_all_histo_modif_per_configResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_modif_per_config_specific">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_histo_modif_per_config_specificResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_histo_modif_per_config_specificResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_histo_config_path">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="oldPath" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="newPath" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_histo_config_pathResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Update_histo_config_pathResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_histo_config_name">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="oldName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="newName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_histo_config_nameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Update_histo_config_nameResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Delete_histo_configuration">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="path" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Delete_histo_configurationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Delete_histo_configurationResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="Get_PathSoapIn">
@@ -495,6 +677,72 @@
   <wsdl:message name="Add_UserSoapOut">
     <wsdl:part name="parameters" element="tns:Add_UserResponse" />
   </wsdl:message>
+  <wsdl:message name="Get_histo_id_userSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_histo_id_user" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_id_userSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_histo_id_userResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_histo_userSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_histo_user" />
+  </wsdl:message>
+  <wsdl:message name="Add_histo_userSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_histo_userResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_id_configSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_histo_id_config" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_id_configSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_histo_id_configResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_histo_configSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_histo_config" />
+  </wsdl:message>
+  <wsdl:message name="Add_histo_configSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_histo_configResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_histo_modif_per_configSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_histo_modif_per_config" />
+  </wsdl:message>
+  <wsdl:message name="Add_histo_modif_per_configSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_histo_modif_per_configResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_modif_per_configSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_histo_modif_per_config" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_modif_per_configSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_histo_modif_per_configResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_all_histo_modif_per_configSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_all_histo_modif_per_config" />
+  </wsdl:message>
+  <wsdl:message name="Get_all_histo_modif_per_configSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_all_histo_modif_per_configResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_modif_per_config_specificSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_histo_modif_per_config_specific" />
+  </wsdl:message>
+  <wsdl:message name="Get_histo_modif_per_config_specificSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_histo_modif_per_config_specificResponse" />
+  </wsdl:message>
+  <wsdl:message name="Update_histo_config_pathSoapIn">
+    <wsdl:part name="parameters" element="tns:Update_histo_config_path" />
+  </wsdl:message>
+  <wsdl:message name="Update_histo_config_pathSoapOut">
+    <wsdl:part name="parameters" element="tns:Update_histo_config_pathResponse" />
+  </wsdl:message>
+  <wsdl:message name="Update_histo_config_nameSoapIn">
+    <wsdl:part name="parameters" element="tns:Update_histo_config_name" />
+  </wsdl:message>
+  <wsdl:message name="Update_histo_config_nameSoapOut">
+    <wsdl:part name="parameters" element="tns:Update_histo_config_nameResponse" />
+  </wsdl:message>
+  <wsdl:message name="Delete_histo_configurationSoapIn">
+    <wsdl:part name="parameters" element="tns:Delete_histo_configuration" />
+  </wsdl:message>
+  <wsdl:message name="Delete_histo_configurationSoapOut">
+    <wsdl:part name="parameters" element="tns:Delete_histo_configurationResponse" />
+  </wsdl:message>
   <wsdl:portType name="AnalyticsSoap">
     <wsdl:operation name="Get_Path">
       <wsdl:input message="tns:Get_PathSoapIn" />
@@ -583,6 +831,50 @@
     <wsdl:operation name="Add_User">
       <wsdl:input message="tns:Add_UserSoapIn" />
       <wsdl:output message="tns:Add_UserSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_id_user">
+      <wsdl:input message="tns:Get_histo_id_userSoapIn" />
+      <wsdl:output message="tns:Get_histo_id_userSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_user">
+      <wsdl:input message="tns:Add_histo_userSoapIn" />
+      <wsdl:output message="tns:Add_histo_userSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_id_config">
+      <wsdl:input message="tns:Get_histo_id_configSoapIn" />
+      <wsdl:output message="tns:Get_histo_id_configSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_config">
+      <wsdl:input message="tns:Add_histo_configSoapIn" />
+      <wsdl:output message="tns:Add_histo_configSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_modif_per_config">
+      <wsdl:input message="tns:Add_histo_modif_per_configSoapIn" />
+      <wsdl:output message="tns:Add_histo_modif_per_configSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_modif_per_config">
+      <wsdl:input message="tns:Get_histo_modif_per_configSoapIn" />
+      <wsdl:output message="tns:Get_histo_modif_per_configSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_all_histo_modif_per_config">
+      <wsdl:input message="tns:Get_all_histo_modif_per_configSoapIn" />
+      <wsdl:output message="tns:Get_all_histo_modif_per_configSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_modif_per_config_specific">
+      <wsdl:input message="tns:Get_histo_modif_per_config_specificSoapIn" />
+      <wsdl:output message="tns:Get_histo_modif_per_config_specificSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Update_histo_config_path">
+      <wsdl:input message="tns:Update_histo_config_pathSoapIn" />
+      <wsdl:output message="tns:Update_histo_config_pathSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Update_histo_config_name">
+      <wsdl:input message="tns:Update_histo_config_nameSoapIn" />
+      <wsdl:output message="tns:Update_histo_config_nameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete_histo_configuration">
+      <wsdl:input message="tns:Delete_histo_configurationSoapIn" />
+      <wsdl:output message="tns:Delete_histo_configurationSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="AnalyticsSoap" type="tns:AnalyticsSoap">
@@ -785,6 +1077,105 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="Get_histo_id_user">
+      <soap:operation soapAction="http://tempuri.org/Get_histo_id_user" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_user">
+      <soap:operation soapAction="http://tempuri.org/Add_histo_user" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_id_config">
+      <soap:operation soapAction="http://tempuri.org/Get_histo_id_config" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_config">
+      <soap:operation soapAction="http://tempuri.org/Add_histo_config" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_modif_per_config">
+      <soap:operation soapAction="http://tempuri.org/Add_histo_modif_per_config" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_modif_per_config">
+      <soap:operation soapAction="http://tempuri.org/Get_histo_modif_per_config" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_all_histo_modif_per_config">
+      <soap:operation soapAction="http://tempuri.org/Get_all_histo_modif_per_config" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_modif_per_config_specific">
+      <soap:operation soapAction="http://tempuri.org/Get_histo_modif_per_config_specific" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_histo_config_path">
+      <soap:operation soapAction="http://tempuri.org/Update_histo_config_path" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_histo_config_name">
+      <soap:operation soapAction="http://tempuri.org/Update_histo_config_name" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_histo_configuration">
+      <soap:operation soapAction="http://tempuri.org/Delete_histo_configuration" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="AnalyticsSoap12" type="tns:AnalyticsSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -979,6 +1370,105 @@
     </wsdl:operation>
     <wsdl:operation name="Add_User">
       <soap12:operation soapAction="http://tempuri.org/Add_User" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_id_user">
+      <soap12:operation soapAction="http://tempuri.org/Get_histo_id_user" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_user">
+      <soap12:operation soapAction="http://tempuri.org/Add_histo_user" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_id_config">
+      <soap12:operation soapAction="http://tempuri.org/Get_histo_id_config" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_config">
+      <soap12:operation soapAction="http://tempuri.org/Add_histo_config" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_histo_modif_per_config">
+      <soap12:operation soapAction="http://tempuri.org/Add_histo_modif_per_config" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_modif_per_config">
+      <soap12:operation soapAction="http://tempuri.org/Get_histo_modif_per_config" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_all_histo_modif_per_config">
+      <soap12:operation soapAction="http://tempuri.org/Get_all_histo_modif_per_config" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_histo_modif_per_config_specific">
+      <soap12:operation soapAction="http://tempuri.org/Get_histo_modif_per_config_specific" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_histo_config_path">
+      <soap12:operation soapAction="http://tempuri.org/Update_histo_config_path" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_histo_config_name">
+      <soap12:operation soapAction="http://tempuri.org/Update_histo_config_name" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_histo_configuration">
+      <soap12:operation soapAction="http://tempuri.org/Delete_histo_configuration" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

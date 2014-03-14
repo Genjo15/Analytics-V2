@@ -66,6 +66,9 @@ namespace Analytics_V2
         private string _IndicatorAudienceAlertsLogs;
         private string _IndicatorAudienceCriticalAlertsLogs;
 
+        private string _CheckChannelAndDateAudienceCriticalAlertsLogs;
+        private int _CheckChannelAndDateAudienceCriticalAlerts;
+
         #endregion
 
 
@@ -106,6 +109,7 @@ namespace Analytics_V2
             _TargetAudienceAlertsLogs = "";
             _IndicatorAudienceAlertsLogs = "";
             _IndicatorAudienceCriticalAlertsLogs = "";
+            _CheckChannelAndDateAudienceCriticalAlertsLogs = "";
         }
 
         #endregion
@@ -674,6 +678,9 @@ namespace Analytics_V2
                         currentCheck = "* CHECK INDICATOR AUD BLOCK:";
                     else if (line.Contains("== CONTROL TOTAL TV =="))
                         currentCheck = "";
+                    else if (line.Contains("* CHECK CHANNEL AND DATE AUD :"))
+                        currentCheck = "* CHECK CHANNEL AND DATE AUD :";
+
                     
                     if(currentCheck.Equals( "* CHECK NO DIFF :")) 
                     {
@@ -815,6 +822,13 @@ namespace Analytics_V2
                             }    
                         }
                     }
+
+                    else if (currentCheck.Equals("* CHECK CHANNEL AND DATE AUD :"))
+                    {
+                        _CheckChannelAndDateAudienceCriticalAlertsLogs += line + "\n";
+                        if (line.Contains("Alert"))
+                            _CheckChannelAndDateAudienceCriticalAlerts++;
+                    }
                 }
 
                 file.Close();
@@ -860,7 +874,7 @@ namespace Analytics_V2
 
                 int totalFormatErrors = _NoDiffFormatErrors+ _DiffFormatErrors+ _DurationFormatErrors+ _TotalAudienceFormatErrors +_TargetAudienceFormatErrors+ _IndicatorAudienceFormatErrors;
                 int totalAlerts = _NoDiffAlerts + _DiffAlerts + _DurationAlerts + _TotalAudienceAlerts + _TargetAudienceAlerts + _IndicatorAudienceAlerts;
-                int totalCriticalAlerts = _NoDiffCriticalAlerts + _DiffCriticalAlerts + _DurationCriticalAlerts + _TotalAudienceCriticalAlerts + _IndicatorAudienceCriticalAlerts;
+                int totalCriticalAlerts = _NoDiffCriticalAlerts + _DiffCriticalAlerts + _DurationCriticalAlerts + _TotalAudienceCriticalAlerts + _IndicatorAudienceCriticalAlerts + _CheckChannelAndDateAudienceCriticalAlerts;
                 commentsCell.Value = "Total Format Error : " + totalFormatErrors + "\nTotal Alerts : " + totalAlerts + "\nTotal Critical Alerts : " + totalCriticalAlerts;
 
                 // Fill cells
@@ -889,6 +903,7 @@ namespace Analytics_V2
                 /////////////
                 // Create UC
 
+                // Define what has to be highlited in red
                 Dictionary<string, char> criticalAlertsResume = new Dictionary<string, char>();
                 if (_NoDiffCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK NO DIFFUSION", ' ');
@@ -900,6 +915,8 @@ namespace Analytics_V2
                     criticalAlertsResume.Add("CHECK TOTAL AUDIENCE", ' ');
                 if (_IndicatorAudienceCriticalAlerts > 0)
                     criticalAlertsResume.Add("CHECK INDICATOR AUDIENCE", ' ');
+                if (_CheckChannelAndDateAudienceCriticalAlerts > 0)
+                    criticalAlertsResume.Add("CHECK CHANNEL AND DATE AUDIENCE", ' ');
 
                 if (!isQH)
                 {
@@ -912,7 +929,7 @@ namespace Analytics_V2
                     _ControlDiffForm.Text = splitRes[splitRes.Length - 1];
                 }
 
-                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs, _DiffAlertsLogs, _DiffCriticalAlertsLogs, _DurationAlertsLogs, _DurationCriticalAlertsLogs, _TotalAudienceAlertsLogs, _TotalAudienceCriticalAlertsLogs, _TargetAudienceAlertsLogs, _IndicatorAudienceAlertsLogs, _IndicatorAudienceCriticalAlertsLogs, isQH);
+                ControlDiffReview review = new ControlDiffReview(criticalAlertsResume, _NoDiffAlertsLogs, _NoDiffCriticalAlertsLogs, _DiffAlertsLogs, _DiffCriticalAlertsLogs, _DurationAlertsLogs, _DurationCriticalAlertsLogs, _TotalAudienceAlertsLogs, _TotalAudienceCriticalAlertsLogs, _TargetAudienceAlertsLogs, _IndicatorAudienceAlertsLogs, _IndicatorAudienceCriticalAlertsLogs,_CheckChannelAndDateAudienceCriticalAlertsLogs, isQH);
                 _ControlDiffForm.Controls.Clear();
                 _ControlDiffForm.Controls.Add(review);
                 review.Dock = System.Windows.Forms.DockStyle.Fill;
