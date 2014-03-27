@@ -131,6 +131,9 @@ namespace Analytics_V2
             // Treat each input file
             foreach (String processedFile in _InputFiles)
             {
+                Stopwatch launchStopwatch3 = new Stopwatch();
+                launchStopwatch3.Start();
+
                 string originalProcessedFile = processedFile.Replace("_1.txt", ".txt");
                 _FileCounter++;
                 _CurrentFile = processedFile;
@@ -197,6 +200,12 @@ namespace Analytics_V2
                 TimeSpan ts2 = launchStopwatch2.Elapsed;
                 string elapsedTime2 = String.Format("{0:00}:{1:00}", ts2.Minutes, ts2.Seconds);
                 UpdateRichTextBox("time", elapsedTime2);
+
+                // Update statistics
+                launchStopwatch3.Stop();
+                AnalyticsWebService.AnalyticsSoapClient query = new AnalyticsWebService.AnalyticsSoapClient();
+                query.Insert(System.Environment.UserName, _Config.Get_ConfigType(), _Config.Get_Name(), processedFile, _DatamodPath, (int)launchStopwatch3.ElapsedMilliseconds / 1000);
+                query.Close();
             }
 
             // Display elapsed time
@@ -214,12 +223,11 @@ namespace Analytics_V2
 
         private void PreProcess(DataTable dataTable)
         {
-            Stopwatch launchStopwatch = new Stopwatch();
-            launchStopwatch.Start();
-
+            Stopwatch launchStopwatch = new Stopwatch();         
             switch (dataTable.TableName)
             {
                 case "XLS2TXT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "XLS2TXT..... ");
                     try
                     {
@@ -234,9 +242,10 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== XLS2TXT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
-
                 case "FILESPLIT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "FILESPLIT..... ");
                     try
                     {
@@ -251,9 +260,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== FILESPLIT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "COLUMNSCONCAT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "COLUMNSCONCAT..... ");
                     try
                     {
@@ -273,9 +284,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COLUMNSCONCAT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "LINESCONCAT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "LINESCONCAT..... ");
                     try
                     {
@@ -293,14 +306,10 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== LINESCONCAT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
             }
-            GC.Collect();
-
-            launchStopwatch.Stop();
-            TimeSpan ts = launchStopwatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
-            UpdateRichTextBox("time", elapsedTime);
+            GC.Collect();         
         }
 
         /***********\
@@ -310,11 +319,10 @@ namespace Analytics_V2
         private void Process(DataTable dataTable)
         {
             Stopwatch launchStopwatch = new Stopwatch();
-            launchStopwatch.Start();
-
             switch (dataTable.TableName)
             {
                 case "REPLACE":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "REPLACE..... ");
                     try
                     {
@@ -330,9 +338,11 @@ namespace Analytics_V2
                     {   ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== REPLACE ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "CUT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "CUT..... ");
                     try
                     {
@@ -349,9 +359,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== CUT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "COLUMNS":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "COLUMNS..... ");
                     try
                     {
@@ -368,9 +380,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COLUMNS ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "EXPAND":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "EXPAND..... ");
                     try
                     {
@@ -387,9 +401,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== EXPAND ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "FILTER":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "FILTER..... ");
                     try
                     {
@@ -406,9 +422,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== FILTER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "LINEDEL":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "LINEDEL..... ");
                     try
                     {
@@ -422,9 +440,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== LINEDEL ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "DATECONVERT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "DATECONVERT..... ");
                     try
                     {
@@ -441,9 +461,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== DATECONVERT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "TRANSLATE":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "TRANSLATE..... ");
                     try
                     {
@@ -460,9 +482,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TRANSLATE ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "TRANSCRIPT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "TRANSCRIPT..... ");
                     try
                     {
@@ -479,9 +503,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TRANSCRIPT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "DATEFORMAT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "DATEFORMAT..... ");
                     try
                     {
@@ -495,9 +521,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== DATEFORMAT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "TIMEFORMAT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "TIMEFORMAT..... ");
                     try
                     {
@@ -514,9 +542,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TIMEFORMAT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "TIMECONVERT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "TIMECONVERT..... ");
                     try
                     {
@@ -533,9 +563,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TIMECONVERT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "WRITE":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "WRITE..... ");
                     try
                     {
@@ -552,9 +584,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== WRITE ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "COPY":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "COPY..... ");
                     try
                     {
@@ -571,9 +605,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COPY ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "CELLCOPY":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "CELLCOPY..... ");
                     try
                     {
@@ -590,9 +626,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== CELLCOPY ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "VALUECHECKER":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "VALUECHECKER..... ");
                     try
                     {
@@ -609,9 +647,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== VALUECHECKER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "VALUECORRECTOR":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "VALUECORRECTOR..... ");
                     try
                     {
@@ -628,9 +668,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== VALUECORRECTOR ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "QHFORMAT":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "QHFORMAT..... ");
                     try
                     {
@@ -647,9 +689,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== QHFORMAT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "REMOVER":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "REMOVER..... ");
                     try
                     {
@@ -664,9 +708,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== REMOVER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "CALCUL":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "CALCUL..... ");
                     try
                     {
@@ -683,9 +729,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== CALCUL ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "LEVELS":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "LEVELS..... ");
                     try
                     {
@@ -702,9 +750,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== LEVELS ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "DUPLICATES":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "DUPLICATES..... ");
                     try
                     {
@@ -721,14 +771,10 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== DUPLICATES ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
             }
             GC.Collect();
-
-            launchStopwatch.Stop();
-            TimeSpan ts = launchStopwatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
-            UpdateRichTextBox("time", elapsedTime);
         }
 
         /***********\
@@ -738,11 +784,10 @@ namespace Analytics_V2
         private void Control(DataTable dataTable)
         {
             Stopwatch launchStopwatch = new Stopwatch();
-            launchStopwatch.Start();
-
             switch (dataTable.TableName)
             {
                 case "DATACHECKER":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "DATACHECKER..... ");
                     try
                     {
@@ -756,9 +801,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== DATACHECKER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "CONTROLDIFF": // Note that this control (special for programs) performs the renaming of the datamod
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "CONTROLDIFF..... ");
                     try
                     {
@@ -773,7 +820,7 @@ namespace Analytics_V2
                         System.IO.File.Move(_DatamodPath, finalPath);
                         String tmpPath = Path.GetDirectoryName(_DatamodPath);
                         _DatamodPath = finalPath;
-                        File.Delete(fileToDeletePath);  // Delete the old file.
+                        //File.Delete(fileToDeletePath);  // Delete the old file.
                         _OutputFiles.Add(_DatamodPath); // Add the output file to the list of output file.
                         controldiffProcess = null;
                         UpdateRichTextBox("complete", "Complete!");
@@ -783,9 +830,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== CONTROLDIFF ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "QHNUMBERS": // Note that this control (special for QH) performs the renaming of the datamod
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "QHNUMBERS..... ");
                     try
                     {
@@ -800,7 +849,7 @@ namespace Analytics_V2
                         System.IO.File.Move(_DatamodPath, finalPath);
                         String tmpPath = Path.GetDirectoryName(_DatamodPath);
                         _DatamodPath = finalPath;
-                        File.Delete(fileToDeletePath);  // Delete the old file.
+                        //File.Delete(fileToDeletePath);  // Delete the old file.
                         _OutputFiles.Add(_DatamodPath); // Add the output file to the list of output file.
                         _Logs += "\r\n== CONTROL LINES QH ==\r\n";
                         foreach (String logLine in qhnumbersProcess.Log)
@@ -813,9 +862,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== QHNUMBERS ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
 
                 case "TOTALTVCONTROL":
+                    StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "TOTALTVCONTROL..... ");
                     try
                     {
@@ -832,15 +883,11 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TOTALTVCONTROL ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
             }
 
             GC.Collect();
-
-            launchStopwatch.Stop();
-            TimeSpan ts = launchStopwatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
-            UpdateRichTextBox("time", elapsedTime);
         }
 
         /**********************\
@@ -969,6 +1016,25 @@ namespace Analytics_V2
             streamWriter.Close();
             streamWriter.Dispose();
             _Logs = null;
+        }
+
+        /*************************************\
+         * Stopwatch functions               *
+         *   - Start stopwatch.              *
+         *   - Stop stopwatch (& update RTB) *
+        \*************************************/
+
+        private void StartStopWatch(Stopwatch stopWatch)
+        {
+            stopWatch.Start();
+        }
+
+        private void StopStopWatch(Stopwatch stopWatch)
+        {
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+            UpdateRichTextBox("time", elapsedTime);
         }
 
         #endregion

@@ -35,6 +35,7 @@ namespace Analytics_V2
         private int _EncodingInput;       //
         private String _EncodingOutput;   //
         private String _CountryCode;      //
+        private String _ConfigType;       //
 
         #endregion
 
@@ -54,6 +55,7 @@ namespace Analytics_V2
             _DecimalSeparator = null;
             _EncodingOutput = null;
             _CountryCode = null;
+            _ConfigType = null;
 
             _XmlDocument = new XDocument();
             _ProcessList = new List<Process>();
@@ -192,7 +194,19 @@ namespace Analytics_V2
                 else ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("Encoding_OUTPUT manquant !", "Analytics", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            //Console.WriteLine(_DataSeparator + " " + _OutputSeparator + " " + _CountryCode + " " + _DecimalSeparator + " " + _TargetsNumber + " " + _Headerlines + " " + _EncodingInput + " " + _EncodingOutput);
+            var header8 = from item in _XmlDocument.Element("region").Elements("Config")
+                          select new
+                          {
+                              configType = item.Attribute("Type"),
+                          };
+            foreach (var element in header8)
+            {
+                if (!String.IsNullOrEmpty(element.configType.ToString().Split(new string[] { "\"" }, StringSplitOptions.None)[1]))
+                    _ConfigType = element.configType.ToString().Split(new string[] { "\"" }, StringSplitOptions.None)[1];
+                else _ConfigType = "Other";
+            }
+
+           //Console.WriteLine(_DataSeparator + " " + _OutputSeparator + " " + _CountryCode + " " + _DecimalSeparator + " " + _TargetsNumber + " " + _Headerlines + " " + _EncodingInput + " " + _EncodingOutput + " " + _ConfigType);
         }
 
         /*************************************************************************\
@@ -360,6 +374,7 @@ namespace Analytics_V2
             clonedConfig._EncodingInput = this._EncodingInput;
             clonedConfig._EncodingOutput = this._EncodingOutput;
             clonedConfig._CountryCode = this._CountryCode;
+            clonedConfig._ConfigType = this._ConfigType;
 
             return clonedConfig;
         }
@@ -610,6 +625,11 @@ namespace Analytics_V2
             return _CountryCode;
         }
 
+        public String Get_ConfigType()
+        {
+            return _ConfigType;
+        }
+
         public int Get_TargetsNumber()
         {
             return _TargetsNumber;
@@ -619,6 +639,7 @@ namespace Analytics_V2
         {
             return _ProcessList;
         }
+
 
         #endregion
     }

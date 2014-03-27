@@ -93,6 +93,16 @@ namespace Analytics_V2.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AnalyticsIcon2 {
+            get {
+                object obj = ResourceManager.GetObject("AnalyticsIcon2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Arrow_Down {
             get {
                 object obj = ResourceManager.GetObject("Arrow_Down", resourceCulture);
@@ -177,6 +187,16 @@ namespace Analytics_V2.Properties {
             get {
                 object obj = ResourceManager.GetObject("Settings", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Statistics {
+            get {
+                object obj = ResourceManager.GetObject("Statistics", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

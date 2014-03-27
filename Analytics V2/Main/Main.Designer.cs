@@ -54,6 +54,7 @@
             this.ToolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.ConfigStatementToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.StatisticsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.MainBoardSplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.FileBrowserNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.common = new ComponentFactory.Krypton.Navigator.KryptonPage();
@@ -156,6 +157,7 @@
             this.AdministrationToolStripButton,
             this.ToolStripSeparator6,
             this.ConfigStatementToolStripButton,
+            this.StatisticsToolStripButton,
             this.ToolStripSeparator7});
             this.ToolBarToolStrip.Name = "ToolBarToolStrip";
             this.ToolBarToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -299,6 +301,13 @@
             // 
             this.ToolStripSeparator7.Name = "ToolStripSeparator7";
             resources.ApplyResources(this.ToolStripSeparator7, "ToolStripSeparator7");
+            // 
+            // StatisticsToolStripButton
+            // 
+            this.StatisticsToolStripButton.Image = global::Analytics_V2.Properties.Resources.Statistics;
+            resources.ApplyResources(this.StatisticsToolStripButton, "StatisticsToolStripButton");
+            this.StatisticsToolStripButton.Name = "StatisticsToolStripButton";
+            this.StatisticsToolStripButton.Click += new System.EventHandler(this.StatisticsToolStripButton_Click);
             // 
             // MainBoardSplitContainer2
             // 
@@ -514,6 +523,7 @@
         private System.Windows.Forms.ToolStripButton HistoryToolStripButton;
         private System.Windows.Forms.ToolStripButton ConfigStatementToolStripButton;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton StatisticsToolStripButton;
 
 
 

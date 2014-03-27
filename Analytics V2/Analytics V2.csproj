@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>40</ApplicationRevision>
+    <ApplicationRevision>47</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -70,7 +70,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Minion.ico</ApplicationIcon>
+    <ApplicationIcon>AnalyticsIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Calcul">
@@ -164,6 +164,10 @@
     </Reference>
     <Reference Include="skyit">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\skyit\skyit.dll</HintPath>
+    </Reference>
+    <Reference Include="Stats, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Stats\V2\Stats.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -464,8 +468,10 @@
     <None Include="Resources\Analytics.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Analytics.ico" />
-    <Content Include="Minion.ico" />
+    <Content Include="AnalyticsIcon.ico" />
+    <None Include="Resources\AnalyticsIcon2.png" />
+    <None Include="Resources\AnalyticsIcon.png" />
+    <None Include="Resources\Statistics.png" />
     <None Include="Resources\WaitingScreen.PNG" />
     <None Include="Resources\ConfigStatement2.ico" />
     <None Include="Resources\ConfigStatement.png" />

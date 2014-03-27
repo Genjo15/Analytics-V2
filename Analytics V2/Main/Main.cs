@@ -147,7 +147,7 @@ namespace Analytics_V2
 
             // Chronicles form
             _ChroniclesAndStatementForm = new KryptonForm();
-            _ChroniclesAndStatementForm.Text = "Chronicles";
+            _ChroniclesAndStatementForm.Text = "History";
             _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
             _ChroniclesAndStatementForm.StartPosition = FormStartPosition.CenterScreen;
             _ChroniclesAndStatementForm.Size = new Size(1400, 700);
@@ -1427,7 +1427,7 @@ namespace Analytics_V2
         {
             if (_Session.GetNetworkAvailable())
             {
-                _ChroniclesAndStatementForm.Text = "Chronicles";
+                _ChroniclesAndStatementForm.Text = "History";
                 _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
                 _ChroniclesAndStatementForm.Controls.Clear();
                 _Chronicles.GetAllChronicles();
@@ -1441,7 +1441,7 @@ namespace Analytics_V2
             TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
             if (_Session.GetNetworkAvailable())
             {
-                _ChroniclesAndStatementForm.Text = "Chronicles";
+                _ChroniclesAndStatementForm.Text = "History";
                 _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
                 _ChroniclesAndStatementForm.Controls.Clear();
                 _Chronicles.GetChroniclesFromSpecificConfig(treeView.SelectedNode.Text.Replace(".xml", ""));
@@ -1458,7 +1458,7 @@ namespace Analytics_V2
 
         /*********************************************************************\
          * Event which occurs when the ConfigStatement toolstrip is clicked  *
-         *  - Open the Config Statement summary (old "Suivi Pays Analytics). *
+         *  - Open the Config Statement summary (old "SUIVI PAYS ANALYTICS). *
          *  - Also show & hide the waiting screen.                           *
         \*********************************************************************/
 
@@ -1478,6 +1478,18 @@ namespace Analytics_V2
 
                 _ChroniclesAndStatementForm.Show();
             }
+        }
+
+        /*********************************************************************\
+         * Event which occurs when the Statistics toolstrip is clicked       *
+         *  - Open the statistics module                                     *
+        \*********************************************************************/
+
+        private void StatisticsToolStripButton_Click(object sender, EventArgs e)
+        {
+            Stats.Form1 statsForm = new Stats.Form1();
+            statsForm.StartPosition = FormStartPosition.CenterScreen;
+            statsForm.Show();
         }
 
         /*************************************************   MISC   ****************************************************/
@@ -1566,7 +1578,5 @@ namespace Analytics_V2
         }
 
         #endregion
-
-
     }
 }
