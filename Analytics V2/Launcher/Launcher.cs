@@ -64,6 +64,7 @@ namespace Analytics_V2
             {
                 if ((p.Get_OrderId() < 0 && _PreProcess) || ((p.Get_OrderId() > 0 & p.Get_OrderId() < 100) && _Process) || ((p.Get_OrderId() > 100 && _Control)))
                     _NumberOfProcesses++;
+
             }
 
             _Logs = null;
