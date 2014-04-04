@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using ComponentFactory.Krypton.Toolkit;
 
 namespace Analytics_V2
 {
@@ -16,12 +17,15 @@ namespace Analytics_V2
 
         #region Variables
 
+        private int _ID; // Control ID.
+
         private delegate void processOnProgressBar(float i);            // Delegate type 1.
         private processOnProgressBar _UpdateProgressBarDel;             // Delegate for updating the progress bar.
         private delegate void processOnRichTextBox(String a, String b); // Delegate type 2.
         private processOnRichTextBox _UpdateRichTextBoxDel;             // Delegate for updating the RTB.
         private delegate void processOnProgressBar2(string str);        // Delegate type 3.
         private processOnProgressBar2 _DisplayConfigProcessTimeDel;     // Delegate for adding the config process time.
+        Delegate _AbortThreadDel;
 
         private Boolean _Expand;                                   // Indicates id groupbox expanded or not.
         System.Windows.Forms.ToolTip _MinimiseExpandButtonTooltip; // Tooltip for the MinimiseExpand Button.
@@ -32,9 +36,12 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public ProgressBar(String name)
+        public ProgressBar(String name, int id, Delegate del)
         {
             InitializeComponent();
+
+            _ID = id;
+            _AbortThreadDel = del;
 
             this.Dock = System.Windows.Forms.DockStyle.Top;
 
@@ -45,7 +52,7 @@ namespace Analytics_V2
 
             _MinimiseExpandButtonTooltip = new ToolTip();
             _MinimiseExpandButtonTooltip.SetToolTip(ExpandMinimize, "Show details");
-
+            new ToolTip().SetToolTip(StopButton, "Stop Process !");
 
             _Expand = false;
 
@@ -137,6 +144,23 @@ namespace Analytics_V2
             }
         }
 
+        /******************************************\
+         * Event for clicking Stop Process button *
+        \******************************************/
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            var result = KryptonMessageBox.Show("Do you really want to stop the process?" , "Stop the process",
+                         MessageBoxButtons.YesNo,
+                         MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                _AbortThreadDel.DynamicInvoke(_ID);
+                //Bar.ForeColor = Color.IndianRed;
+            }
+        }
+
         #endregion
 
         #region Accessors
@@ -156,12 +180,6 @@ namespace Analytics_V2
             return _DisplayConfigProcessTimeDel;
         }
 
-        #endregion
-
-
-
-        
-
-
+        #endregion  
     }
 }

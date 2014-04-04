@@ -11,7 +11,7 @@ using DataGridViewAutoFilter;
 
 namespace Analytics_V2
 {
-    public partial class Chronicles : UserControl
+    public partial class History : UserControl
     {
         /********************************************* Declaration of variables *********************************************/
 
@@ -23,7 +23,7 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public Chronicles()
+        public History()
         {
             InitializeComponent();
             DataGridView.BindingContextChanged += new EventHandler(DataGridView_BindingContextChanged);
@@ -55,7 +55,6 @@ namespace Analytics_V2
                 // Query on DB & bind to Datagrid View
                 AnalyticsWebService.AnalyticsSoapClient service = new AnalyticsWebService.AnalyticsSoapClient();
                 DataSet dataSet = service.Get_histo_modif_per_config(name);
-                //DataGridView.DataSource = dataSet.Tables[0];
 
                 BindingSource bs = new BindingSource();
                 bs.DataSource = dataSet.Tables[0];
@@ -79,7 +78,6 @@ namespace Analytics_V2
                 // Query on DB & bind to Datagrid View
                 AnalyticsWebService.AnalyticsSoapClient service = new AnalyticsWebService.AnalyticsSoapClient();
                 DataSet dataSet = service.Get_all_histo_modif_per_config();
-                //DataGridView.DataSource = dataSet.Tables[0];
 
                 BindingSource bs = new BindingSource();
                 bs.DataSource = dataSet.Tables[0];
@@ -87,13 +85,7 @@ namespace Analytics_V2
                
                 service.Close();
             }
-            catch (Exception ex) { KryptonMessageBox.Show(ex.ToString()); } 
-
-            //foreach(DataGridViewColumn col in DataGridView.Columns)
-            //{
-            //    col.
-            //}
-            
+            catch (Exception ex) { KryptonMessageBox.Show(ex.ToString()); }             
         }
 
         /**************************************************************\
@@ -155,10 +147,6 @@ namespace Analytics_V2
                                 if (configBefore[i + 1] != null && configBefore[i + 1].Equals(str))
                                 {
                                     trigger = true;
-                                    //BeforeRichTextBox.SelectionFont = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                                    //BeforeRichTextBox.SelectionBackColor = Color.IndianRed;
-                                    //BeforeRichTextBox.AppendText(configBefore[i] + "\n");
-                                    //appended = true;
                                 }
 
                             if (configBefore[i].Equals(str) && !appended)
@@ -200,10 +188,6 @@ namespace Analytics_V2
                                 if (configAfter[i + 1] != null && configAfter[i + 1].Equals(str))
                                 {
                                     trigger = true;
-                                    //AfterRichTextBox.SelectionFont = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                                    //AfterRichTextBox.SelectionBackColor = Color.LightGreen;
-                                    //AfterRichTextBox.AppendText(configAfter[i] + "\n");
-                                    //appended = true;
                                 }
 
                             if (configAfter[i].Equals(str) && !appended)

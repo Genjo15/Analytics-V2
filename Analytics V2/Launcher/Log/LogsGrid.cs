@@ -129,19 +129,22 @@ namespace Analytics_V2
         {
             for (int i = 0; i < processList.Count; i++)
             {
-                int occurrenceCounter = 0;
-                DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
-                row.Cells[0].Value = processList[i].Get_OrderId();
-                row.Cells[1].Value = processList[i].Get_Name();
+                if (processList[i].Get_OrderId() != 0)
+                {
+                    int occurrenceCounter = 0;
+                    DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
+                    row.Cells[0].Value = processList[i].Get_OrderId();
+                    row.Cells[1].Value = processList[i].Get_Name();
 
-                // Check how many time the process has already been called
-                for (int j = 0; j < i + 1; j++)
-                    if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
-                        occurrenceCounter++;
+                    // Check how many time the process has already been called
+                    for (int j = 0; j < i + 1; j++)
+                        if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
+                            occurrenceCounter++;
 
 
-                AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
-                DataGridView.Rows.Add(row);    
+                    AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
+                    DataGridView.Rows.Add(row);
+                }
             }
 
             //////////

@@ -43,16 +43,18 @@ namespace Analytics_V2
         private String _PreviousNodeName; // Previous node name.
         private String _LogsPath;         // Logs path.
 
-        private Authentication _Session;                     // Authentication instance.
-        private Administration _Administration;              // The Administration module UC.
-        private Settings _Settings;                          // The Settings module UC.
-        private Chronicles _Chronicles;                      // The History module UC.
-        private ConfigStatement _ConfigStatement;            // The Config statement module UC (old "Suivi Pays").
-        private WaitingScreen _WaitingScreen;                // Waiting Screen UC.
-        private KryptonForm _AdministrationForm;             // Form hosting the Administration UC.
-        private KryptonForm _SettingsForm;                   // Form hosting the Settings UC.
-        private KryptonForm _ChroniclesAndStatementForm;     // Form hosting the Chronicles UC.
-        private KryptonForm _WaitScreenForm;                 // Form hosting the WaitingScreen UC.
+        private Authentication _Session;                  // Authentication instance.
+        private Administration _Administration;           // The Administration module UC.
+        private Settings _Settings;                       // The Settings module UC.
+        private History _Chronicles;                      // The History module UC.
+        private ConfigStatement _ConfigStatement;         // The Config statement module UC (old "Suivi Pays").
+        private WaitingScreen _WaitingScreen;             // Waiting Screen UC.
+        private BatchUC _Batch;                           // Batch UC.
+        private KryptonForm _AdministrationForm;          // Form hosting the Administration UC.
+        private KryptonForm _SettingsForm;                // Form hosting the Settings UC.
+        private KryptonForm _HistoryAndStatementForm;     // Form hosting the Chronicles UC.
+        private KryptonForm _WaitScreenForm;              // Form hosting the WaitingScreen UC.
+        private KryptonForm _BatchForm;                   // Form hosting the batch UC.
          
         private delegate void processOnMainThread(int[] tab);                                                     // Delegate type.
         private processOnMainThread _UpdateProgressBarDel;                                                        // Delegate for updating the progress bar.
@@ -61,7 +63,9 @@ namespace Analytics_V2
         private delegate void processOnMainThread3(int i, string str, string str2, List<Process> pl, int number); // Delegate type3.
         private processOnMainThread3 _AddLogsGridViewDel;                                                         // Delegate for adding the logs grid view.
         private delegate void ProcessOnMainThread4(int i, string str);                                            // Delegate type4.
-        private ProcessOnMainThread4 _DisplayConfigProcessTimeDel;
+        private ProcessOnMainThread4 _DisplayConfigProcessTimeDel;                                                // Delegate for displaying the process time.
+        private delegate void ProcessOnMainThread5(int i);                                                        // Delegate type5.
+        private ProcessOnMainThread5 _AbortThreadDel;                                                             // Delegate for aborting the specific thread.
         #endregion
 
         /**************************************************** Constructor ****************************************************/
@@ -81,8 +85,9 @@ namespace Analytics_V2
             _Session.CheckSavedPUC(System.Environment.MachineName);
             _Administration = new Administration();
             _Settings = new Settings();
-            _Chronicles = new Chronicles();
+            _Chronicles = new History();
             _ConfigStatement = new ConfigStatement();
+            _Batch = new BatchUC();
             _WaitingScreen = new WaitingScreen();
 
             InitializeInterface();
@@ -104,6 +109,7 @@ namespace Analytics_V2
             _UpdateRichTextBoxDel = new processOnMainThread2(UpdateRichTextBox);
             _AddLogsGridViewDel = new processOnMainThread3(AddLogsGridView);
             _DisplayConfigProcessTimeDel = new ProcessOnMainThread4(DisplayConfigProcessTime);
+            _AbortThreadDel = new ProcessOnMainThread5(AbortThread);
         }
 
         #endregion
@@ -146,13 +152,13 @@ namespace Analytics_V2
             _SettingsForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideSettingsForm);
 
             // Chronicles form
-            _ChroniclesAndStatementForm = new KryptonForm();
-            _ChroniclesAndStatementForm.Text = "History";
-            _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
-            _ChroniclesAndStatementForm.StartPosition = FormStartPosition.CenterScreen;
-            _ChroniclesAndStatementForm.Size = new Size(1400, 700);
-            _ChroniclesAndStatementForm.Controls.Add(_Chronicles);
-            _ChroniclesAndStatementForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideChroniclesForm);
+            _HistoryAndStatementForm = new KryptonForm();
+            _HistoryAndStatementForm.Text = "History";
+            _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
+            _HistoryAndStatementForm.StartPosition = FormStartPosition.CenterScreen;
+            _HistoryAndStatementForm.Size = new Size(1400, 700);
+            _HistoryAndStatementForm.Controls.Add(_Chronicles);
+            _HistoryAndStatementForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideChroniclesForm);
 
             // WaitingScreen form
             _WaitScreenForm = new KryptonForm();
@@ -160,6 +166,16 @@ namespace Analytics_V2
             _WaitScreenForm.StartPosition = FormStartPosition.CenterScreen;
             _WaitScreenForm.Controls.Add(_WaitingScreen);
             _WaitScreenForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+
+            // Batch form
+            _BatchForm = new KryptonForm();
+            _BatchForm.Text = "Batch Administration";
+            _BatchForm.Size = new System.Drawing.Size(600, 400);
+            _BatchForm.StartPosition = FormStartPosition.CenterScreen;
+            _BatchForm.Icon = global::Analytics_V2.Properties.Resources.Batch2;
+            _BatchForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideBatchForm);
+            _BatchForm.Controls.Add(_Batch);
+
 
             // Add file browsers (local + common)
             this.FileBrowserNavigator.Pages[0].Controls.Add(_FileBrowser);
@@ -170,7 +186,7 @@ namespace Analytics_V2
             _LocalFileBrowser.PopulateTreeView();
 
             // Add Navigator / Specific tools
-            this.MainBoardSplitContainer3.Panel1.Controls.Add(_Navigator);
+            this.MainBoardSplitContainer5.Panel1.Controls.Add(_Navigator);
             this.MainBoardSplitContainer4.Panel1.Controls.Add(_SpecificCountries);
             this.MainBoardSplitContainer4.Panel2.Controls.Add(_SpecificTools);
 
@@ -304,7 +320,7 @@ namespace Analytics_V2
                         // Enable buttons
                         EditToolStripButton.Enabled = true;
                         SuppressToolStripButton.Enabled = true;
-                        LaunchToolStripButton.Enabled = true;
+                        LaunchButton.Enabled = true;
 
                         // Check if the config already exists in the list of config
                         if (_ConfigsList.Count > 0)
@@ -335,7 +351,7 @@ namespace Analytics_V2
 
                         // Disable buttons
                         SuppressToolStripButton.Enabled = true;
-                        LaunchToolStripButton.Enabled = false;
+                        LaunchButton.Enabled = false;
 
                         KryptonMessageBox.Show("Error !! The selected configuration is INVALID : \n\n                        " + exception.ToString(), "invalid XML",
                               MessageBoxButtons.OK,
@@ -348,7 +364,8 @@ namespace Analytics_V2
                     // Enable buttons
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = true;
-                    LaunchToolStripButton.Enabled = false;
+                    if(_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+                        LaunchButton.Enabled = false;
 
                     // Display folder name.
                     _Navigator.DisplayFolderName(treeView.SelectedNode.Text);
@@ -359,7 +376,7 @@ namespace Analytics_V2
                     // Disable buttons
                     EditToolStripButton.Enabled = false;
                     SuppressToolStripButton.Enabled = false;
-                    LaunchToolStripButton.Enabled = false;
+                    LaunchButton.Enabled = false;
                 }
             }
 
@@ -537,7 +554,6 @@ namespace Analytics_V2
             }
 
             fileBrowser.PopulateTreeView();
-            //fileBrowser.PasteToolStripMenuItem.Enabled = false;
             _FileBrowser.PasteToolStripMenuItem.Enabled = false;
             _LocalFileBrowser.PasteToolStripMenuItem.Enabled = false;
         }
@@ -728,6 +744,7 @@ namespace Analytics_V2
          * Event of clicking on the element "Save" of the MenuStrip           * 
          * CREATION MODE :                                                    * 
          *   - Call the Save function                                         * 
+         *   - Update config list                                             *
          * NORMAL MODE :                                                      * 
          *   - Retrieve the selected config tab (for the encoding).           *
          *   - Retrieve the encoding.                                         *
@@ -737,9 +754,9 @@ namespace Analytics_V2
          *   - Create the streamwriter and save.                              *
          *   - Propose to save anyway if the xml is not valid.                *
          *   - Edit label and button.                                         *
+         *   - Update config list.                                            *
          *                                                                    *
          * - Check config modifications                                       *
-         * - Refresh View (TreeView + Configs list)                           *
         \**********************************************************************/
 
         private void SaveToolStripButton_Click(object sender, EventArgs e)
@@ -765,7 +782,9 @@ namespace Analytics_V2
                     var result = KryptonMessageBox.Show("Saved in :\n" + element.Tag.ToString(), "File saved.",
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Information);
-                }
+                    _ConfigsList.Clear();
+                    _ConfigsList.Add(new Config(_Navigator.NavigatorControl.SelectedPage.Text.Replace(".xml",""),element.Tag.ToString()));
+                }             
             }
 
             else
@@ -773,12 +792,6 @@ namespace Analytics_V2
                 Encoding encoding;
                 String treatedString;
                 StreamWriter writer;
-                
-            
-                //// Retrieve the selected config tab (for the encoding).
-                //IEnumerable<Config> retrieveConfigQuerry2 = from item in _ConfigsList
-                //                                           where item.Get_Name().Equals(_Navigator.NavigatorControl.SelectedPage.Text)
-                //                                           select item;
 
                 // Retrieve the path
                 var childrens3 = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
@@ -823,6 +836,9 @@ namespace Analytics_V2
                             var result = KryptonMessageBox.Show("Saved in :\n" + richTextBox.Tag.ToString(), "File saved.",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+
+                            _ConfigsList.Clear();
+                            _ConfigsList.Add(new Config(_Navigator.NavigatorControl.SelectedPage.Text.Replace(".xml", ""), richTextBox.Tag.ToString()));
                         }
             
                         catch (Exception ex)
@@ -845,7 +861,7 @@ namespace Analytics_V2
                 }
             }
 
-            // Check modifications
+            // Update modifications in DB
             IEnumerable<Config> retrieveConfigQuerry2 = from item in _ConfigsList
                                                        where item.Get_Path().Equals(configPath)
                                                        select item;
@@ -855,7 +871,14 @@ namespace Analytics_V2
                 set.CheckModification(_ConfigBeforeModif);
             }
 
-            //RefreshToolStripButton_Click(new Object(), new EventArgs());
+            // Update Summary tab (in case of summary tab displays the edited config
+            IEnumerable<Config> retrieveConfigQuerry3 = from item in _ConfigsList
+                                                        where item.Get_Path().Equals(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath)
+                                                       select item;
+            
+            foreach (Config set in retrieveConfigQuerry3)
+                _Navigator.DisplayConfigSummary(set.Get_Name(), set.Get_ProcessList(), set.Get_Warning());
+
         }
 
         private String XmlTreatment(String str)
@@ -1203,6 +1226,7 @@ namespace Analytics_V2
         /*********************************************************************************\
          * Event of clicking of the element Launch of the MenuStrip                      *
          * (or double click on the treenode).                                            *
+         *   - Define if Case 1 or 2                                                     *
          *   - Define paths (input files, output files, logs).                           *
          *   - After validation, put selection page to Summary.                          *
          *   - Retrieve the selected config.                                             *
@@ -1214,16 +1238,61 @@ namespace Analytics_V2
          *   - *INCLUDED* the delegate for updating Log & progress UC during the thread. *
         \*********************************************************************************/
 
-        private void LaunchToolStripButton_Click(object sender, EventArgs e)
+        private void LaunchButton_Click(object sender, EventArgs e)
         {
-            if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath.Contains("Recettes"))
+            // CASE 1 : Selected navigator tab is Summary --> Launch selected TreeNode config.
+            if (_Navigator.NavigatorControl.SelectedPage == _Navigator.NavigatorControl.Pages["Summary"])
             {
-                if(_Session.CheckIfAccessGranted("launchConfigPreProd"))
-                    LaunchConfig(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath.Contains("Recettes"))
+                {
+                    if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                        LaunchConfigSelectedTreeNode(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+                }
+
+                else
+                {
+                    LaunchConfigSelectedTreeNode(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+                }
             }
 
+            // CASE 2 : Selected navigator tab is not summary --> Launch selected Navigator tab config.
             else
-                LaunchConfig(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+            {
+                if ((Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
+                {
+                    // Get path of config (selected navigator tab)
+                    string path = "";
+                    var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
+                    foreach (XMLLoader.XMLForm element in childrens)
+                    {
+                        path = (string)element.Tag;
+                    }
+                    // Check access.
+                    if (path.Contains("Recettes"))
+                    {
+                        if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                            LaunchConfigSelectedNavigatorTab(path);
+                    }
+                    else LaunchConfigSelectedNavigatorTab(path);
+                }
+                else if (!(Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
+                {
+                    // Get path of config (selected navigator tab)
+                    string path = "";
+                    var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
+                    foreach (KryptonRichTextBox element in childrens)
+                    {
+                        path = (string)element.Tag;
+                    }
+                    // Check access.
+                    if (path.Contains("Recettes"))
+                    {
+                        if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                            LaunchConfigSelectedNavigatorTab(path);
+                    }
+                    else LaunchConfigSelectedNavigatorTab(path);
+                }
+            }
         }
 
         private void TreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -1233,18 +1302,18 @@ namespace Analytics_V2
                 if (((TreeView)(sender)).SelectedNode.FullPath.Contains("Recettes"))
                 {
                     if(_Session.CheckIfAccessGranted("launchConfigPreProd"))
-                        LaunchConfig(((TreeView)(sender)));
+                        LaunchConfigSelectedTreeNode(((TreeView)(sender)));
                 }
 
                 else
-                    LaunchConfig(((TreeView)(sender)));
+                    LaunchConfigSelectedTreeNode(((TreeView)(sender)));
             }
         }
 
-        private void LaunchConfig(TreeView treeView)
+        private void LaunchConfigSelectedTreeNode(TreeView treeView)
         {         
             OpenFileDialog openFileDialog = new OpenFileDialog();
-
+            openFileDialog.Title = "CONFIG : " + treeView.SelectedNode.Text;
             openFileDialog.InitialDirectory = @"D:\";
             openFileDialog.Multiselect = true;
             // openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
@@ -1270,9 +1339,9 @@ namespace Analytics_V2
                 // Create a launcher and associated UC.
                 foreach (Config set in retrieveConfigQuerry)
                 {
-                    _LaunchersList.Add(new Launcher(set.Clone(), PreProcessToolStripButton.Checked, ProcessToolStripButton.Checked, ControlsToolStripButton.Checked, HeaderConsistencyToolStripButton.Checked, new List<String>(_InputFiles), _LogsPath, _UpdateProgressBarDel, _UpdateRichTextBoxDel, _AddLogsGridViewDel,_DisplayConfigProcessTimeDel));
+                    _LaunchersList.Add(new Launcher(set.Clone(), PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked, HCButton.Checked, new List<String>(_InputFiles), _LogsPath, _UpdateProgressBarDel, _UpdateRichTextBoxDel, _AddLogsGridViewDel, _DisplayConfigProcessTimeDel));
 
-                    _ProgressBarsList.Add(new ProgressBar(set.Get_Name())); // Create a new ProgressBar Control & add it to the list of PB
+                    _ProgressBarsList.Add(new ProgressBar(set.Get_Name(),_ProgressBarsList.Count,_AbortThreadDel)); // Create a new ProgressBar Control & add it to the list of PB
                     _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]); // Add the created PB in the panel.
                     _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber())); // Create a new Log Control & add it to the list of Logs.
                     _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab()); // Add the log tab to the logsNavigator.
@@ -1286,21 +1355,77 @@ namespace Analytics_V2
             }
         }
 
+        private void LaunchConfigSelectedNavigatorTab(string configPath)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "CONFIG : " + _Navigator.NavigatorControl.SelectedPage.Text;
+            openFileDialog.InitialDirectory = @"D:\";
+            openFileDialog.Multiselect = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Put selection page to Summary. 
+                _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages["Summary"];
+
+                // Define paths (input, output, logs)
+                _InputFiles.Clear();
+                foreach (String inputFile in openFileDialog.FileNames)
+                {
+                    _InputFiles.Add(inputFile);
+                    _LogsPath = Path.GetDirectoryName(inputFile);
+                }
+
+                // Retrieve the selected config.
+                IEnumerable<Config> retrieveConfigQuerry = from item in _ConfigsList
+                                                           where item.Get_Path().Equals(configPath)
+                                                           select item;
+
+                // Create a launcher and associated UC.
+                foreach (Config set in retrieveConfigQuerry)
+                {
+                    _LaunchersList.Add(new Launcher(set.Clone(), PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked, HCButton.Checked, new List<String>(_InputFiles), _LogsPath, _UpdateProgressBarDel, _UpdateRichTextBoxDel, _AddLogsGridViewDel, _DisplayConfigProcessTimeDel));
+
+                    _ProgressBarsList.Add(new ProgressBar(set.Get_Name(),_ProgressBarsList.Count,_AbortThreadDel)); // Create a new ProgressBar Control & add it to the list of PB
+                    _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]); // Add the created PB in the panel.
+                    _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber())); // Create a new Log Control & add it to the list of Logs.
+                    _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab()); // Add the log tab to the logsNavigator.
+                    _Navigator.LogsNavigator.SelectedIndex = 0;
+                    _LogsList[_LogsList.Count - 1].Get_NavigatorTab().ButtonSpecs[0].Click += new EventHandler(_Navigator.CloseLogsNavigatorTab);
+
+                    _PoolThreads.Add(new Thread(() => _LaunchersList[_LaunchersList.Count - 1].Run(_LaunchersList.Count - 1)));
+                    _PoolThreads[_PoolThreads.Count - 1].IsBackground = true;
+                    _PoolThreads[_PoolThreads.Count - 1].Start();
+                }
+            }
+        }
+
+        // Abort Thread (button stop) (delegate function)
+        private void AbortThread(int id)
+        {
+            _PoolThreads[id].Abort();
+            _ProgressBarsList[id].Visible = false;
+            _LogsList[id].Get_NavigatorTab().Visible = false;
+        }
+
+        // Update Progress bar (delegate function)
         private void UpdateProgressBar(int[] idAndProgress) // 0 is the ID of the running process and 1 is the progress.
         {
             Invoke(_ProgressBarsList[idAndProgress[0]].Get_UpdateProgressBarDel(), idAndProgress[1]);
         }
 
+        // Display Config Process Time (delegate function)
         private void DisplayConfigProcessTime(int id, string time)
         {
             Invoke(_ProgressBarsList[id].Get_DisplayConfigTimeDel(), time);
         }
 
+        // Update RTB (delegate function)
         private void UpdateRichTextBox(String[] idTypeAndMessage) // 0 is the ID of the running process  1 is the type, and 2 is the message.
         {
             Invoke(_ProgressBarsList[int.Parse(idTypeAndMessage[0])].Get_UpdateRichTextBoxDel(), idTypeAndMessage[1], idTypeAndMessage[2]);
         }
 
+        // Add LogsGridView (delegate function)
         private void AddLogsGridView(int id, string outputFile, string inputFile, List<Process> processList, int targetsNumber)
         {
             Invoke(_LogsList[id].Get_AddLogsGridViewDel(), outputFile, inputFile, processList, targetsNumber);
@@ -1427,12 +1552,12 @@ namespace Analytics_V2
         {
             if (_Session.GetNetworkAvailable())
             {
-                _ChroniclesAndStatementForm.Text = "History";
-                _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
-                _ChroniclesAndStatementForm.Controls.Clear();
+                _HistoryAndStatementForm.Text = "History";
+                _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
+                _HistoryAndStatementForm.Controls.Clear();
                 _Chronicles.GetAllChronicles();
-                _ChroniclesAndStatementForm.Controls.Add(_Chronicles);
-                _ChroniclesAndStatementForm.Show();
+                _HistoryAndStatementForm.Controls.Add(_Chronicles);
+                _HistoryAndStatementForm.Show();
             }
         }
 
@@ -1441,18 +1566,18 @@ namespace Analytics_V2
             TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
             if (_Session.GetNetworkAvailable())
             {
-                _ChroniclesAndStatementForm.Text = "History";
-                _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
-                _ChroniclesAndStatementForm.Controls.Clear();
+                _HistoryAndStatementForm.Text = "History";
+                _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
+                _HistoryAndStatementForm.Controls.Clear();
                 _Chronicles.GetChroniclesFromSpecificConfig(treeView.SelectedNode.Text.Replace(".xml", ""));
-                _ChroniclesAndStatementForm.Controls.Add(_Chronicles);
-                _ChroniclesAndStatementForm.Show();
+                _HistoryAndStatementForm.Controls.Add(_Chronicles);
+                _HistoryAndStatementForm.Show();
             }
         }
 
         private void HideChroniclesForm(object sender, FormClosingEventArgs e)
         {
-            _ChroniclesAndStatementForm.Hide();
+            _HistoryAndStatementForm.Hide();
             e.Cancel = true;
         }
 
@@ -1468,15 +1593,15 @@ namespace Analytics_V2
             {
                 _WaitScreenForm.Show();
 
-                _ChroniclesAndStatementForm.Text = "Configs Summary";
-                _ChroniclesAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.ConfigStatement2;
-                _ChroniclesAndStatementForm.Controls.Clear();
-                _ChroniclesAndStatementForm.Controls.Add(_ConfigStatement);
+                _HistoryAndStatementForm.Text = "Configs Summary";
+                _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.ConfigStatement2;
+                _HistoryAndStatementForm.Controls.Clear();
+                _HistoryAndStatementForm.Controls.Add(_ConfigStatement);
                 _ConfigStatement.FillDataGridView();
 
                 _WaitScreenForm.Hide();
 
-                _ChroniclesAndStatementForm.Show();
+                _HistoryAndStatementForm.Show();
             }
         }
 
@@ -1492,6 +1617,26 @@ namespace Analytics_V2
             statsForm.Show();
         }
 
+        /****************************************************************\
+         * Event which occurs when the Batch toolstrip is clicked       *
+         *  - Open the batch module                                     *
+        \****************************************************************/
+
+        private void BatchToolStripButton_Click(object sender, EventArgs e)
+        {
+            _BatchForm.Show();
+        }
+
+        private void HideBatchForm(object sender, FormClosingEventArgs e)
+        {
+            _Batch.SplitContainer.Panel2Collapsed = true;
+            _Batch.SplitContainer.Panel2.Hide();
+            _BatchForm.Size = new System.Drawing.Size(600, 400);
+
+            _BatchForm.Hide();
+            e.Cancel = true;
+        }
+
         /*************************************************   MISC   ****************************************************/
 
 
@@ -1505,22 +1650,32 @@ namespace Analytics_V2
             _Navigator.SummarySplitContainer1.SplitterDistance -= 1;
         }
 
-        /******************************************\
-         * Event of changing tab on the navigator *
+        /********************************************************\
+         * Event of changing tab on the navigator               *
          * + Event which appears when the control has the focus *
-        \******************************************/
+        \********************************************************/
 
         private void NavigatorControl_SelectedPageChanged(object sender, EventArgs e)
         {
             if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
             {
+                LaunchButton.Enabled = true;
                 SaveToolStripButton.Enabled = true;
                 _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
+                    
             }
             else
             {
+                LaunchButton.Enabled = false;
                 SaveToolStripButton.Enabled = false;
                 _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                {
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.IndianRed;
+                    LaunchButton.Enabled = true;
+                }
             }
         }
 

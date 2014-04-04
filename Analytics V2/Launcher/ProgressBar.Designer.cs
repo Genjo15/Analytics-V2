@@ -30,6 +30,7 @@
         {
             this.ProgressBarGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.SplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
+            this.StopButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.ExpandMinimize = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.Bar = new System.Windows.Forms.ProgressBar();
             this.ProcessSummaryRichTextBox = new ComponentFactory.Krypton.Toolkit.KryptonRichTextBox();
@@ -73,6 +74,7 @@
             // 
             // SplitContainer1.Panel1
             // 
+            this.SplitContainer1.Panel1.Controls.Add(this.StopButton);
             this.SplitContainer1.Panel1.Controls.Add(this.ExpandMinimize);
             this.SplitContainer1.Panel1.Controls.Add(this.Bar);
             this.SplitContainer1.Panel1MinSize = 13;
@@ -86,6 +88,21 @@
             this.SplitContainer1.SplitterDistance = 13;
             this.SplitContainer1.SplitterWidth = 1;
             this.SplitContainer1.TabIndex = 0;
+            // 
+            // StopButton
+            // 
+            this.StopButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.StopButton.Location = new System.Drawing.Point(592, 0);
+            this.StopButton.Name = "StopButton";
+            this.StopButton.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.Office2007Silver;
+            this.StopButton.Size = new System.Drawing.Size(15, 13);
+            this.StopButton.StateCommon.Back.Image = global::Analytics_V2.Properties.Resources.Stop;
+            this.StopButton.StateCommon.Back.ImageStyle = ComponentFactory.Krypton.Toolkit.PaletteImageStyle.CenterMiddle;
+            this.StopButton.TabIndex = 2;
+            this.StopButton.Values.Image = global::Analytics_V2.Properties.Resources.Stop;
+            this.StopButton.Values.ImageTransparentColor = System.Drawing.SystemColors.ControlLight;
+            this.StopButton.Values.Text = "";
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // ExpandMinimize
             // 
@@ -106,7 +123,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Bar.Location = new System.Drawing.Point(0, 0);
             this.Bar.Name = "Bar";
-            this.Bar.Size = new System.Drawing.Size(603, 13);
+            this.Bar.Size = new System.Drawing.Size(590, 13);
             this.Bar.Step = 1;
             this.Bar.TabIndex = 0;
             // 
@@ -151,6 +168,7 @@
         private System.Windows.Forms.ProgressBar Bar;
         private ComponentFactory.Krypton.Toolkit.KryptonRichTextBox ProcessSummaryRichTextBox;
         private ComponentFactory.Krypton.Toolkit.KryptonButton ExpandMinimize;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton StopButton;
 
     }
 }

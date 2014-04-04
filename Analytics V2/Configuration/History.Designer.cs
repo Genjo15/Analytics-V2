@@ -1,6 +1,6 @@
 ﻿namespace Analytics_V2
 {
-    partial class Chronicles
+    partial class History
     {
         /// <summary> 
         /// Variable nécessaire au concepteur.

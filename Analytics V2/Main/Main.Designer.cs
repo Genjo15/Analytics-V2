@@ -42,24 +42,25 @@
             this.ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.RefreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.LaunchToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ToolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.PreProcessToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ProcessToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ControlsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.HeaderConsistencyToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ToolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.HistoryToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.AdministrationToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.ConfigStatementToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ToolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.StatisticsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ToolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.BatchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.MainBoardSplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.FileBrowserNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.common = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.local = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.MainBoardSplitContainer3 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
+            this.MainBoardSplitContainer5 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
+            this.ProcessAndControlGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
+            this.HCButton = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            this.LaunchButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            this.PreProcessButton = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            this.ControlsButton = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            this.ProcessButton = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
             this.MainBoardSplitContainer4 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.Manager = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
@@ -93,9 +94,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.local)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel1)).BeginInit();
+            this.MainBoardSplitContainer3.Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel2)).BeginInit();
             this.MainBoardSplitContainer3.Panel2.SuspendLayout();
             this.MainBoardSplitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer5.Panel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer5.Panel2)).BeginInit();
+            this.MainBoardSplitContainer5.Panel2.SuspendLayout();
+            this.MainBoardSplitContainer5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ProcessAndControlGroupBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProcessAndControlGroupBox.Panel)).BeginInit();
+            this.ProcessAndControlGroupBox.Panel.SuspendLayout();
+            this.ProcessAndControlGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer4.Panel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer4.Panel2)).BeginInit();
@@ -146,19 +157,13 @@
             this.ToolStripSeparator2,
             this.RefreshToolStripButton,
             this.ToolStripSeparator3,
-            this.LaunchToolStripButton,
-            this.ToolStripSeparator4,
-            this.PreProcessToolStripButton,
-            this.ProcessToolStripButton,
-            this.ControlsToolStripButton,
-            this.HeaderConsistencyToolStripButton,
-            this.ToolStripSeparator5,
             this.HistoryToolStripButton,
             this.AdministrationToolStripButton,
             this.ToolStripSeparator6,
             this.ConfigStatementToolStripButton,
             this.StatisticsToolStripButton,
-            this.ToolStripSeparator7});
+            this.ToolStripSeparator7,
+            this.BatchToolStripButton});
             this.ToolBarToolStrip.Name = "ToolBarToolStrip";
             this.ToolBarToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             // 
@@ -213,63 +218,6 @@
             this.ToolStripSeparator3.Name = "ToolStripSeparator3";
             resources.ApplyResources(this.ToolStripSeparator3, "ToolStripSeparator3");
             // 
-            // LaunchToolStripButton
-            // 
-            resources.ApplyResources(this.LaunchToolStripButton, "LaunchToolStripButton");
-            this.LaunchToolStripButton.Name = "LaunchToolStripButton";
-            this.LaunchToolStripButton.Click += new System.EventHandler(this.LaunchToolStripButton_Click);
-            // 
-            // ToolStripSeparator4
-            // 
-            this.ToolStripSeparator4.Name = "ToolStripSeparator4";
-            resources.ApplyResources(this.ToolStripSeparator4, "ToolStripSeparator4");
-            // 
-            // PreProcessToolStripButton
-            // 
-            this.PreProcessToolStripButton.Checked = true;
-            this.PreProcessToolStripButton.CheckOnClick = true;
-            this.PreProcessToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.PreProcessToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.PreProcessToolStripButton, "PreProcessToolStripButton");
-            this.PreProcessToolStripButton.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
-            this.PreProcessToolStripButton.Name = "PreProcessToolStripButton";
-            this.PreProcessToolStripButton.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
-            // 
-            // ProcessToolStripButton
-            // 
-            this.ProcessToolStripButton.Checked = true;
-            this.ProcessToolStripButton.CheckOnClick = true;
-            this.ProcessToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ProcessToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.ProcessToolStripButton, "ProcessToolStripButton");
-            this.ProcessToolStripButton.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
-            this.ProcessToolStripButton.Name = "ProcessToolStripButton";
-            // 
-            // ControlsToolStripButton
-            // 
-            this.ControlsToolStripButton.Checked = true;
-            this.ControlsToolStripButton.CheckOnClick = true;
-            this.ControlsToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ControlsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.ControlsToolStripButton, "ControlsToolStripButton");
-            this.ControlsToolStripButton.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
-            this.ControlsToolStripButton.Name = "ControlsToolStripButton";
-            // 
-            // HeaderConsistencyToolStripButton
-            // 
-            this.HeaderConsistencyToolStripButton.Checked = true;
-            this.HeaderConsistencyToolStripButton.CheckOnClick = true;
-            this.HeaderConsistencyToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.HeaderConsistencyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.HeaderConsistencyToolStripButton, "HeaderConsistencyToolStripButton");
-            this.HeaderConsistencyToolStripButton.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
-            this.HeaderConsistencyToolStripButton.Name = "HeaderConsistencyToolStripButton";
-            // 
-            // ToolStripSeparator5
-            // 
-            this.ToolStripSeparator5.Name = "ToolStripSeparator5";
-            resources.ApplyResources(this.ToolStripSeparator5, "ToolStripSeparator5");
-            // 
             // HistoryToolStripButton
             // 
             resources.ApplyResources(this.HistoryToolStripButton, "HistoryToolStripButton");
@@ -297,17 +245,24 @@
             this.ConfigStatementToolStripButton.Name = "ConfigStatementToolStripButton";
             this.ConfigStatementToolStripButton.Click += new System.EventHandler(this.ConfigStatementToolStripButton_Click);
             // 
-            // ToolStripSeparator7
-            // 
-            this.ToolStripSeparator7.Name = "ToolStripSeparator7";
-            resources.ApplyResources(this.ToolStripSeparator7, "ToolStripSeparator7");
-            // 
             // StatisticsToolStripButton
             // 
             this.StatisticsToolStripButton.Image = global::Analytics_V2.Properties.Resources.Statistics;
             resources.ApplyResources(this.StatisticsToolStripButton, "StatisticsToolStripButton");
             this.StatisticsToolStripButton.Name = "StatisticsToolStripButton";
             this.StatisticsToolStripButton.Click += new System.EventHandler(this.StatisticsToolStripButton_Click);
+            // 
+            // ToolStripSeparator7
+            // 
+            this.ToolStripSeparator7.Name = "ToolStripSeparator7";
+            resources.ApplyResources(this.ToolStripSeparator7, "ToolStripSeparator7");
+            // 
+            // BatchToolStripButton
+            // 
+            this.BatchToolStripButton.Image = global::Analytics_V2.Properties.Resources.Batch;
+            resources.ApplyResources(this.BatchToolStripButton, "BatchToolStripButton");
+            this.BatchToolStripButton.Name = "BatchToolStripButton";
+            this.BatchToolStripButton.Click += new System.EventHandler(this.BatchToolStripButton_Click);
             // 
             // MainBoardSplitContainer2
             // 
@@ -362,10 +317,74 @@
             resources.ApplyResources(this.MainBoardSplitContainer3, "MainBoardSplitContainer3");
             this.MainBoardSplitContainer3.Name = "MainBoardSplitContainer3";
             // 
+            // MainBoardSplitContainer3.Panel1
+            // 
+            this.MainBoardSplitContainer3.Panel1.Controls.Add(this.MainBoardSplitContainer5);
+            // 
             // MainBoardSplitContainer3.Panel2
             // 
             this.MainBoardSplitContainer3.Panel2.Controls.Add(this.MainBoardSplitContainer4);
             this.MainBoardSplitContainer3.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
+            // 
+            // MainBoardSplitContainer5
+            // 
+            this.MainBoardSplitContainer5.Cursor = System.Windows.Forms.Cursors.Default;
+            resources.ApplyResources(this.MainBoardSplitContainer5, "MainBoardSplitContainer5");
+            this.MainBoardSplitContainer5.Name = "MainBoardSplitContainer5";
+            // 
+            // MainBoardSplitContainer5.Panel2
+            // 
+            this.MainBoardSplitContainer5.Panel2.Controls.Add(this.ProcessAndControlGroupBox);
+            // 
+            // ProcessAndControlGroupBox
+            // 
+            resources.ApplyResources(this.ProcessAndControlGroupBox, "ProcessAndControlGroupBox");
+            this.ProcessAndControlGroupBox.Name = "ProcessAndControlGroupBox";
+            // 
+            // ProcessAndControlGroupBox.Panel
+            // 
+            this.ProcessAndControlGroupBox.Panel.Controls.Add(this.HCButton);
+            this.ProcessAndControlGroupBox.Panel.Controls.Add(this.LaunchButton);
+            this.ProcessAndControlGroupBox.Panel.Controls.Add(this.PreProcessButton);
+            this.ProcessAndControlGroupBox.Panel.Controls.Add(this.ControlsButton);
+            this.ProcessAndControlGroupBox.Panel.Controls.Add(this.ProcessButton);
+            this.ProcessAndControlGroupBox.Values.Heading = resources.GetString("ProcessAndControlGroupBox.Values.Heading");
+            // 
+            // HCButton
+            // 
+            this.HCButton.Checked = true;
+            resources.ApplyResources(this.HCButton, "HCButton");
+            this.HCButton.Name = "HCButton";
+            this.HCButton.Values.Text = resources.GetString("HCButton.Values.Text");
+            // 
+            // LaunchButton
+            // 
+            resources.ApplyResources(this.LaunchButton, "LaunchButton");
+            this.LaunchButton.Name = "LaunchButton";
+            this.LaunchButton.Values.Image = global::Analytics_V2.Properties.Resources.Launch;
+            this.LaunchButton.Values.Text = resources.GetString("LaunchButton.Values.Text");
+            this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
+            // 
+            // PreProcessButton
+            // 
+            this.PreProcessButton.Checked = true;
+            resources.ApplyResources(this.PreProcessButton, "PreProcessButton");
+            this.PreProcessButton.Name = "PreProcessButton";
+            this.PreProcessButton.Values.Text = resources.GetString("PreProcessButton.Values.Text");
+            // 
+            // ControlsButton
+            // 
+            this.ControlsButton.Checked = true;
+            resources.ApplyResources(this.ControlsButton, "ControlsButton");
+            this.ControlsButton.Name = "ControlsButton";
+            this.ControlsButton.Values.Text = resources.GetString("ControlsButton.Values.Text");
+            // 
+            // ProcessButton
+            // 
+            this.ProcessButton.Checked = true;
+            resources.ApplyResources(this.ProcessButton, "ProcessButton");
+            this.ProcessButton.Name = "ProcessButton";
+            this.ProcessButton.Values.Text = resources.GetString("ProcessButton.Values.Text");
             // 
             // MainBoardSplitContainer4
             // 
@@ -467,10 +486,20 @@
             ((System.ComponentModel.ISupportInitialize)(this.common)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.local)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel1)).EndInit();
+            this.MainBoardSplitContainer3.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel2)).EndInit();
             this.MainBoardSplitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3)).EndInit();
             this.MainBoardSplitContainer3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer5.Panel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer5.Panel2)).EndInit();
+            this.MainBoardSplitContainer5.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer5)).EndInit();
+            this.MainBoardSplitContainer5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ProcessAndControlGroupBox.Panel)).EndInit();
+            this.ProcessAndControlGroupBox.Panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ProcessAndControlGroupBox)).EndInit();
+            this.ProcessAndControlGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer4.Panel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer4.Panel2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer4)).EndInit();
@@ -501,20 +530,13 @@
         private System.Windows.Forms.ToolStripButton RefreshToolStripButton;
         private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer MainBoardSplitContainer4;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator2;
-        private System.Windows.Forms.ToolStripButton LaunchToolStripButton;
         private System.Windows.Forms.ToolStripButton NewFileToolStripButton;
         private System.Windows.Forms.ToolStripButton EditToolStripButton;
         private System.Windows.Forms.ToolStripButton SuppressToolStripButton;
-        private System.Windows.Forms.ToolStripButton PreProcessToolStripButton;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator3;
-        private System.Windows.Forms.ToolStripButton ProcessToolStripButton;
-        private System.Windows.Forms.ToolStripButton ControlsToolStripButton;
-        private System.Windows.Forms.ToolStripButton HeaderConsistencyToolStripButton;
-        private System.Windows.Forms.ToolStripSeparator ToolStripSeparator4;
         internal System.Windows.Forms.ToolStripMenuItem ConnectAsToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem StatusToolStripMenuItem;
         internal System.Windows.Forms.ToolStripButton AdministrationToolStripButton;
-        private System.Windows.Forms.ToolStripSeparator ToolStripSeparator5;
         internal ComponentFactory.Krypton.Navigator.KryptonNavigator FileBrowserNavigator;
         internal ComponentFactory.Krypton.Navigator.KryptonPage common;
         internal ComponentFactory.Krypton.Navigator.KryptonPage local;
@@ -524,6 +546,14 @@
         private System.Windows.Forms.ToolStripButton ConfigStatementToolStripButton;
         private System.Windows.Forms.ToolStripSeparator ToolStripSeparator7;
         private System.Windows.Forms.ToolStripButton StatisticsToolStripButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer MainBoardSplitContainer5;
+        private ComponentFactory.Krypton.Toolkit.KryptonGroupBox ProcessAndControlGroupBox;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton LaunchButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton PreProcessButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton HCButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton ControlsButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton ProcessButton;
+        private System.Windows.Forms.ToolStripButton BatchToolStripButton;
 
 
 

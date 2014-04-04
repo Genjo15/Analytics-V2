@@ -36,7 +36,8 @@ namespace Analytics_V2
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             _ExpandedNodes = new List<string>();
             _Path = path;
-            
+            TreeView.LostFocus+=TreeView_LostFocus;
+            TreeView.GotFocus+=TreeView_GotFocus;
         }
 
         #endregion
@@ -283,8 +284,26 @@ namespace Analytics_V2
             _Path = path;
         }
 
+        /*********************************************************\
+         * Highlight selected node when TreeView get/loses focus *
+        \*********************************************************/
+
+        private void TreeView_LostFocus(object sender, EventArgs e)
+        {
+            if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
+                TreeView.SelectedNode.BackColor = Color.IndianRed;
+        }
+
+        private void TreeView_GotFocus(object sender, EventArgs e)
+        {
+            if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
+                TreeView.SelectedNode.BackColor =System.Drawing.SystemColors.ControlLight;
+        }
+
         #endregion
     }
+
+
 
 
     // TO KEEP JUST IN CASE (override the NodeSorter)

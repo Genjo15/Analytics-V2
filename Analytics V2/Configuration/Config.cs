@@ -487,7 +487,8 @@ namespace Analytics_V2
            
 
             // UPDATE CHRONICLES
-            UpdateChronicles(configBefore, configAfter, linesDeleted, linesAdded);
+            if(!(linesAdded == 0 && linesDeleted == 0))
+                UpdateChronicles(configBefore, configAfter, linesDeleted, linesAdded);
         }
 
         /***************************************************************************\
