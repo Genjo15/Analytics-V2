@@ -34,9 +34,11 @@
             this.Filesplit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Linesconcat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Xls2txt = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Xml2Txt = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Calcul = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cellcopy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Columns = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnDeleter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Copy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cut = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Dateconvert = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,6 +62,7 @@
             this.Datachecker = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Qhnumbers = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Totaltvcontrol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.txt2xml = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,9 +74,11 @@
             this.Filesplit,
             this.Linesconcat,
             this.Xls2txt,
+            this.Xml2Txt,
             this.Calcul,
             this.Cellcopy,
             this.Columns,
+            this.ColumnDeleter,
             this.Copy,
             this.Cut,
             this.Dateconvert,
@@ -96,7 +101,8 @@
             this.Controldiff,
             this.Datachecker,
             this.Qhnumbers,
-            this.Totaltvcontrol});
+            this.Totaltvcontrol,
+            this.txt2xml});
             this.DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DataGridView.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
             this.DataGridView.GridStyles.StyleColumn = ComponentFactory.Krypton.Toolkit.GridStyle.Sheet;
@@ -150,6 +156,14 @@
             this.Xls2txt.ReadOnly = true;
             this.Xls2txt.Width = 83;
             // 
+            // Xml2Txt
+            // 
+            this.Xml2Txt.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Xml2Txt.HeaderText = "XML2TXT";
+            this.Xml2Txt.Name = "Xml2Txt";
+            this.Xml2Txt.ReadOnly = true;
+            this.Xml2Txt.Width = 87;
+            // 
             // Calcul
             // 
             this.Calcul.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
@@ -173,6 +187,14 @@
             this.Columns.Name = "Columns";
             this.Columns.ReadOnly = true;
             this.Columns.Width = 93;
+            // 
+            // ColumnDeleter
+            // 
+            this.ColumnDeleter.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnDeleter.HeaderText = "COLUMNDELETER";
+            this.ColumnDeleter.Name = "ColumnDeleter";
+            this.ColumnDeleter.ReadOnly = true;
+            this.ColumnDeleter.Width = 133;
             // 
             // Copy
             // 
@@ -381,6 +403,14 @@
             this.Totaltvcontrol.ReadOnly = true;
             this.Totaltvcontrol.Width = 142;
             // 
+            // txt2xml
+            // 
+            this.txt2xml.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.txt2xml.HeaderText = "TXT2XML";
+            this.txt2xml.Name = "txt2xml";
+            this.txt2xml.ReadOnly = true;
+            this.txt2xml.Width = 87;
+            // 
             // ConfigStatement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,9 +431,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Filesplit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Linesconcat;
         private System.Windows.Forms.DataGridViewTextBoxColumn Xls2txt;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Xml2Txt;
         private System.Windows.Forms.DataGridViewTextBoxColumn Calcul;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cellcopy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Columns;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDeleter;
         private System.Windows.Forms.DataGridViewTextBoxColumn Copy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cut;
         private System.Windows.Forms.DataGridViewTextBoxColumn Dateconvert;
@@ -427,5 +459,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Datachecker;
         private System.Windows.Forms.DataGridViewTextBoxColumn Qhnumbers;
         private System.Windows.Forms.DataGridViewTextBoxColumn Totaltvcontrol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn txt2xml;
     }
 }

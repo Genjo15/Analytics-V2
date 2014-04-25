@@ -111,6 +111,11 @@ namespace Analytics_V2
                     ProcessSummaryRichTextBox.AppendText(message + "\n");
                     break;
 
+                case "superfail":
+                    ProcessSummaryRichTextBox.SelectionColor = Color.Red;
+                    ProcessSummaryRichTextBox.AppendText("\n\n    ----> " + message + "\n");
+                    break;
+
             }
         }
 

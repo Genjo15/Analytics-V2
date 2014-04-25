@@ -225,6 +225,7 @@ namespace Analytics_V2
                 case "suppress":
                 case "edit":
                 case "cut":
+                case "hc":
                 case "copy":
                 case "launchConfigPreProd" :
                     switch (_AccessType)

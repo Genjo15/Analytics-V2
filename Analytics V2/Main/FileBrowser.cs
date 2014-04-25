@@ -21,7 +21,7 @@ namespace Analytics_V2
         private DirectoryInfo[] _Directories;                     // Array of directories.
         private FileInfo[] _Files;                                // Array of files.
         private List<string> _ExpandedNodes;                      // List of all expanded nodes.
-        private string _Path;
+        private string _Path;                                     // Path of root.
 
 
         #endregion
@@ -279,26 +279,41 @@ namespace Analytics_V2
             catch { }
         }
 
-        public void SetPath(string path)
-        {
-            _Path = path;
-        }
-
         /*********************************************************\
          * Highlight selected node when TreeView get/loses focus *
         \*********************************************************/
 
         private void TreeView_LostFocus(object sender, EventArgs e)
         {
-            if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
-                TreeView.SelectedNode.BackColor = Color.IndianRed;
+            //if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
+            //{
+            //    //TreeView.SelectedNode.BackColor = Color.IndianRed;
+            //    TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
+            //    TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
+            //}
         }
 
         private void TreeView_GotFocus(object sender, EventArgs e)
         {
+            //if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
+            //    TreeView.SelectedNode.BackColor =System.Drawing.SystemColors.ControlLight;
             if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
-                TreeView.SelectedNode.BackColor =System.Drawing.SystemColors.ControlLight;
+            {
+                TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
+                TreeView.SelectedNode.ForeColor = Color.Black;
+            }
         }
+
+        public void SetPath(string path)
+        {
+            _Path = path;
+        }
+
+        /*************************\
+         * Access node by letter *
+        \*************************/
+
+        // TO IMPLEMENT
 
         #endregion
     }

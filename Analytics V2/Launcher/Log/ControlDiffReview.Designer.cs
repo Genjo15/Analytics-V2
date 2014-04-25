@@ -66,7 +66,7 @@
             this.kryptonSplitContainer.Panel2.Controls.Add(this.kryptonSplitContainer2);
             this.kryptonSplitContainer.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
             this.kryptonSplitContainer.Size = new System.Drawing.Size(950, 825);
-            this.kryptonSplitContainer.SplitterDistance = 157;
+            this.kryptonSplitContainer.SplitterDistance = 178;
             this.kryptonSplitContainer.TabIndex = 0;
             // 
             // checkDataGridView
@@ -80,7 +80,7 @@
             this.checkDataGridView.ReadOnly = true;
             this.checkDataGridView.RowHeadersVisible = false;
             this.checkDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.checkDataGridView.Size = new System.Drawing.Size(950, 157);
+            this.checkDataGridView.Size = new System.Drawing.Size(950, 178);
             this.checkDataGridView.TabIndex = 0;
             this.checkDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.checkDataGridView_CellClick);
             // 
@@ -105,8 +105,9 @@
             // kryptonSplitContainer2.Panel2
             // 
             this.kryptonSplitContainer2.Panel2.Controls.Add(this.criticalAlertsRichTextBox);
-            this.kryptonSplitContainer2.Size = new System.Drawing.Size(950, 663);
-            this.kryptonSplitContainer2.SplitterDistance = 316;
+            this.kryptonSplitContainer2.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
+            this.kryptonSplitContainer2.Size = new System.Drawing.Size(950, 642);
+            this.kryptonSplitContainer2.SplitterDistance = 305;
             this.kryptonSplitContainer2.TabIndex = 0;
             // 
             // alertsRichTextBox
@@ -114,7 +115,7 @@
             this.alertsRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.alertsRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.alertsRichTextBox.Name = "alertsRichTextBox";
-            this.alertsRichTextBox.Size = new System.Drawing.Size(950, 316);
+            this.alertsRichTextBox.Size = new System.Drawing.Size(950, 305);
             this.alertsRichTextBox.TabIndex = 0;
             this.alertsRichTextBox.Text = "kryptonRichTextBox1";
             // 
@@ -123,7 +124,7 @@
             this.criticalAlertsRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.criticalAlertsRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.criticalAlertsRichTextBox.Name = "criticalAlertsRichTextBox";
-            this.criticalAlertsRichTextBox.Size = new System.Drawing.Size(950, 342);
+            this.criticalAlertsRichTextBox.Size = new System.Drawing.Size(950, 332);
             this.criticalAlertsRichTextBox.TabIndex = 0;
             this.criticalAlertsRichTextBox.Text = "";
             // 

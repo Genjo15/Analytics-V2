@@ -34,6 +34,7 @@
             this.ToolBarGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.ToolBarToolStrip = new System.Windows.Forms.ToolStrip();
             this.SettingsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.HCToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.NewFileToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.SaveToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -149,6 +150,7 @@
             this.ToolBarToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ToolBarToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SettingsToolStripButton,
+            this.HCToolStripButton,
             this.ToolStripSeparator1,
             this.NewFileToolStripButton,
             this.SaveToolStripButton,
@@ -172,6 +174,13 @@
             resources.ApplyResources(this.SettingsToolStripButton, "SettingsToolStripButton");
             this.SettingsToolStripButton.Name = "SettingsToolStripButton";
             this.SettingsToolStripButton.Click += new System.EventHandler(this.SettingsToolStripButton_Click);
+            // 
+            // HCToolStripButton
+            // 
+            this.HCToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.HCToolStripButton, "HCToolStripButton");
+            this.HCToolStripButton.Name = "HCToolStripButton";
+            this.HCToolStripButton.Click += new System.EventHandler(this.HCToolStripButton_Click);
             // 
             // ToolStripSeparator1
             // 
@@ -554,6 +563,7 @@
         private ComponentFactory.Krypton.Toolkit.KryptonCheckButton ControlsButton;
         private ComponentFactory.Krypton.Toolkit.KryptonCheckButton ProcessButton;
         private System.Windows.Forms.ToolStripButton BatchToolStripButton;
+        private System.Windows.Forms.ToolStripButton HCToolStripButton;
 
 
 

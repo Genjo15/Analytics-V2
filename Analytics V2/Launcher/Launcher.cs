@@ -26,6 +26,7 @@ namespace Analytics_V2
         private Boolean _Process;           // Boolean which indicates if process is enabled or not.
         private Boolean _Control;           // Boolean which indicates if control is enabled or not.
         private Boolean _HeaderConsistency; // Boolean which indicates if HC is enabled or not.
+        private Boolean _HasTxt2Xml;        // Boolean which indicates if the function TXT2XML has been used (check in HC COntrol).
 
         private List<String> _InputFiles;   // List of input files.
         private List<String> _OutputFiles;  // List of output files.
@@ -55,6 +56,7 @@ namespace Analytics_V2
             _Process = process;
             _Control = control;
             _HeaderConsistency = headerConsistency;
+            _HasTxt2Xml = false;
 
             _Progress = 0;
             _ID = 0;
@@ -120,93 +122,114 @@ namespace Analytics_V2
             if (_PreProcess)
             {
                 UpdateRichTextBox("title", "PRE-PROCESS");
-                foreach (Process process in _Config.Get_ProcessList().OrderBy(x=>x.Get_OrderId()))
+
+                foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
+                //foreach (Process process in _Config.Get_ProcessList())
                     if (process.Get_OrderId() < 0)
                     {
-                        PreProcess(process.Get_Datatable());
-                        counter++;
-                        UpdateProgressBar(counter);
+                        try
+                        {
+                            PreProcess(process.Get_Datatable());
+                            counter++;
+                            UpdateProgressBar(counter);
+                        }
+                        catch (Exception ex)
+                        {
+                            counter++;
+                            UpdateProgressBar(counter);
+                            UpdateRichTextBox("fail", "FAIL");
+                        }
                     }
             }
 
             // Treat each input file
-            foreach (String processedFile in _InputFiles)
+            if (_InputFiles.Count > 0)
             {
-                Stopwatch launchStopwatch3 = new Stopwatch();
-                launchStopwatch3.Start();
-
-                string originalProcessedFile = processedFile.Replace("_1.txt", ".txt");
-                _FileCounter++;
-                _CurrentFile = processedFile;
-
-                 _DatamodPath = Path.GetDirectoryName(processedFile) + "\\" + Path.GetFileNameWithoutExtension(processedFile) + "_new.txt";
-
-                // Convert the current treated file into a list of strings.
-                _TabData = FileToLS(processedFile);
-
-                // Perform process.
-                if (_Process)
+                foreach (String processedFile in _InputFiles)
                 {
-                    UpdateRichTextBox("title", "PROCESS" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
-                    foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
-                        if (process.Get_OrderId() > 0 && process.Get_OrderId() < 100)
-                        {
-                            Process(process.Get_Datatable());
-                            counter = counter + (float)((float)1 / (float)_InputFiles.Count);
-                            UpdateProgressBar(counter);
-                        }
+                    Stopwatch launchStopwatch3 = new Stopwatch();
+                    launchStopwatch3.Start();
+
+                    string originalProcessedFile = processedFile.Replace("_1.txt", ".txt");
+                    _FileCounter++;
+                    _CurrentFile = processedFile;
+
+                    _DatamodPath = Path.GetDirectoryName(processedFile) + "\\" + Path.GetFileNameWithoutExtension(processedFile) + "_new.txt";
+
+                    // Convert the current treated file into a list of strings.
+                    _TabData = FileToLS(processedFile);
+
+                    // Perform process.
+                    if (_Process)
+                    {
+                        UpdateRichTextBox("title", "PROCESS" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
+                        foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
+                            if (process.Get_OrderId() > 0 && process.Get_OrderId() < 100)
+                            {
+                                Process(process.Get_Datatable());
+                                counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                                UpdateProgressBar(counter);
+                            }
+                    }
+
+                    // Write Datamod.
+                    if (!String.IsNullOrEmpty(_Config.Get_CountryCode()))
+                    {
+                        WriteDatamod();
+                    }
+                    else _DatamodPath = processedFile;
+
+                    // Perform Controls.
+                    if (_Control)
+                    {
+                        UpdateRichTextBox("title", "CONTROL" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
+                        foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
+                            if (process.Get_OrderId() > 100)
+                            {
+                                Control(process.Get_Datatable());
+                                counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                                UpdateProgressBar(counter);
+                            }
+                    }
+
+                    // Perform Header Consistency.
+                    if (_HeaderConsistency && _Config.Get_Headerlines() > 0)
+                        HeaderConsistency();
+
+                    // Write logs.
+                    WriteLogs();
+
+
+                    ////////////////////////
+                    // Create LogsGrid, analyze it and add it to the control.
+
+                    Stopwatch launchStopwatch2 = new Stopwatch();
+                    launchStopwatch2.Start();
+
+                    UpdateRichTextBox("title", "*** ANALYZE LOGS ***");
+                    AddLogsGridView(_DatamodPath, originalProcessedFile);
+                    counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                    UpdateRichTextBox("complete", "      |-->Complete!");
+                    UpdateProgressBar(counter);
+
+                    launchStopwatch2.Stop();
+                    TimeSpan ts2 = launchStopwatch2.Elapsed;
+                    string elapsedTime2 = String.Format("{0:00}:{1:00}", ts2.Minutes, ts2.Seconds);
+                    UpdateRichTextBox("time", elapsedTime2);
+
+                    // Update statistics
+                    launchStopwatch3.Stop();
+                    AnalyticsWebService.AnalyticsSoapClient query = new AnalyticsWebService.AnalyticsSoapClient();
+                    query.Insert(System.Environment.UserName, _Config.Get_ConfigType(), _Config.Get_Name(), processedFile, _DatamodPath, (int)launchStopwatch3.ElapsedMilliseconds / 1000);
+                    query.Close();
                 }
+            }
 
-                // Write Datamod.
-                if (!String.IsNullOrEmpty(_Config.Get_CountryCode()))
-                {
-                    WriteDatamod();
-                }
-                else _DatamodPath = processedFile;
-
-                // Perform Controls.
-                if (_Control)
-                {
-                    UpdateRichTextBox("title", "CONTROL" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
-                    foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
-                        if (process.Get_OrderId() > 100)
-                        {
-                            Control(process.Get_Datatable());
-                            counter = counter + (float)((float)1 / (float)_InputFiles.Count);
-                            UpdateProgressBar(counter);
-                        }
-                }
-
-                // Perform Header Consistency.
-                if (_HeaderConsistency && _Config.Get_Headerlines() > 0)
-                    HeaderConsistency();
-
-                // Write logs.
-                WriteLogs();
-
-
-                ////////////////////////
-                // Create LogsGrid, analyze it and add it to the control.
-
-                Stopwatch launchStopwatch2 = new Stopwatch();
-                launchStopwatch2.Start();
-
-                UpdateRichTextBox("title", "*** ANALYZE LOGS ***");
-                AddLogsGridView(_DatamodPath, originalProcessedFile);
-                counter = counter + (float)((float)1 / (float)_InputFiles.Count);
-                UpdateRichTextBox("complete", "      |-->Complete!");
-                UpdateProgressBar(counter);
-
-                launchStopwatch2.Stop();
-                TimeSpan ts2 = launchStopwatch2.Elapsed;
-                string elapsedTime2 = String.Format("{0:00}:{1:00}", ts2.Minutes, ts2.Seconds);
-                UpdateRichTextBox("time", elapsedTime2);
-
-                // Update statistics
-                launchStopwatch3.Stop();
-                AnalyticsWebService.AnalyticsSoapClient query = new AnalyticsWebService.AnalyticsSoapClient();
-                query.Insert(System.Environment.UserName, _Config.Get_ConfigType(), _Config.Get_Name(), processedFile, _DatamodPath, (int)launchStopwatch3.ElapsedMilliseconds / 1000);
-                query.Close();
+            else
+            {
+                UpdateRichTextBox("superfail", "GLOBAL PROCESS FAILED, sorry");
+                counter = _NumberOfProcesses;
+                UpdateProgressBarPut100Percent();
             }
 
             // Display elapsed time
@@ -215,6 +238,8 @@ namespace Analytics_V2
             //string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
 
+            
+            UpdateProgressBarPut100Percent();
             DisplayConfigProcessTime(elapsedTime);
         }
 
@@ -244,6 +269,23 @@ namespace Analytics_V2
                         UpdateRichTextBox("fail", "FAIL");
                     }
                     StopStopWatch(launchStopwatch);
+                    break;
+                case "XML2TXT":
+                    StartStopWatch(launchStopwatch);
+                    UpdateRichTextBox("function", "XML2TXT.....");
+                    try
+                    {
+                        XML2TXT.XML2TXT xml2txtprocess = new XML2TXT.XML2TXT(_InputFiles);
+                        xml2txtprocess.Run();
+                        _InputFiles = xml2txtprocess.FinalPaths;
+                        xml2txtprocess = null;
+                        UpdateRichTextBox("complete", "Complete!");
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== XML2TXT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                    }
                     break;
                 case "FILESPLIT":
                     StartStopWatch(launchStopwatch);
@@ -379,6 +421,27 @@ namespace Analytics_V2
                     catch (Exception ex)
                     {
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COLUMNS ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                    }
+                    StopStopWatch(launchStopwatch);
+                    break;
+
+                case "COLUMNDELETER":
+                    StartStopWatch(launchStopwatch);
+                    UpdateRichTextBox("function", "COLUMNDELETER..... ");
+                    try
+                    {
+                        MyTextColumnsDeleter.TextColumnsDeleter columnDeleterProcess = new MyTextColumnsDeleter.TextColumnsDeleter(_TabData, dataTable, _Config.Get_DataSeparator());
+                        _TabData = columnDeleterProcess.Run();
+                        _Logs += "\r\n== COLUMNDELETER ==\r\n";
+                        foreach (String logLine in columnDeleterProcess.Log)
+                            _Logs += logLine + "\r\n";
+                        columnDeleterProcess = null;
+                        UpdateRichTextBox("complete", "Complete!");
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COLUMNDELETER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
                     StopStopWatch(launchStopwatch);
@@ -792,6 +855,7 @@ namespace Analytics_V2
                     UpdateRichTextBox("function", "DATACHECKER..... ");
                     try
                     {
+                        dataTable.Rows[0].SetField("XMLPath", (string)dataTable.Rows[0]["XMLPath"].ToString().Replace("Bases completes", "Bases complètes")); // Ghetto South Korea
                         DataChecking.DataChecking datacheckingProcess = new DataChecking.DataChecking(dataTable, _DatamodPath);
                         datacheckingProcess.Run();
                         datacheckingProcess = null;
@@ -886,6 +950,29 @@ namespace Analytics_V2
                     }
                     StopStopWatch(launchStopwatch);
                     break;
+
+                case "TXT2XML":
+                    _HasTxt2Xml = true;
+                    StartStopWatch(launchStopwatch);
+                    UpdateRichTextBox("function", "TXT2XML..... ");
+                    try
+                    {
+                        string finalPath = Path.GetDirectoryName(_DatamodPath) + "\\" + Path.GetFileNameWithoutExtension(_DatamodPath) + ".xml";
+                        TXT2XML.TXT2XML txt2XmlProcess = new TXT2XML.TXT2XML(_TabData, dataTable, finalPath, _Config.Get_DataSeparator());
+                        txt2XmlProcess.Run();
+                        File.Delete(_DatamodPath);
+                        _Logs += "\r\n== TXT2XML ==\r\n";
+                        foreach (String logLine in txt2XmlProcess.Log)
+                            _Logs += logLine + "\r\n";
+                        txt2XmlProcess = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TXT2XML ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                    }
+                    StopStopWatch(launchStopwatch);
+                    break;
             }
 
             GC.Collect();
@@ -897,9 +984,12 @@ namespace Analytics_V2
 
         private void HeaderConsistency()
         {
-            HeaderConsistency.HC headerConsistencyProcess = new global::HeaderConsistency.HC(Properties.Settings.Default.hc_config, _DatamodPath, _Config.Get_Name());
-            headerConsistencyProcess.RunControl();
-            GC.Collect();
+            if (!_HasTxt2Xml)
+            {
+                HeaderConsistency.HC headerConsistencyProcess = new global::HeaderConsistency.HC(Properties.Settings.Default.hc_config, _DatamodPath, _Config.Get_Name());
+                headerConsistencyProcess.RunControl();
+                GC.Collect();
+            }
         }
 
         /****************************\
@@ -908,8 +998,14 @@ namespace Analytics_V2
 
         private void UpdateProgressBar(float counter)
         {
-            _Progress = (counter / (float)(_NumberOfProcesses + 1)) * 100; // +Filecounter for the processes of analyzing logs.
-            _UpdateProgressBar.DynamicInvoke(new int[] { _ID, (int)_Progress });
+            _Progress = (counter / (float)(_NumberOfProcesses + 1)) * 100; // + Filecounter for the processes of analyzing logs.
+            if(_Progress <= 100)
+                _UpdateProgressBar.DynamicInvoke(new int[] { _ID, (int)_Progress });
+        }
+
+        private void UpdateProgressBarPut100Percent()
+        {
+            _UpdateProgressBar.DynamicInvoke(new int[] { _ID, (int)100 });
         }
 
         private void UpdateRichTextBox(String type, String message)
@@ -917,6 +1013,10 @@ namespace Analytics_V2
             String[] test = new String[] { _ID.ToString(), type, message };
             _UpdateRichTextBox.DynamicInvoke(new Object[]{test});
         }
+
+        /********************************\
+         * Display Process Time (total) *
+        \********************************/
 
         private void DisplayConfigProcessTime(string time)
         {
@@ -1049,6 +1149,5 @@ namespace Analytics_V2
 
 
         #endregion
-
     }
 }

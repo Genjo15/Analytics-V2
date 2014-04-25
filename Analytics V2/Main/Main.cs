@@ -170,7 +170,7 @@ namespace Analytics_V2
             // Batch form
             _BatchForm = new KryptonForm();
             _BatchForm.Text = "Batch Administration";
-            _BatchForm.Size = new System.Drawing.Size(600, 400);
+            _BatchForm.Size = new System.Drawing.Size(550, 550);
             _BatchForm.StartPosition = FormStartPosition.CenterScreen;
             _BatchForm.Icon = global::Analytics_V2.Properties.Resources.Batch2;
             _BatchForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideBatchForm);
@@ -233,6 +233,7 @@ namespace Analytics_V2
             _LocalFileBrowser.TreeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(RemoveExpandedNode);
             _LocalFileBrowser.ViewHistoryToolStripMenuItem.Click += new System.EventHandler(this.ViewHistoryToolStripMenuItem_Click);
 
+            _Navigator.NavigatorControl.TabClicked += NavigatorControl_TabClick;
             _Navigator.NavigatorControl.SelectedPageChanged += NavigatorControl_SelectedPageChanged;
             _SpecificCountries.SpecificCountriesListBox.ListBox.DoubleClick += new System.EventHandler(SpecificCountriesListBox_DoubleClick);
             _SpecificTools.SpecificToolsListBox.ListBox.DoubleClick += new System.EventHandler(SpecificToolsListBox_DoubleClick);
@@ -244,6 +245,11 @@ namespace Analytics_V2
 
             this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
         }
+
+
+
+
+
 
         /***************************************\
          * Get Path of configs from WebService *
@@ -763,8 +769,6 @@ namespace Analytics_V2
         {
             string configPath = "";
 
-            // Case of creation mode
-
             // Retrieve the path
             var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
             foreach (var element in childrens)
@@ -772,6 +776,7 @@ namespace Analytics_V2
                 configPath = (string)element.Tag;
             }
 
+            // CREATION MODE CASE
             if ((Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
             {
                 var childrens2 = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
@@ -782,11 +787,14 @@ namespace Analytics_V2
                     var result = KryptonMessageBox.Show("Saved in :\n" + element.Tag.ToString(), "File saved.",
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Information);
+
+                    // Update the config list.
                     _ConfigsList.Clear();
                     _ConfigsList.Add(new Config(_Navigator.NavigatorControl.SelectedPage.Text.Replace(".xml",""),element.Tag.ToString()));
                 }             
             }
 
+            // XML MODE CASE
             else
             {
                 Encoding encoding;
@@ -837,8 +845,6 @@ namespace Analytics_V2
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
 
-                            _ConfigsList.Clear();
-                            _ConfigsList.Add(new Config(_Navigator.NavigatorControl.SelectedPage.Text.Replace(".xml", ""), richTextBox.Tag.ToString()));
                         }
             
                         catch (Exception ex)
@@ -859,6 +865,10 @@ namespace Analytics_V2
                         }
                     }
                 }
+
+                // Update the config list.
+                _ConfigsList.Clear();
+                _ConfigsList.Add(new Config(_Navigator.NavigatorControl.SelectedPage.Text.Replace(".xml", ""), configPath));
             }
 
             // Update modifications in DB
@@ -1343,7 +1353,7 @@ namespace Analytics_V2
 
                     _ProgressBarsList.Add(new ProgressBar(set.Get_Name(),_ProgressBarsList.Count,_AbortThreadDel)); // Create a new ProgressBar Control & add it to the list of PB
                     _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]); // Add the created PB in the panel.
-                    _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber())); // Create a new Log Control & add it to the list of Logs.
+                    _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber(), PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked)); // Create a new Log Control & add it to the list of Logs.
                     _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab()); // Add the log tab to the logsNavigator.
                     _Navigator.LogsNavigator.SelectedIndex = 0;
                     _LogsList[_LogsList.Count - 1].Get_NavigatorTab().ButtonSpecs[0].Click += new EventHandler(_Navigator.CloseLogsNavigatorTab);
@@ -1387,7 +1397,7 @@ namespace Analytics_V2
 
                     _ProgressBarsList.Add(new ProgressBar(set.Get_Name(),_ProgressBarsList.Count,_AbortThreadDel)); // Create a new ProgressBar Control & add it to the list of PB
                     _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]); // Add the created PB in the panel.
-                    _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber())); // Create a new Log Control & add it to the list of Logs.
+                    _LogsList.Add(new Log(set.Get_Name(), set.Get_TargetsNumber(), PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked)); // Create a new Log Control & add it to the list of Logs.
                     _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab()); // Add the log tab to the logsNavigator.
                     _Navigator.LogsNavigator.SelectedIndex = 0;
                     _LogsList[_LogsList.Count - 1].Get_NavigatorTab().ButtonSpecs[0].Click += new EventHandler(_Navigator.CloseLogsNavigatorTab);
@@ -1637,6 +1647,29 @@ namespace Analytics_V2
             e.Cancel = true;
         }
 
+        /*************************************************************\
+         * Event which occurs when the HC toolstrip is clicked       *
+         *  - Open the HC Module                                     *
+        \*************************************************************/
+
+        private void HCToolStripButton_Click(object sender, EventArgs e)
+        {
+            if(_Session.CheckIfAccessGranted("hc"))
+            {
+                try
+                {
+                    HeaderConsistency.HC HC = new HeaderConsistency.HC(Properties.Settings.Default.hc_config);
+                    HC.Show();
+                }
+                catch(Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Cannot open the module (check if path of HC is well defined)." + ex, "Error while opening HC Module",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+                }
+            }
+        }
+
         /*************************************************   MISC   ****************************************************/
 
 
@@ -1650,10 +1683,38 @@ namespace Analytics_V2
             _Navigator.SummarySplitContainer1.SplitterDistance -= 1;
         }
 
-        /********************************************************\
-         * Event of changing tab on the navigator               *
-         * + Event which appears when the control has the focus *
-        \********************************************************/
+        /***************************************************************************\
+         * Event of clicking tab on the navigator | when the selected tab changes  *
+        \***************************************************************************/
+
+        private void NavigatorControl_TabClick(object sender, KryptonPageEventArgs e)
+        {
+            if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            {
+                LaunchButton.Enabled = true;
+                SaveToolStripButton.Enabled = true;
+                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                {
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.Black;
+                }
+
+            }
+            else
+            {
+                LaunchButton.Enabled = false;
+                SaveToolStripButton.Enabled = false;
+                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                {
+                    //((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.IndianRed;
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
+                    LaunchButton.Enabled = true;
+                }
+            }
+        }
 
         private void NavigatorControl_SelectedPageChanged(object sender, EventArgs e)
         {
@@ -1663,8 +1724,11 @@ namespace Analytics_V2
                 SaveToolStripButton.Enabled = true;
                 _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
                 if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                {
                     ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
-                    
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.Black;
+                }
+
             }
             else
             {
@@ -1673,11 +1737,14 @@ namespace Analytics_V2
                 _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
                 if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
                 {
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.IndianRed;
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
+                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
                     LaunchButton.Enabled = true;
                 }
             }
         }
+
+        
 
         /***********************************************************************\
          * Events of right click on a Treenode --> Full Collapse / Full Expand *
@@ -1733,5 +1800,7 @@ namespace Analytics_V2
         }
 
         #endregion
+
+
     }
 }

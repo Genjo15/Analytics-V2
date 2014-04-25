@@ -273,7 +273,6 @@ namespace Analytics_V2
             
         }
 
-
         private void DataGridView_BindingContextChanged(object sender, EventArgs e)
         {
             if (DataGridView.DataSource == null) return;
@@ -283,8 +282,6 @@ namespace Analytics_V2
                 col.HeaderCell = new
                     DataGridViewAutoFilterColumnHeaderCell(col.HeaderCell);
             }
-
-           // DataGridView1.AutoResizeColumns();
         }
 
         #endregion

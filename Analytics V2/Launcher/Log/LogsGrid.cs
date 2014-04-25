@@ -18,6 +18,10 @@ namespace Analytics_V2
         
         #region Variables
 
+        private Boolean _PreProcess;        // Boolean which indicates if preprocess is enabled or not.
+        private Boolean _Process;           // Boolean which indicates if process is enabled or not.
+        private Boolean _Control;           // Boolean which indicates if control is enabled or not.
+
         private string _InputFileName;
         private string _DatamodRootPath;
         private string _DatamodLogPath;
@@ -76,8 +80,9 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public LogsGrid(String name, List<Process> processList, string dmPath, string inputFile, int targetsNumber)
+        public LogsGrid(String name, List<Process> processList, string dmPath, string inputFile, int targetsNumber, Boolean preProcess, Boolean process, Boolean control)
         {
+
             InitializeComponent();
             InitializeControlDiffForm();
             DataGridView.Name = name;
@@ -85,6 +90,10 @@ namespace Analytics_V2
             _InputFileName = inputFile;
             _DatacheckerPath = dmPath.Replace(".txt", "_dc.log");
             _HCPath = dmPath.Replace(".txt", "_hc.log");
+
+            _PreProcess = preProcess;
+            _Process = process;
+            _Control = control;
 
             _NumberOfDays = NumberOfDays(dmPath);
             _NumberOfTargets = targetsNumber;
@@ -129,22 +138,25 @@ namespace Analytics_V2
         {
             for (int i = 0; i < processList.Count; i++)
             {
-                if (processList[i].Get_OrderId() != 0)
-                {
-                    int occurrenceCounter = 0;
-                    DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
-                    row.Cells[0].Value = processList[i].Get_OrderId();
-                    row.Cells[1].Value = processList[i].Get_Name();
+                //if (processList[i].Get_OrderId() != 0)
+                //{
+                    if ((_PreProcess && processList[i].Get_OrderId() < 0) || (_Process && processList[i].Get_OrderId() < 100 && processList[i].Get_OrderId() > 0) || (_Control && processList[i].Get_OrderId() > 100))
+                    {
+                        int occurrenceCounter = 0;
+                        DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
+                        row.Cells[0].Value = processList[i].Get_OrderId();
+                        row.Cells[1].Value = processList[i].Get_Name();
 
-                    // Check how many time the process has already been called
-                    for (int j = 0; j < i + 1; j++)
-                        if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
-                            occurrenceCounter++;
+                        // Check how many time the process has already been called
+                        for (int j = 0; j < i + 1; j++)
+                            if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
+                                occurrenceCounter++;
 
 
-                    AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
-                    DataGridView.Rows.Add(row);
-                }
+                        AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
+                        DataGridView.Rows.Add(row);
+                    }
+                //}
             }
 
             //////////
@@ -191,6 +203,16 @@ namespace Analytics_V2
                     listErrors.Add("/!\\ Error: ");
 
                     AnalyzeProcessLog("------------XLS2TXT------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodRootPath + "XLS2TXT_Process.log");
+
+                    break;
+                }
+
+                case "XML2TXT":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("-> Error: ");
+
+                    AnalyzeProcessLog("------------ XML2TXT ------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodRootPath + "XML2TXT_Process.log");
 
                     break;
                 }
@@ -251,6 +273,14 @@ namespace Analytics_V2
                     List<string> listErrors = new List<string>();
                     listErrors.Add(", could not operate concatenation.");
                     AnalyzeProcessLog("== COLUMNS PROCESS ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
+                    break;
+                }
+
+                case "COLUMNDELETER":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("Error when creating  the new table :");
+                    AnalyzeProcessLog("== COLUMNDELETER PROCESS ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
                     break;
                 }
 
@@ -475,7 +505,6 @@ namespace Analytics_V2
 
                     AnalyzeControlDiffOrQHNumbers(commentsCell, checkCell, _ControlDiffPath, false);
 
-
                     break;
                 }
 
@@ -496,6 +525,16 @@ namespace Analytics_V2
                     break;
                 }
 
+                case "TXT2XML":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("Error on line : ");
+                    listErrors.Add("Error when creating xml files");
+
+                    AnalyzeProcessLog("== TXT2XML ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
+
+                    break;
+                }
 
                 default:
                     commentsCell.Style.BackColor = Color.Transparent;
@@ -515,7 +554,7 @@ namespace Analytics_V2
         private void AnalyzeProcessLog(string processToAnalyze, List<string> errorMessages, DataGridViewCell commentsCell, DataGridViewCell checkCell, int occurrenceNumber, string logPath)
         {
             int warningCounter = 0;
-            int informationCounter = 0;
+            int informationOrCriticalCounter = 0;
             int occurrences = 0;
             Boolean readingTrigger = false;
 
@@ -553,11 +592,15 @@ namespace Analytics_V2
                                 || (line.Contains(error) && error.Equals(", was deleted: ") && processToAnalyze.Contains("LINEDEL"))
                                 || (line.Contains(error) && error.Equals(" - Unknown Channel Id: ") && processToAnalyze.Contains("DataChecking"))
                                 || (line.Contains(error) && error.Equals(" - Unknown Typology Id: ") && processToAnalyze.Contains("DataChecking"))
+                                || (line.Contains(error) && error.Equals(" - Field is empty.") && processToAnalyze.Contains("DataChecking"))
                                 || (line.Contains(error) && error.Equals("-> Duplicated line removed index: ") && processToAnalyze.Contains("DUPLICATES"))
+                                || (line.Contains(error) && processToAnalyze.Contains("XML2TXT"))
+                                || (line.Contains(error) && processToAnalyze.Contains("TXT2XML"))
+                                || (line.Contains(error) && processToAnalyze.Contains("COLUMNDELETER"))
                                 )
                             {
                                 warningCounter--;
-                                informationCounter++;
+                                informationOrCriticalCounter++;
                             }
                         }
                     }
@@ -576,47 +619,55 @@ namespace Analytics_V2
                 checkCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
                 commentsCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
 
-                if (processToAnalyze.Contains("VALUECHECKER") && informationCounter > 0)
-                    commentsCell.Value = "Alerts : " + warningCounter + ". Replacements : " + informationCounter;
-                else if(processToAnalyze.Contains("VALUECORRECTOR") && informationCounter > 0)
-                    commentsCell.Value = "Alerts : " + warningCounter + ". Corrected values : " + informationCounter;
+                if (processToAnalyze.Contains("VALUECHECKER") && informationOrCriticalCounter > 0)
+                    commentsCell.Value = "Alerts : " + warningCounter + ". Replacements : " + informationOrCriticalCounter;
+                else if(processToAnalyze.Contains("VALUECORRECTOR") && informationOrCriticalCounter > 0)
+                    commentsCell.Value = "Alerts : " + warningCounter + ". Corrected values : " + informationOrCriticalCounter;
             }
 
-            else if (processToAnalyze.Contains("VALUECHECKER") && informationCounter > 0)
+            else if (processToAnalyze.Contains("VALUECHECKER") && informationOrCriticalCounter > 0)
             {
-                commentsCell.Value = "Replacements : " + informationCounter;
+                commentsCell.Value = "Replacements : " + informationOrCriticalCounter;
                 checkCell.Value = "INFO";
                 checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
             }
 
-            else if (processToAnalyze.Contains("VALUECORRECTOR") && informationCounter > 0)
+            else if (processToAnalyze.Contains("VALUECORRECTOR") && informationOrCriticalCounter > 0)
             {
-                commentsCell.Value = "Corrected values : " + informationCounter;
+                commentsCell.Value = "Corrected values : " + informationOrCriticalCounter;
                 checkCell.Value = "INFO";
                 checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
             }
 
-            else if (processToAnalyze.Contains("LINEDEL") && informationCounter > 0)
+            else if (processToAnalyze.Contains("LINEDEL") && informationOrCriticalCounter > 0)
             {
-                commentsCell.Value = "Lines deleted : " + informationCounter;
+                commentsCell.Value = "Lines deleted : " + informationOrCriticalCounter;
                 checkCell.Value = "INFO";
                 checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
             }
 
-            else if (processToAnalyze.Contains("DUPLICATES") && informationCounter > 0)
+            else if (processToAnalyze.Contains("DUPLICATES") && informationOrCriticalCounter > 0)
             {
-                commentsCell.Value = "Duplicated lines removed : " + informationCounter;
+                commentsCell.Value = "Duplicated lines removed : " + informationOrCriticalCounter;
                 checkCell.Value = "INFO";
                 checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
             }
 
-            else if (processToAnalyze.Contains("DataChecking") && informationCounter > 0)
+            else if (processToAnalyze.Contains("DataChecking") && informationOrCriticalCounter > 0)
             {
-                commentsCell.Value = "Unknown Typology or Channel : " + informationCounter;
+                commentsCell.Value = "Unknown Typology or Channel : " + informationOrCriticalCounter;
+                checkCell.Value = "WARNING";
+                checkCell.Style.ForeColor = System.Drawing.Color.Red;
+                commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+            }
+
+            else if ((processToAnalyze.Contains("XML2TXT") || processToAnalyze.Contains("TXT2XML") || processToAnalyze.Contains("COLUMNDELETER")) && informationOrCriticalCounter > 0)
+            {
+                commentsCell.Value = "Critical errors : " + informationOrCriticalCounter;
                 checkCell.Value = "WARNING";
                 checkCell.Style.ForeColor = System.Drawing.Color.Red;
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
@@ -1019,6 +1070,10 @@ namespace Analytics_V2
                     System.Diagnostics.Process.Start(_DatamodLogPath);
                 else if ((int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("CONTROLDIFF"))) || (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) > 100 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("QHNUMBERS")))
                     _ControlDiffForm.Show();
+                else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("XML2TXT"))
+                    System.Diagnostics.Process.Start(_DatamodRootPath + "XML2TXT_Process.log");
+                else if (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("TXT2XML") || DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("COLUMNDELETER"))
+                    System.Diagnostics.Process.Start(_DatamodLogPath);
             }
 
             catch(Exception ex)

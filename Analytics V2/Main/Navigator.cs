@@ -24,9 +24,6 @@ namespace Analytics_V2
         private List<KryptonHeaderGroup> _ProcessHeaderGroupList; // List of KryptonHeaderGroup.
         private KryptonGroupBox _WarningGroupBox;                 // Groupbox containing warning.
         
-
-
-
         #endregion
 
         /**************************************************** Constructor ****************************************************/
@@ -174,6 +171,7 @@ namespace Analytics_V2
             
             try
             {
+                GC.Collect();
                 XMLLoader.Dock = DockStyle.Fill;
                 XMLLoader.init(Properties.Settings.Default.interpretation_template);
                 XMLLoader.loadXML(path);
@@ -322,17 +320,28 @@ namespace Analytics_V2
                 ButtonSpecAny buttonSpec = sender as ButtonSpecAny;
                 KryptonPage tab = buttonSpec.Tag as KryptonPage;
 
-                if (tab.Text.Contains('*'))
-                {
-                    var result = KryptonMessageBox.Show("Config unsaved. Close Anyway ?\n\n                        ", "Close Tab",
-                     MessageBoxButtons.YesNo,
-                     MessageBoxIcon.Warning);
+                //if (tab.Text.Contains('*'))
+                //{
+                //    var result = KryptonMessageBox.Show("Config unsaved. Close Anyway ?\n\n                        ", "Close Tab",
+                //     MessageBoxButtons.YesNo,
+                //     MessageBoxIcon.Warning);
+                //
+                //    if (result == DialogResult.Yes)
+                //        NavigatorControl.Pages.Remove(tab);
+                //}
+                //
+                //else
+                //{
+                    if ((Boolean)tab.Tag == true)
+                    {
+                        foreach (Control c in tab.Controls)
+                        {
+                            ((XMLLoader.XMLForm)c).Dispose();
+                        }
+                    }
 
-                    if (result == DialogResult.Yes)
-                        NavigatorControl.Pages.Remove(tab);
-                }
-
-                else NavigatorControl.Pages.Remove(tab);    
+                    NavigatorControl.Pages.Remove(tab);
+                //}
     
                 foreach(ToolStripMenuItem element in ContextMenuStrip.Items)
                 {

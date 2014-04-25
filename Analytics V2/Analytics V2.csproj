@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>63</ApplicationRevision>
+    <ApplicationRevision>72</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -184,11 +184,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Text\Text.dll</HintPath>
     </Reference>
+    <Reference Include="TextColumnsDeleter">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Text\TextColumnsDeleter.dll</HintPath>
+    </Reference>
     <Reference Include="Tools">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Tools\Tools.dll</HintPath>
     </Reference>
-    <Reference Include="TV5_2012">
-      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\TV5_2012\TV5_2012.dll</HintPath>
+    <Reference Include="TV5_2012, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\TV5_2012\V2\TV5_2012.dll</HintPath>
+    </Reference>
+    <Reference Include="TXT2XML">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\TXT2XML\TXT2XML.dll</HintPath>
     </Reference>
     <Reference Include="XFiles, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -198,10 +205,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XLS2TXT\V2\XLS2TXT.dll</HintPath>
     </Reference>
+    <Reference Include="XML2TXT">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XML2TXT\XML2TXT.dll</HintPath>
+    </Reference>
     <Reference Include="XMLEditor">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XMLEditor\V2\XMLEditor.dll</HintPath>
     </Reference>
-    <Reference Include="XMLLoader">
+    <Reference Include="XMLLoader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XMLLoader\XMLLoader.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -212,10 +223,16 @@
     <Compile Include="Access\Administration.Designer.cs">
       <DependentUpon>Administration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\BatchUC.cs">
+    <Compile Include="Configuration\Batch\BatchElement.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Configuration\BatchUC.Designer.cs">
+    <Compile Include="Configuration\Batch\BatchElement.Designer.cs">
+      <DependentUpon>BatchElement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\Batch\BatchUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\Batch\BatchUC.Designer.cs">
       <DependentUpon>BatchUC.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\ConfigStatement.cs">
@@ -318,7 +335,10 @@
     <EmbeddedResource Include="Access\Authentication.resx">
       <DependentUpon>Authentication.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\BatchUC.resx">
+    <EmbeddedResource Include="Configuration\Batch\BatchElement.resx">
+      <DependentUpon>BatchElement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\Batch\BatchUC.resx">
       <DependentUpon>BatchUC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\ConfigStatement.resx">
@@ -478,7 +498,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AnalyticsIcon.ico" />
+    <None Include="Resources\HC.ico" />
+    <None Include="Resources\Save.png" />
     <None Include="Resources\Back.png" />
+    <None Include="Resources\Delete.png" />
     <None Include="Resources\Close.png" />
     <None Include="Resources\Batch2.ico" />
     <None Include="Resources\Batch.png" />
@@ -499,6 +522,7 @@
     <None Include="Resources\History.ico" />
     <None Include="Resources\Time Machine.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

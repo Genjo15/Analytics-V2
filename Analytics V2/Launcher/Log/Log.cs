@@ -13,6 +13,10 @@ namespace Analytics_V2
 
         #region Variables
 
+        private Boolean _PreProcess;        // Boolean which indicates if preprocess is enabled or not.
+        private Boolean _Process;           // Boolean which indicates if process is enabled or not.
+        private Boolean _Control;           // Boolean which indicates if control is enabled or not.
+
         private KryptonPage _NavigatorTab;
         private ButtonSpecAny _CloseButton;
         private KryptonSplitContainer _SplitContainer;
@@ -29,8 +33,12 @@ namespace Analytics_V2
         #region Constructor
 
         //public Log(String tabName, Delegate del)
-        public Log(String tabName, int targetsNumber)
+        public Log(String tabName, int targetsNumber, Boolean preProcess, Boolean process, Boolean control)
         {
+            _PreProcess = preProcess;
+            _Process = process;
+            _Control = control;
+
             _NavigatorTab = new KryptonPage();
             _CloseButton = new ButtonSpecAny();
 
@@ -82,7 +90,7 @@ namespace Analytics_V2
             String[] splitResult = outputFile.Split(new char[] { '\\' });
             _ComboBox.Items.Add(splitResult[splitResult.Length - 1]); // datamod name.
 
-            _LogsGridViewList.Add(new LogsGrid(splitResult[splitResult.Length - 1], processList, outputFile, inputFile,targetsNumber));
+            _LogsGridViewList.Add(new LogsGrid(splitResult[splitResult.Length - 1], processList, outputFile, inputFile,targetsNumber, _PreProcess,_Process,_Control));
 
             if (!_SplitContainer.Panel2.HasChildren)
             {
