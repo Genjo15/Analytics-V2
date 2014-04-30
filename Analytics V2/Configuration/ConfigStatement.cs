@@ -78,6 +78,7 @@ namespace Analytics_V2
             DataGridView.Columns["Timeformat"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
             DataGridView.Columns["Transcript"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
             DataGridView.Columns["Translate"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
+            DataGridView.Columns["Transpose"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
             DataGridView.Columns["Valuechecker"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
             DataGridView.Columns["ValueCorrector"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
             DataGridView.Columns["Write"].HeaderCell.Style.BackColor = Color.MediumAquamarine;
@@ -201,22 +202,24 @@ namespace Analytics_V2
                             CheckCell(row, 24);
                         if (process.Get_Name().Equals("TRANSLATE"))
                             CheckCell(row, 25);
-                        if (process.Get_Name().Equals("VALUECHECKER"))
+                        if (process.Get_Name().Equals("TRANSPOSE"))
                             CheckCell(row, 26);
-                        if (process.Get_Name().Equals("VALUECORRECTOR"))
+                        if (process.Get_Name().Equals("VALUECHECKER"))
                             CheckCell(row, 27);
-                        if (process.Get_Name().Equals("WRITE"))
+                        if (process.Get_Name().Equals("VALUECORRECTOR"))
                             CheckCell(row, 28);
-                        if (process.Get_Name().Equals("CONTROLDIFF"))
+                        if (process.Get_Name().Equals("WRITE"))
                             CheckCell(row, 29);
-                        if (process.Get_Name().Equals("DATACHECKER"))
+                        if (process.Get_Name().Equals("CONTROLDIFF"))
                             CheckCell(row, 30);
-                        if (process.Get_Name().Equals("QHNUMBERS"))
+                        if (process.Get_Name().Equals("DATACHECKER"))
                             CheckCell(row, 31);
-                        if (process.Get_Name().Equals("TOTALTVCONTROL"))
+                        if (process.Get_Name().Equals("QHNUMBERS"))
                             CheckCell(row, 32);
-                        if (process.Get_Name().Equals("TXT2XML"))
+                        if (process.Get_Name().Equals("TOTALTVCONTROL"))
                             CheckCell(row, 33);
+                        if (process.Get_Name().Equals("TXT2XML"))
+                            CheckCell(row, 34);
                     }
 
                     DataGridView.Rows.Add(row);

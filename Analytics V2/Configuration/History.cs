@@ -31,10 +31,6 @@ namespace Analytics_V2
 
             LinesAddedLabel.ForeColor = Color.DarkGreen;
             LinesDeletedLabel.ForeColor = Color.IndianRed;
-
-            //BindingSource bs = new BindingSource();
-            //bs.DataSource = DataGridView.DataSource;
-            //DataGridView.DataSource = bs;
         }
 
         #endregion
@@ -155,7 +151,6 @@ namespace Analytics_V2
                                 BeforeRichTextBox.SelectionBackColor = Color.IndianRed;
                                 BeforeRichTextBox.AppendText(configBefore[i] + "\n");
                                 appended = true;
-
                             }
                         }
 

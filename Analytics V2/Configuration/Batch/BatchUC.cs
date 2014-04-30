@@ -28,6 +28,7 @@ namespace Analytics_V2
         {
             InitializeComponent();
             this.Dock = DockStyle.Fill;
+            this.BringToFront();
             SplitContainer.Panel2Collapsed = true;
             SplitContainer.Panel2.Hide();
 

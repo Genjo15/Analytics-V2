@@ -519,6 +519,7 @@ namespace Analytics_V2
                     List<string> listErrors = new List<string>();
                     listErrors.Add("Alert ! Line ");
                     listErrors.Add("Error ! Line ");
+                    listErrors.Add("Error ! TTV Channel");
 
                     AnalyzeProcessLog("== CONTROL TOTAL TV ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
 
@@ -530,8 +531,28 @@ namespace Analytics_V2
                     List<string> listErrors = new List<string>();
                     listErrors.Add("Error on line : ");
                     listErrors.Add("Error when creating xml files");
+                    listErrors.Add("Missing element in line");
+                    listErrors.Add("Could not parse skipped lines indexes");
 
                     AnalyzeProcessLog("== TXT2XML ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
+
+                    break;
+                }
+
+                case "TRANSPOSE":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("Error detected during the reception lines");
+                    listErrors.Add("Error detected when creating the list of string ");
+                    listErrors.Add("Error detected when creating column ");
+                    listErrors.Add("Error detected when creating row ");
+                    listErrors.Add("Error detected when creating colum name");
+                    listErrors.Add("Error detected when assigning value into  the table");
+                    listErrors.Add("Error detected in function find_max_colum_col");
+                    listErrors.Add("Error detected in function find_repetition_col");
+                    listErrors.Add("Error detected in function strlen_col");
+
+                    AnalyzeProcessLog("== TRANSPOSE ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
 
                     break;
                 }
@@ -587,6 +608,8 @@ namespace Analytics_V2
                         {
                             if (line.Contains(error))
                                 warningCounter++;
+
+                            // Add here cases of critical error
                             if ((line.Contains(error) && error.Equals(", replaced:") && processToAnalyze.Contains("VALUECHECKER")) 
                                 || (line.Contains(error) && error.Equals(" was corrected value:") && processToAnalyze.Contains("VALUECORRECTOR")) 
                                 || (line.Contains(error) && error.Equals(", was deleted: ") && processToAnalyze.Contains("LINEDEL"))
@@ -595,8 +618,9 @@ namespace Analytics_V2
                                 || (line.Contains(error) && error.Equals(" - Field is empty.") && processToAnalyze.Contains("DataChecking"))
                                 || (line.Contains(error) && error.Equals("-> Duplicated line removed index: ") && processToAnalyze.Contains("DUPLICATES"))
                                 || (line.Contains(error) && processToAnalyze.Contains("XML2TXT"))
-                                || (line.Contains(error) && processToAnalyze.Contains("TXT2XML"))
+                                || (line.Contains(error) && error.Equals("Error when creating xml files") && processToAnalyze.Contains("TXT2XML"))
                                 || (line.Contains(error) && processToAnalyze.Contains("COLUMNDELETER"))
+                                || (line.Contains(error) && error.Equals("Error ! TTV Channel") && processToAnalyze.Equals("== CONTROL TOTAL TV =="))
                                 )
                             {
                                 warningCounter--;
@@ -620,9 +644,20 @@ namespace Analytics_V2
                 commentsCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
 
                 if (processToAnalyze.Contains("VALUECHECKER") && informationOrCriticalCounter > 0)
+                {
                     commentsCell.Value = "Alerts : " + warningCounter + ". Replacements : " + informationOrCriticalCounter;
+                }
                 else if(processToAnalyze.Contains("VALUECORRECTOR") && informationOrCriticalCounter > 0)
+                {
                     commentsCell.Value = "Alerts : " + warningCounter + ". Corrected values : " + informationOrCriticalCounter;
+                }
+                else if (processToAnalyze.Contains("TXT2XML") && informationOrCriticalCounter > 0)
+                {
+                    commentsCell.Value = "Alerts : " + warningCounter + "Critical errors : " + informationOrCriticalCounter;
+                    checkCell.Value = "ALERT";
+                    checkCell.Style.ForeColor = System.Drawing.Color.Red;
+                    commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+                }
             }
 
             else if (processToAnalyze.Contains("VALUECHECKER") && informationOrCriticalCounter > 0)
@@ -659,8 +694,16 @@ namespace Analytics_V2
 
             else if (processToAnalyze.Contains("DataChecking") && informationOrCriticalCounter > 0)
             {
-                commentsCell.Value = "Unknown Typology or Channel : " + informationOrCriticalCounter;
-                checkCell.Value = "WARNING";
+                commentsCell.Value = "Unknown Typology or Channel , or Empty fields :  " + informationOrCriticalCounter;
+                checkCell.Value = "ALERT";
+                checkCell.Style.ForeColor = System.Drawing.Color.Red;
+                commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+            }
+
+            else if (processToAnalyze.Equals(("== CONTROL TOTAL TV ==")) && informationOrCriticalCounter > 0)
+            {
+                commentsCell.Value = "TTV Channel is missing";
+                checkCell.Value = "ALERT";
                 checkCell.Style.ForeColor = System.Drawing.Color.Red;
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
             }
@@ -668,7 +711,7 @@ namespace Analytics_V2
             else if ((processToAnalyze.Contains("XML2TXT") || processToAnalyze.Contains("TXT2XML") || processToAnalyze.Contains("COLUMNDELETER")) && informationOrCriticalCounter > 0)
             {
                 commentsCell.Value = "Critical errors : " + informationOrCriticalCounter;
-                checkCell.Value = "WARNING";
+                checkCell.Value = "ALERT";
                 checkCell.Style.ForeColor = System.Drawing.Color.Red;
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
             }
@@ -879,9 +922,11 @@ namespace Analytics_V2
 
                     else if (currentCheck.Equals("* CHECK CHANNEL AND DATE AUD :"))
                     {
-                        _CheckChannelAndDateAudienceCriticalAlertsLogs += line + "\n";
                         if (line.Contains("Alert"))
+                        {
                             _CheckChannelAndDateAudienceCriticalAlerts++;
+                            _CheckChannelAndDateAudienceCriticalAlertsLogs += line + "\n";
+                        }
                     }
                 }
 

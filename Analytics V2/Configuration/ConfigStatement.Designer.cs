@@ -55,6 +55,7 @@
             this.Timeformat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Transcript = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Translate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Transpose = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Valuechecker = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Valuecorrector = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Write = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -95,6 +96,7 @@
             this.Timeformat,
             this.Transcript,
             this.Translate,
+            this.Transpose,
             this.Valuechecker,
             this.Valuecorrector,
             this.Write,
@@ -347,6 +349,14 @@
             this.Translate.Name = "Translate";
             this.Translate.ReadOnly = true;
             // 
+            // Transpose
+            // 
+            this.Transpose.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Transpose.HeaderText = "TRANSPOSE";
+            this.Transpose.Name = "Transpose";
+            this.Transpose.ReadOnly = true;
+            this.Transpose.Width = 101;
+            // 
             // Valuechecker
             // 
             this.Valuechecker.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
@@ -452,6 +462,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Timeformat;
         private System.Windows.Forms.DataGridViewTextBoxColumn Transcript;
         private System.Windows.Forms.DataGridViewTextBoxColumn Translate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Transpose;
         private System.Windows.Forms.DataGridViewTextBoxColumn Valuechecker;
         private System.Windows.Forms.DataGridViewTextBoxColumn Valuecorrector;
         private System.Windows.Forms.DataGridViewTextBoxColumn Write;

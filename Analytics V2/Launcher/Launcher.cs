@@ -286,6 +286,7 @@ namespace Analytics_V2
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== XML2TXT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
                     }
+                    StopStopWatch(launchStopwatch);
                     break;
                 case "FILESPLIT":
                     StartStopWatch(launchStopwatch);
@@ -837,6 +838,27 @@ namespace Analytics_V2
                     }
                     StopStopWatch(launchStopwatch);
                     break;
+
+                case "TRANSPOSE":
+                    StartStopWatch(launchStopwatch);
+                    UpdateRichTextBox("function", "TRANSPOSE..... ");
+                    try
+                    {
+                        Transpose.Transpose transposeProcess = new Transpose.Transpose(_TabData, dataTable, _Config.Get_DataSeparator());
+                        _TabData = transposeProcess.run();
+                        _Logs += "\r\n== TRANSPOSE ==\r\n";
+                        foreach (String logline in transposeProcess.log)
+                            _Logs += logline + "\r\n";
+                        transposeProcess = null;
+                        UpdateRichTextBox("complete", "Complete!");
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== TRANSPOSE ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                    }
+                    StopStopWatch(launchStopwatch);
+                    break;
             }
             GC.Collect();
         }
@@ -885,7 +907,17 @@ namespace Analytics_V2
                         System.IO.File.Move(_DatamodPath, finalPath);
                         String tmpPath = Path.GetDirectoryName(_DatamodPath);
                         _DatamodPath = finalPath;
-                        //File.Delete(fileToDeletePath);  // Delete the old file.
+
+                        // Suppress input file in txt (only in case of XLS2TXT)
+                        Boolean deleteOldFile = false;
+                        foreach (Process process in _Config.Get_ProcessList())
+                        {
+                            if (process.Get_Name().Equals("XLS2TXT"))
+                                deleteOldFile = true;
+                        }
+                        if (deleteOldFile == true)
+                            File.Delete(fileToDeletePath);  // Delete the old file.
+
                         _OutputFiles.Add(_DatamodPath); // Add the output file to the list of output file.
                         controldiffProcess = null;
                         UpdateRichTextBox("complete", "Complete!");
@@ -914,7 +946,17 @@ namespace Analytics_V2
                         System.IO.File.Move(_DatamodPath, finalPath);
                         String tmpPath = Path.GetDirectoryName(_DatamodPath);
                         _DatamodPath = finalPath;
-                        //File.Delete(fileToDeletePath);  // Delete the old file.
+
+                        // Suppress input file in txt (only in case of XLS2TXT)
+                        Boolean deleteOldFile = false;                  
+                        foreach (Process process in _Config.Get_ProcessList())
+                        {
+                            if (process.Get_Name().Equals("XLS2TXT"))
+                                deleteOldFile = true;
+                        }
+                        if (deleteOldFile == true)
+                            File.Delete(fileToDeletePath);  // Delete the old file.
+
                         _OutputFiles.Add(_DatamodPath); // Add the output file to the list of output file.
                         _Logs += "\r\n== CONTROL LINES QH ==\r\n";
                         foreach (String logLine in qhnumbersProcess.Log)

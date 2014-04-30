@@ -66,6 +66,7 @@ namespace Analytics_V2
         private ProcessOnMainThread4 _DisplayConfigProcessTimeDel;                                                // Delegate for displaying the process time.
         private delegate void ProcessOnMainThread5(int i);                                                        // Delegate type5.
         private ProcessOnMainThread5 _AbortThreadDel;                                                             // Delegate for aborting the specific thread.
+
         #endregion
 
         /**************************************************** Constructor ****************************************************/
@@ -78,7 +79,7 @@ namespace Analytics_V2
 
             _FileBrowser = new FileBrowser(InitializePath());
             _LocalFileBrowser = new FileBrowser(Properties.Settings.Default.local_path);
-            _Navigator = new Navigator();
+            _Navigator = new Navigator(ProcessHelperButton);
             _SpecificCountries = new SpecificCountries();
             _SpecificTools = new SpecificTools();
             _Session = new Authentication("user");
@@ -175,8 +176,8 @@ namespace Analytics_V2
             _BatchForm.Icon = global::Analytics_V2.Properties.Resources.Batch2;
             _BatchForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideBatchForm);
             _BatchForm.Controls.Add(_Batch);
-
-
+            _BatchForm.TopMost = true;
+            
             // Add file browsers (local + common)
             this.FileBrowserNavigator.Pages[0].Controls.Add(_FileBrowser);
             this.FileBrowserNavigator.Pages[0].Tag = _FileBrowser;
@@ -193,6 +194,8 @@ namespace Analytics_V2
             MainBoardSplitContainer1.FixedPanel = FixedPanel.Panel1;
 
             // Event handlers
+            this.Resize += Main_Resize;
+
             _FileBrowser.TreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             _FileBrowser.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
             _FileBrowser.CutToolStripMenuItem.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
@@ -212,6 +215,7 @@ namespace Analytics_V2
             _FileBrowser.TreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(KeepExpandedNode);
             _FileBrowser.TreeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(RemoveExpandedNode);
             _FileBrowser.ViewHistoryToolStripMenuItem.Click += new System.EventHandler(this.ViewHistoryToolStripMenuItem_Click);
+            _FileBrowser.OpenDirectoryToolStripMenuItem.Click += OpenDirectoryToolStripMenuItem_Click;
 
             _LocalFileBrowser.TreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             _LocalFileBrowser.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
@@ -232,6 +236,7 @@ namespace Analytics_V2
             _LocalFileBrowser.TreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(KeepExpandedNode);
             _LocalFileBrowser.TreeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(RemoveExpandedNode);
             _LocalFileBrowser.ViewHistoryToolStripMenuItem.Click += new System.EventHandler(this.ViewHistoryToolStripMenuItem_Click);
+            _LocalFileBrowser.OpenDirectoryToolStripMenuItem.Click += OpenDirectoryToolStripMenuItem_Click;
 
             _Navigator.NavigatorControl.TabClicked += NavigatorControl_TabClick;
             _Navigator.NavigatorControl.SelectedPageChanged += NavigatorControl_SelectedPageChanged;
@@ -241,12 +246,9 @@ namespace Analytics_V2
             _Session.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             _Session.PasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(PasswordTextBox_KeyDown);
             
-
-
+            // Set connection status
             this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
         }
-
-
 
 
 
@@ -883,8 +885,9 @@ namespace Analytics_V2
 
             // Update Summary tab (in case of summary tab displays the edited config
             IEnumerable<Config> retrieveConfigQuerry3 = from item in _ConfigsList
-                                                        where item.Get_Path().Equals(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath)
-                                                       select item;
+                                                        //where item.Get_Path().Equals(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath)
+                                                        where item.Get_Path().Equals(configPath)
+                                                        select item;
             
             foreach (Config set in retrieveConfigQuerry3)
                 _Navigator.DisplayConfigSummary(set.Get_Name(), set.Get_ProcessList(), set.Get_Warning());
@@ -1670,17 +1673,73 @@ namespace Analytics_V2
             }
         }
 
+        /*******************************************************************************\
+         * Event which occurs when the OpenDirectory contextMenuStrip is clicked       *
+         *  - Open the directory in the File Explorer                                  *
+        \*******************************************************************************/
+
+        private void OpenDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (treeView.SelectedNode.ImageIndex == 1)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", treeView.SelectedNode.FullPath);
+                }
+                catch (Exception ex) 
+                {
+                    var result = KryptonMessageBox.Show("Cannot open File Explorer. Error:\n\n" + ex, "Error while opening File Explorer",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+                };
+            }
+
+            else if (treeView.SelectedNode.ImageIndex == 2)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", treeView.SelectedNode.Parent.FullPath);
+                }
+                catch (Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Cannot open File Explorer. Error:\n\n" + ex, "Error while opening File Explorer",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+                };
+            }
+        }
+
         /*************************************************   MISC   ****************************************************/
 
 
-        /***************************************************************\
-         * Event of resizing the form (for correcting a graphical bug) *
-        \***************************************************************/
+        /******************************************************************************************************\
+         * Event of resizing the form                                                                         *
+         *  - for correcting a graphical bug which occurs when the form is not focused anymore then refocused *
+         *       |-> graphical display bug with the progress bars                                             *
+         *                                                                                                    *
+        \******************************************************************************************************/
 
         private void Main_Resize(object sender, EventArgs e)
         {
             _Navigator.SummarySplitContainer1.SplitterDistance += 1;
             _Navigator.SummarySplitContainer1.SplitterDistance -= 1;
+
+            switch (this.WindowState)
+            {
+                case FormWindowState.Maximized:
+                    //MessageBox.Show("J'aggrandis");
+                    break;
+                case FormWindowState.Minimized:
+                    
+                    break;
+                case FormWindowState.Normal:
+                    //MessageBox.Show("Retour à la normale");
+                    break;
+                default:
+                    break;
+            }
         }
 
         /***************************************************************************\
@@ -1744,8 +1803,6 @@ namespace Analytics_V2
             }
         }
 
-        
-
         /***********************************************************************\
          * Events of right click on a Treenode --> Full Collapse / Full Expand *
          *  - Full Collapse / Expand.                                          *
@@ -1801,6 +1858,6 @@ namespace Analytics_V2
 
         #endregion
 
-
     }
 }
+

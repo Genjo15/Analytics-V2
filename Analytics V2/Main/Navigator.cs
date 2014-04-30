@@ -23,6 +23,8 @@ namespace Analytics_V2
 
         private List<KryptonHeaderGroup> _ProcessHeaderGroupList; // List of KryptonHeaderGroup.
         private KryptonGroupBox _WarningGroupBox;                 // Groupbox containing warning.
+        private XMLLoader.ButtonHelp _ButtonHelp;                 // Button helm (used when initializing a XMLLoader).
+        
         
         #endregion
 
@@ -30,8 +32,10 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public Navigator()
+        public Navigator(XMLLoader.ButtonHelp buttonHelp)
         {
+            _ButtonHelp = buttonHelp;
+
             InitializeComponent();
             _ProcessHeaderGroupList = new List<KryptonHeaderGroup>();
             CreateWarningGroupBox();
@@ -173,7 +177,7 @@ namespace Analytics_V2
             {
                 GC.Collect();
                 XMLLoader.Dock = DockStyle.Fill;
-                XMLLoader.init(Properties.Settings.Default.interpretation_template);
+                XMLLoader.init(Properties.Settings.Default.interpretation_template, _ButtonHelp);
                 XMLLoader.loadXML(path);
                 XMLLoader.Tag = path;
                 navigatorTab.Tag = true;
@@ -184,7 +188,7 @@ namespace Analytics_V2
             // If no connection, New tab (XML mode)
             catch (Exception ex)
             {
-                var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.", "No network",
+                var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.\n\n\n" + ex, "Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
 
@@ -448,7 +452,7 @@ namespace Analytics_V2
                         // Set New Control
                         XMLLoader.XMLForm XMLLoader = new XMLLoader.XMLForm();
                         XMLLoader.Dock = DockStyle.Fill;
-                        XMLLoader.init(Properties.Settings.Default.interpretation_template);
+                        XMLLoader.init(Properties.Settings.Default.interpretation_template, _ButtonHelp);
                         XMLLoader.loadXML(path);
                         XMLLoader.Tag = path;
                         NavigatorControl.SelectedPage.Controls.Add(XMLLoader);

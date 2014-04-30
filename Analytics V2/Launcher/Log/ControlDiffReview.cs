@@ -145,6 +145,10 @@ namespace Analytics_V2
                 ReinitializeRTBs();
                 if (!string.IsNullOrEmpty(_CheckChannelAndDateAudienceCriticalAlertsLogs))
                     criticalAlertsRichTextBox.AppendText("CRITICAL ALERTS :\n\n" + _CheckChannelAndDateAudienceCriticalAlertsLogs);
+                else
+                {
+                    alertsRichTextBox.AppendText("* CHECK CHANNEL AND DATE AUD :\nOK");
+                }
             }
         }
 

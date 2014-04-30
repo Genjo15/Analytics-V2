@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>72</ApplicationRevision>
+    <ApplicationRevision>84</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -184,17 +184,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Text\Text.dll</HintPath>
     </Reference>
-    <Reference Include="TextColumnsDeleter">
+    <Reference Include="TextColumnsDeleter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Text\TextColumnsDeleter.dll</HintPath>
     </Reference>
     <Reference Include="Tools">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Tools\Tools.dll</HintPath>
     </Reference>
+    <Reference Include="Transpose">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Transpose\Transpose.dll</HintPath>
+    </Reference>
     <Reference Include="TV5_2012, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\TV5_2012\V2\TV5_2012.dll</HintPath>
     </Reference>
-    <Reference Include="TXT2XML">
+    <Reference Include="TXT2XML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\TXT2XML\TXT2XML.dll</HintPath>
     </Reference>
     <Reference Include="XFiles, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

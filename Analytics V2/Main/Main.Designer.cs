@@ -72,6 +72,7 @@
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ProcessHelperButton = new XMLLoader.ButtonHelp();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1.Panel1)).BeginInit();
             this.MainBoardSplitContainer1.Panel1.SuspendLayout();
@@ -352,6 +353,7 @@
             // 
             // ProcessAndControlGroupBox.Panel
             // 
+            this.ProcessAndControlGroupBox.Panel.Controls.Add(this.ProcessHelperButton);
             this.ProcessAndControlGroupBox.Panel.Controls.Add(this.HCButton);
             this.ProcessAndControlGroupBox.Panel.Controls.Add(this.LaunchButton);
             this.ProcessAndControlGroupBox.Panel.Controls.Add(this.PreProcessButton);
@@ -461,6 +463,11 @@
             this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
             this.StatusToolStripMenuItem.TextChanged += new System.EventHandler(this.StatusToolStripMenuItem_TextChanged);
             // 
+            // ProcessHelperButton
+            // 
+            resources.ApplyResources(this.ProcessHelperButton, "ProcessHelperButton");
+            this.ProcessHelperButton.Name = "ProcessHelperButton";
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -564,6 +571,7 @@
         private ComponentFactory.Krypton.Toolkit.KryptonCheckButton ProcessButton;
         private System.Windows.Forms.ToolStripButton BatchToolStripButton;
         private System.Windows.Forms.ToolStripButton HCToolStripButton;
+        internal XMLLoader.ButtonHelp ProcessHelperButton;
 
 
 

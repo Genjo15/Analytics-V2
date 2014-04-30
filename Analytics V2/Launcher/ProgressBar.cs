@@ -77,8 +77,6 @@ namespace Analytics_V2
         private void UpdateProgressBar(float progress)
         {
             Bar.Value = (int)progress;
-
-
             ProgressBarGroupBox.Values.Heading = ProgressBarGroupBox.Values.Heading.Split(new string[] { " - " }, StringSplitOptions.None)[0] + " - " + progress + "%";
         }
 
@@ -162,7 +160,6 @@ namespace Analytics_V2
             if (result == DialogResult.Yes)
             {
                 _AbortThreadDel.DynamicInvoke(_ID);
-                //Bar.ForeColor = Color.IndianRed;
             }
         }
 
