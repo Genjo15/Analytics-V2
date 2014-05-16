@@ -81,7 +81,7 @@ namespace Analytics_V2
                 }
             }
 
-            catch (Exception ex)
+            catch
             {
                 var result = KryptonMessageBox.Show("No connection found, please ensure that your connection is functionning.", "Connection Error",
                                 MessageBoxButtons.OK,
@@ -149,7 +149,7 @@ namespace Analytics_V2
                 }
             }
 
-            catch (Exception ex)
+            catch 
             {
                 var result = KryptonMessageBox.Show("No connection found, please ensure that your connection is functionning.", "Connection Error",
                                 MessageBoxButtons.OK,
@@ -177,7 +177,7 @@ namespace Analytics_V2
                 _NetworkAvailable = true;
             }
 
-            catch (Exception ex)
+            catch
             {
                 _NetworkAvailable = false;
                 _AccessType = "user";

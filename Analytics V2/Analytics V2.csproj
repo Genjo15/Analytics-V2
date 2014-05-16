@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>84</ApplicationRevision>
+    <ApplicationRevision>93</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -228,6 +228,13 @@
     <Compile Include="Access\Administration.Designer.cs">
       <DependentUpon>Administration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\Batch\BatchElementMulti.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\Batch\BatchElementMulti.Designer.cs">
+      <DependentUpon>BatchElementMulti.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\Batch\Batch.cs" />
     <Compile Include="Configuration\Batch\BatchElement.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -342,6 +349,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\Batch\BatchElement.resx">
       <DependentUpon>BatchElement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\Batch\BatchElementMulti.resx">
+      <DependentUpon>BatchElementMulti.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\Batch\BatchUC.resx">
       <DependentUpon>BatchUC.cs</DependentUpon>
@@ -503,6 +513,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AnalyticsIcon.ico" />
+    <None Include="Resources\Delete2.png" />
+    <None Include="Resources\Batch3.png" />
+    <None Include="Resources\Batch2.png" />
+    <None Include="Resources\Edit2.png" />
     <None Include="Resources\HC.ico" />
     <None Include="Resources\Save.png" />
     <None Include="Resources\Back.png" />

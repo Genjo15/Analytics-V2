@@ -121,7 +121,7 @@ namespace Analytics_V2
                 _Files = directory.GetFiles();
             }
 
-            catch (Exception ex) { }
+            catch { }
 
             if (_Files.Length > 0)
                 foreach (FileInfo file in _Files)
@@ -151,7 +151,7 @@ namespace Analytics_V2
                                                          .ToArray();
             }
 
-            catch (Exception ex) { }
+            catch { }
        
             if(_Directories.Length > 0)
                 foreach (DirectoryInfo dir in _Directories)

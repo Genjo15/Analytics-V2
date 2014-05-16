@@ -85,11 +85,11 @@ namespace Analytics_V2
          * Display Config Summary                                     *
          *   - The Name of the config (KryptonHeader).                *
          *   - Each process used in the config (KryptonHeaderGroup).  *
-         *   - The big play button.                                   *
         \**************************************************************/
 
         public void DisplayConfigSummary(String name, List<Process>processList, String warning)
         {
+            _ProcessHeaderGroupList.Clear();
             _ProcessHeaderGroupList = new List<KryptonHeaderGroup>();
             this.SummarySplitContainer1.Panel1.Controls.Clear();
 
@@ -142,6 +142,7 @@ namespace Analytics_V2
    
         }
 
+
         /************************\
          * Display Folder name  *
         \************************/
@@ -156,6 +157,55 @@ namespace Analytics_V2
             header.Text = name;
             header.Values.Description = null;
             header.Values.Image = null;
+
+            this.SummarySplitContainer1.Panel1.Controls.Add(header);
+        }
+
+        /**************************************************************\
+         * Display Batch Summary                                     *
+        \**************************************************************/
+
+        public void DisplayBatchSummary(Batch batch)
+        {
+            _ProcessHeaderGroupList.Clear();
+            _ProcessHeaderGroupList = new List<KryptonHeaderGroup>();
+            this.SummarySplitContainer1.Panel1.Controls.Clear();
+
+            // Display the name of the batch
+            KryptonHeader header = new KryptonHeader();
+            header.Dock = System.Windows.Forms.DockStyle.Top;
+            header.Text = "Batch : " + batch.Get_Name();
+            header.Values.Description = null;
+            header.Values.Image = null;
+
+            // Display all batch elements
+            foreach (KeyValuePair<string, Tuple<string, string>> element in batch.Get_BatchElements())
+            {
+                KryptonHeaderGroup headerGroup = new KryptonHeaderGroup();
+                ButtonSpecHeaderGroup buttonSpecHeaderGroup = new ButtonSpecHeaderGroup();
+                headerGroup.Dock = System.Windows.Forms.DockStyle.Top;
+                headerGroup.HeaderPositionSecondary = ComponentFactory.Krypton.Toolkit.VisualOrientation.Left;
+                headerGroup.ValuesPrimary.Image = null;
+                headerGroup.HeaderStylePrimary = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
+                headerGroup.ValuesSecondary.Heading = "Target";
+                headerGroup.Text = element.Value.Item1;
+                buttonSpecHeaderGroup.Tag = headerGroup;
+                headerGroup.ButtonSpecs.AddRange(new ComponentFactory.Krypton.Toolkit.ButtonSpecHeaderGroup[] { buttonSpecHeaderGroup });
+                headerGroup.ButtonSpecs[0].Type = ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonExpand;
+                headerGroup.Size = new System.Drawing.Size(150, 23);
+
+                KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                richTextBox.ReadOnly = true;
+                richTextBox.Text = element.Key;
+
+                headerGroup.Panel.Controls.Add(richTextBox);
+                _ProcessHeaderGroupList.Add(headerGroup);
+            }
+
+            _ProcessHeaderGroupList.Reverse();
+            foreach (KryptonHeaderGroup element in _ProcessHeaderGroupList)
+                this.SummarySplitContainer1.Panel1.Controls.Add(element);
 
             this.SummarySplitContainer1.Panel1.Controls.Add(header);
         }
@@ -216,7 +266,6 @@ namespace Analytics_V2
 
             NavigatorControl.Pages.Add(navigatorTab);
         }
-
 
         /**************************************************************\
          * Method for displaying a XML                                *
@@ -459,7 +508,7 @@ namespace Analytics_V2
                     }
 
                     // If no connection, stay in XML mode
-                    catch (Exception ex)
+                    catch 
                     {
                         var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.", "No network",
                             MessageBoxButtons.OK,

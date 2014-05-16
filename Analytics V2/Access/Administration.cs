@@ -231,7 +231,7 @@ namespace Analytics_V2
                                     MessageBoxIcon.Information);
             }
 
-            catch (Exception ex)
+            catch 
             {
                 var result = KryptonMessageBox.Show("Fail to create user", "Error",
                                     MessageBoxButtons.OK,

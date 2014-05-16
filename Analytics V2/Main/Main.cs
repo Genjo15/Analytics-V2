@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Threading;
 using System.Xml.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Analytics_V2
 {
@@ -78,7 +79,10 @@ namespace Analytics_V2
             InitializeComponent();
 
             _FileBrowser = new FileBrowser(InitializePath());
-            _LocalFileBrowser = new FileBrowser(Properties.Settings.Default.local_path);
+            if (Directory.Exists(Properties.Settings.Default.local_path))
+                _LocalFileBrowser = new FileBrowser(Properties.Settings.Default.local_path);
+            else
+                _LocalFileBrowser = new FileBrowser(@"D:\\");
             _Navigator = new Navigator(ProcessHelperButton);
             _SpecificCountries = new SpecificCountries();
             _SpecificTools = new SpecificTools();
@@ -89,6 +93,8 @@ namespace Analytics_V2
             _Chronicles = new History();
             _ConfigStatement = new ConfigStatement();
             _Batch = new BatchUC();
+            LoadBatchs();        // Load batch objects from saved instance.
+            _Batch.LoadBatchs(); // Load them graphically (rows in DGV).
             _WaitingScreen = new WaitingScreen();
 
             InitializeInterface();
@@ -177,6 +183,10 @@ namespace Analytics_V2
             _BatchForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideBatchForm);
             _BatchForm.Controls.Add(_Batch);
             _BatchForm.TopMost = true;
+            // Build batch listbox
+            foreach (Batch element in _Batch.Get_BatchsList())
+                BatchListBox.Items.Add(element.Get_Name());
+            BatchListBox.BackColor = Color.FromArgb(227, 230, 232);
             
             // Add file browsers (local + common)
             this.FileBrowserNavigator.Pages[0].Controls.Add(_FileBrowser);
@@ -245,7 +255,7 @@ namespace Analytics_V2
             _Session.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             _Session.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             _Session.PasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(PasswordTextBox_KeyDown);
-            
+           
             // Set connection status
             this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
         }
@@ -271,7 +281,7 @@ namespace Analytics_V2
                 request.Close();
             }
 
-            catch (Exception ex)
+            catch 
             {
                 var result = KryptonMessageBox.Show("Path introuvable, veuillez le définir manuellement", "Path introuvable",
                          MessageBoxButtons.OK,
@@ -549,7 +559,7 @@ namespace Analytics_V2
                         session.Add_histo_config(_PreviousNodeName.Replace(".xml", ""), _SourcePath);
                     session.Close();
                 }
-                catch (Exception ex) { }
+                catch { }
 
                 // Update Config path in database
                 try
@@ -558,7 +568,7 @@ namespace Analytics_V2
                     service.Update_histo_config_path(_SourcePath, _TargetPath);
                     service.Close();
                 }
-                catch (Exception ex) { }
+                catch { }
             }
 
             fileBrowser.PopulateTreeView();
@@ -642,7 +652,7 @@ namespace Analytics_V2
                                     session.Add_histo_config(_PreviousNodeName.Replace(".xml", ""), _SourcePath);
                                 session.Close();
                             }
-                            catch (Exception ex) { }
+                            catch { }
 
                             // Update Config path in database
                             try
@@ -651,7 +661,7 @@ namespace Analytics_V2
                                 service.Update_histo_config_path(_SourcePath, _TargetPath);
                                 service.Close();
                             }
-                            catch (Exception ex) { }
+                            catch { }
                         }
                         else if (treeView.SelectedNode.ImageIndex == 1)
                             Directory.Move(_SourcePath, _TargetPath.Replace(".xml", ""));
@@ -985,7 +995,7 @@ namespace Analytics_V2
                         }
                         session.Close();
                     }
-                    catch (Exception ex) { }
+                    catch { }
 
                     // Update Config name in database
                     try
@@ -996,7 +1006,7 @@ namespace Analytics_V2
                         service.Update_histo_config_name(splitResult[splitResult.Length - 1].Replace(".xml", ""), splitResult2[splitResult.Length - 1].Replace(".xml", ""));
                         service.Close();
                     }
-                    catch (Exception ex) { }
+                    catch { }
 
                     // Consequently update Config path in database
                     try
@@ -1005,7 +1015,7 @@ namespace Analytics_V2
                         service.Update_histo_config_path(_SourcePath,_TargetPath);
                         service.Close();
                     }
-                    catch (Exception ex) { }
+                    catch { }
                 }
                 else if (treeView.SelectedNode != null && treeView.SelectedNode.ImageIndex == 1)
                     Directory.Move(_SourcePath, _TargetPath);
@@ -1128,7 +1138,7 @@ namespace Analytics_V2
                 }
 
                 // If no connection, create a virgin xml
-                catch (Exception ex)
+                catch 
                 {
                     var result = KryptonMessageBox.Show("Unable to access file (maybe there is no network). An empty XML file will be created instead.", "No network",
                             MessageBoxButtons.OK,
@@ -1253,57 +1263,60 @@ namespace Analytics_V2
 
         private void LaunchButton_Click(object sender, EventArgs e)
         {
-            // CASE 1 : Selected navigator tab is Summary --> Launch selected TreeNode config.
-            if (_Navigator.NavigatorControl.SelectedPage == _Navigator.NavigatorControl.Pages["Summary"])
+            if (!FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
             {
-                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath.Contains("Recettes"))
+                // CASE 1 : Selected navigator tab is Summary --> Launch selected TreeNode config.
+                if (_Navigator.NavigatorControl.SelectedPage == _Navigator.NavigatorControl.Pages["Summary"])
                 {
-                    if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                    if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath.Contains("Recettes"))
+                    {
+                        if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                            LaunchConfigSelectedTreeNode(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+                    }
+
+                    else
+                    {
                         LaunchConfigSelectedTreeNode(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
+                    }
                 }
 
+                // CASE 2 : Selected navigator tab is not summary --> Launch selected Navigator tab config.
                 else
                 {
-                    LaunchConfigSelectedTreeNode(((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView);
-                }
-            }
-
-            // CASE 2 : Selected navigator tab is not summary --> Launch selected Navigator tab config.
-            else
-            {
-                if ((Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
-                {
-                    // Get path of config (selected navigator tab)
-                    string path = "";
-                    var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
-                    foreach (XMLLoader.XMLForm element in childrens)
+                    if ((Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
                     {
-                        path = (string)element.Tag;
+                        // Get path of config (selected navigator tab)
+                        string path = "";
+                        var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
+                        foreach (XMLLoader.XMLForm element in childrens)
+                        {
+                            path = (string)element.Tag;
+                        }
+                        // Check access.
+                        if (path.Contains("Recettes"))
+                        {
+                            if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                                LaunchConfigSelectedNavigatorTab(path);
+                        }
+                        else LaunchConfigSelectedNavigatorTab(path);
                     }
-                    // Check access.
-                    if (path.Contains("Recettes"))
+                    else if (!(Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
                     {
-                        if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
-                            LaunchConfigSelectedNavigatorTab(path);
+                        // Get path of config (selected navigator tab)
+                        string path = "";
+                        var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
+                        foreach (KryptonRichTextBox element in childrens)
+                        {
+                            path = (string)element.Tag;
+                        }
+                        // Check access.
+                        if (path.Contains("Recettes"))
+                        {
+                            if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
+                                LaunchConfigSelectedNavigatorTab(path);
+                        }
+                        else LaunchConfigSelectedNavigatorTab(path);
                     }
-                    else LaunchConfigSelectedNavigatorTab(path);
-                }
-                else if (!(Boolean)_Navigator.NavigatorControl.SelectedPage.Tag)
-                {
-                    // Get path of config (selected navigator tab)
-                    string path = "";
-                    var childrens = _Navigator.NavigatorControl.SelectedPage.Controls.OfType<KryptonRichTextBox>().ToList();
-                    foreach (KryptonRichTextBox element in childrens)
-                    {
-                        path = (string)element.Tag;
-                    }
-                    // Check access.
-                    if (path.Contains("Recettes"))
-                    {
-                        if (_Session.CheckIfAccessGranted("launchConfigPreProd"))
-                            LaunchConfigSelectedNavigatorTab(path);
-                    }
-                    else LaunchConfigSelectedNavigatorTab(path);
                 }
             }
         }
@@ -1645,9 +1658,17 @@ namespace Analytics_V2
             _Batch.SplitContainer.Panel2Collapsed = true;
             _Batch.SplitContainer.Panel2.Hide();
             _BatchForm.Size = new System.Drawing.Size(600, 400);
+            _Batch.RemoveToolStripButton.Enabled = true;
+            _Batch.AddToolStripButton.Enabled = true;
+            _Batch.EditToolStripButton.Enabled = true;
 
             _BatchForm.Hide();
             e.Cancel = true;
+
+            // rebuild batchs listbox
+            BatchListBox.Items.Clear();
+            foreach (Batch element in _Batch.Get_BatchsList())
+                BatchListBox.Items.Add(element.Get_Name());
         }
 
         /*************************************************************\
@@ -1711,7 +1732,192 @@ namespace Analytics_V2
             }
         }
 
-        /*************************************************   MISC   ****************************************************/
+        /*********************\
+         * Save /Load batchs *
+        \*********************/
+
+        private void SaveBatchs()
+        {
+            if (!Directory.Exists(@"D:\Documents\Analytics"))
+                Directory.CreateDirectory(@"D:\Documents\Analytics");
+            Stream stream = File.Create(@"D:\Documents\Analytics\Batchs");
+            BinaryFormatter serializer = new BinaryFormatter();
+            serializer.Serialize(stream, _Batch.Get_BatchsList());
+            stream.Close();
+            stream.Dispose();
+        }
+
+        private void LoadBatchs()
+        {
+            if (File.Exists(@"D:\Documents\Analytics\Batchs"))
+            {
+                Stream stream = File.OpenRead(@"D:\Documents\Analytics\Batchs");
+                BinaryFormatter deserializer = new BinaryFormatter();
+                _Batch.Set_BatchsList((List<Batch>)deserializer.Deserialize(stream));
+                stream.Close();
+            }
+        }
+
+        /*****************************************************\
+         * event when fileBrowserNavigator page changes :    *
+         *    -> Enable or disable suppress / edit toolstrip *
+        \*****************************************************/
+
+        private void FileBrowserNavigator_SelectedPageChanged(object sender, EventArgs e)
+        {
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
+            {
+                SuppressToolStripButton.Enabled = false;
+                EditToolStripButton.Enabled = false;
+                LaunchButton.Enabled = false;
+                _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[0];
+            }
+            else if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            {
+                LaunchButton.Enabled = true;
+            }
+
+        }
+
+        /*********************************************\
+         * Event of clicking batch listbox item :    *
+         *    -> Display Batch summary               *
+        \*********************************************/
+
+        private void BatchListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Display Summary page
+            _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[0];
+
+            // Retrieve batch to summarize
+            foreach (Batch element in _Batch.Get_BatchsList())
+            {
+                if (element.Get_Name().Equals(BatchListBox.SelectedItem.ToString()))
+                {
+                    _Navigator.DisplayBatchSummary(element);
+
+                    // Event handler for the expand/minimize arrow
+                    foreach (KryptonHeaderGroup element2 in _Navigator.Get_ProcessHeaderGroupList())
+                        element2.ButtonSpecs[0].Click += new EventHandler(ProcessButtonSpec_Click);
+                    break;
+                }
+            }
+        }
+
+        /****************************************************\
+         * Event of double clicking batch listbox item :    *
+         *    -> LAUNCH selected batch                      *
+        \****************************************************/
+
+        private void BatchListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // Display Summary page
+            _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[0];
+
+            // Retrieve batch to launch
+            foreach (Batch element in _Batch.Get_BatchsList())
+            {
+                if (element.Get_Name().Equals(BatchListBox.SelectedItem.ToString()))
+                {
+                    // Launch batch, depending on if it's a single or multi batch
+                    if (element.Get_Type().Equals("Single"))
+                        LaunchBatchSingle(element);
+                    else if (element.Get_Type().Equals("Multi"))
+                        LaunchBatchMulti(element);
+                    break;
+                }
+            }
+        }
+
+        private void LaunchBatchSingle(Batch batch)
+        {
+            foreach (KeyValuePair<string, Tuple<string, string>> element in batch.Get_BatchElements())
+            {
+                // Define paths (input, logs)
+                DirectoryInfo targetPath = new DirectoryInfo(element.Key);
+                FileInfo[] inputFiles = targetPath.GetFiles();
+
+                _InputFiles.Clear();
+                foreach (FileInfo file in inputFiles)
+                {
+                    _InputFiles.Add(file.FullName);
+                    _LogsPath = file.Directory.FullName;
+                }
+
+                // Create a new config
+                Config config = new Config(element.Value.Item1, element.Value.Item2);
+
+                // Create launcher and associated UC.
+                _LaunchersList.Add(new Launcher(config, PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked, HCButton.Checked, new List<String>(_InputFiles), _LogsPath, _UpdateProgressBarDel, _UpdateRichTextBoxDel, _AddLogsGridViewDel, _DisplayConfigProcessTimeDel));
+
+                _ProgressBarsList.Add(new ProgressBar(config.Get_Name(), _ProgressBarsList.Count, _AbortThreadDel));
+                _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]);
+                _LogsList.Add(new Log(config.Get_Name(), config.Get_TargetsNumber(), PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked));
+                _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab());
+                _Navigator.LogsNavigator.SelectedIndex = 0;
+                _LogsList[_LogsList.Count - 1].Get_NavigatorTab().ButtonSpecs[0].Click += new EventHandler(_Navigator.CloseLogsNavigatorTab);
+
+                _PoolThreads.Add(new Thread(() => _LaunchersList[_LaunchersList.Count - 1].Run(_LaunchersList.Count - 1)));
+                _PoolThreads[_PoolThreads.Count - 1].IsBackground = true;
+                _PoolThreads[_PoolThreads.Count - 1].Start();
+            }
+        }
+
+        private void LaunchBatchMulti(Batch batch)
+        {
+            foreach (KeyValuePair<string, List<Tuple<string, string>>> element in batch.Get_BatchElementsMulti())
+            {
+                int configCounter = 1;
+
+                // Define paths (input, logs)
+                DirectoryInfo targetPath = new DirectoryInfo(element.Key);
+                FileInfo[] inputFiles = targetPath.GetFiles();
+
+                _InputFiles.Clear();
+                foreach (FileInfo file in inputFiles)
+                    _InputFiles.Add(file.FullName);
+
+                // Create Config/Instanciate launcher for each config of each batch element
+                foreach (Tuple<string, string> config in element.Value)
+                {
+                    // Copy all inputs in a separated directory
+                    if (!Directory.Exists(targetPath + "\\" + configCounter.ToString()))
+                        Directory.CreateDirectory(targetPath + "\\" + configCounter.ToString());
+                    foreach (String input in _InputFiles)
+                        File.Copy(input, targetPath + "\\" + configCounter.ToString() + "\\" + Path.GetFileName(input), true);
+
+                    // Redefine paths
+                    DirectoryInfo specificTargetPath = new DirectoryInfo(targetPath + "\\" + configCounter.ToString());
+                    FileInfo[] specificInputFiles = specificTargetPath.GetFiles();
+                    List<string> specificInputs = new List<string>();
+                    string specificLogPath = specificTargetPath.FullName;
+
+                    foreach (FileInfo file in specificInputFiles)
+                        specificInputs.Add(file.FullName);
+
+                    // Create a new config
+                    Config specificConfig = new Config(config.Item1, config.Item2);
+
+                    // Create launcher and associated UC.
+                    _LaunchersList.Add(new Launcher(specificConfig, PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked, HCButton.Checked, new List<String>(specificInputs), specificLogPath, _UpdateProgressBarDel, _UpdateRichTextBoxDel, _AddLogsGridViewDel, _DisplayConfigProcessTimeDel));
+
+                    _ProgressBarsList.Add(new ProgressBar(specificConfig.Get_Name(), _ProgressBarsList.Count, _AbortThreadDel));
+                    _Navigator.ProgressGroupBox.Panel.Controls.Add(_ProgressBarsList[_ProgressBarsList.Count - 1]);
+                    _LogsList.Add(new Log(specificConfig.Get_Name(), specificConfig.Get_TargetsNumber(), PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked));
+                    _Navigator.LogsNavigator.Pages.Insert(0, _LogsList[_LogsList.Count - 1].Get_NavigatorTab());
+                    _Navigator.LogsNavigator.SelectedIndex = 0;
+                    _LogsList[_LogsList.Count - 1].Get_NavigatorTab().ButtonSpecs[0].Click += new EventHandler(_Navigator.CloseLogsNavigatorTab);
+
+                    _PoolThreads.Add(new Thread(() => _LaunchersList[_LaunchersList.Count - 1].Run(_LaunchersList.Count - 1)));
+                    _PoolThreads[_PoolThreads.Count - 1].IsBackground = true;
+                    _PoolThreads[_PoolThreads.Count - 1].Start();
+
+                    configCounter++;
+                }
+
+
+            }
+        }
 
 
         /******************************************************************************************************\
@@ -1748,57 +1954,63 @@ namespace Analytics_V2
 
         private void NavigatorControl_TabClick(object sender, KryptonPageEventArgs e)
         {
-            if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            if (!FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
             {
-                LaunchButton.Enabled = true;
-                SaveToolStripButton.Enabled = true;
-                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
-                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
                 {
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.Black;
-                }
-
-            }
-            else
-            {
-                LaunchButton.Enabled = false;
-                SaveToolStripButton.Enabled = false;
-                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
-                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
-                {
-                    //((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.IndianRed;
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
                     LaunchButton.Enabled = true;
+                    SaveToolStripButton.Enabled = true;
+                    _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                    if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                    {
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.Black;
+                    }
+
+                }
+                else
+                {
+                    LaunchButton.Enabled = false;
+                    SaveToolStripButton.Enabled = false;
+                    _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                    if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                    {
+                        //((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.IndianRed;
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
+                        LaunchButton.Enabled = true;
+                    }
                 }
             }
         }
 
         private void NavigatorControl_SelectedPageChanged(object sender, EventArgs e)
         {
-            if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            if (!FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
             {
-                LaunchButton.Enabled = true;
-                SaveToolStripButton.Enabled = true;
-                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
-                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
                 {
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.Black;
-                }
-
-            }
-            else
-            {
-                LaunchButton.Enabled = false;
-                SaveToolStripButton.Enabled = false;
-                _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
-                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
-                {
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
-                    ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
                     LaunchButton.Enabled = true;
+                    SaveToolStripButton.Enabled = true;
+                    _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                    if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                    {
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.Black;
+                    }
+
+                }
+                else
+                {
+                    LaunchButton.Enabled = false;
+                    SaveToolStripButton.Enabled = false;
+                    _Navigator.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                    if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                    {
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
+                        ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
+                        LaunchButton.Enabled = true;
+                    }
                 }
             }
         }
@@ -1827,11 +2039,13 @@ namespace Analytics_V2
 
         private void KeepExpandedNode(object sender, TreeViewCancelEventArgs e)
         {
-            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).AddNodePath(e.Node);
+            if (!FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).AddNodePath(e.Node);
         }
 
         private void RemoveExpandedNode(object sender, TreeViewCancelEventArgs e)
         {
+            if(!FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
             ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).RemoveNodePath(e.Node);
         }
 
@@ -1842,22 +2056,31 @@ namespace Analytics_V2
 
         private void RefreshToolStripButton_Click(object sender, EventArgs e)
         {
-            ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
+            if(!FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
             _ConfigsList.Clear();
         }
 
-        /**********************************************************\
-         * Event of clicking of the element exit of the MenuStrip *
-         *  - Close the form.                                     *
-        \**********************************************************/
+        /***********************************************************************\
+         * Event of clicking of the element exit of the MenuStrip or the cross *
+         *  - Close the form.                                                  *
+        \***********************************************************************/
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SaveBatchs();
             Close();
         }
 
-        #endregion
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveBatchs();
+            Application.Exit();
+        }
 
+        
+
+        #endregion
     }
 }
 

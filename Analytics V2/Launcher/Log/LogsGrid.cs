@@ -284,6 +284,14 @@ namespace Analytics_V2
                     break;
                 }
 
+                case "COLUMNMOVER":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("Error detected in line :");
+                    AnalyzeProcessLog("== COLUMNMOVER PROCESS ==", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
+                    break;
+                }
+
                 case "EXPAND":
                 {
                     List<string> listErrors = new List<string>();
@@ -620,6 +628,7 @@ namespace Analytics_V2
                                 || (line.Contains(error) && processToAnalyze.Contains("XML2TXT"))
                                 || (line.Contains(error) && error.Equals("Error when creating xml files") && processToAnalyze.Contains("TXT2XML"))
                                 || (line.Contains(error) && processToAnalyze.Contains("COLUMNDELETER"))
+                                || (line.Contains(error) && processToAnalyze.Contains("COLUMNMOVER"))
                                 || (line.Contains(error) && error.Equals("Error ! TTV Channel") && processToAnalyze.Equals("== CONTROL TOTAL TV =="))
                                 )
                             {
@@ -708,7 +717,7 @@ namespace Analytics_V2
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
             }
 
-            else if ((processToAnalyze.Contains("XML2TXT") || processToAnalyze.Contains("TXT2XML") || processToAnalyze.Contains("COLUMNDELETER")) && informationOrCriticalCounter > 0)
+            else if ((processToAnalyze.Contains("XML2TXT") || processToAnalyze.Contains("TXT2XML") || processToAnalyze.Contains("COLUMNDELETER") || processToAnalyze.Contains("COLUMNMOVER")) && informationOrCriticalCounter > 0)
             {
                 commentsCell.Value = "Critical errors : " + informationOrCriticalCounter;
                 checkCell.Value = "ALERT";
@@ -941,7 +950,7 @@ namespace Analytics_V2
                     checkNoDiffDico.Remove("");
                     foreach (KeyValuePair<string, int> element in checkNoDiffDico)
                     {
-                        if ((float)element.Value > (float)0.7 * (float)_NumberOfDays)
+                        if ((float)element.Value > (float)0.5 * (float)_NumberOfDays)
                         {
                             _NoDiffCriticalAlerts++;
                             _NoDiffCriticalAlertsLogs = _NoDiffCriticalAlertsLogs + "La chaîne " + element.Key.ToString().Replace(" NO DIFF", "") + " n'a pas été diffusée durant " + element.Value + " jours (sur les " + _NumberOfDays + ").\n";

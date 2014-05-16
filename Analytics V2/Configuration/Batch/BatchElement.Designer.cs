@@ -49,6 +49,7 @@
             // 
             // GroupBox.Panel
             // 
+            this.GroupBox.Panel.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.GroupBox.Panel.Controls.Add(this.TargetPathButton);
             this.GroupBox.Panel.Controls.Add(this.SuppressButton);
             this.GroupBox.Panel.Controls.Add(this.Config);
@@ -77,17 +78,16 @@
             this.SuppressButton.TabIndex = 4;
             this.SuppressButton.Values.Image = global::Analytics_V2.Properties.Resources.Delete;
             this.SuppressButton.Values.Text = "";
-            this.SuppressButton.Click += new System.EventHandler(this.SuppressButton_Click);
             // 
             // Config
             // 
             this.Config.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.Config.AutoSize = true;
             this.Config.BackColor = System.Drawing.Color.Transparent;
-            this.Config.Font = new System.Drawing.Font("Calibri", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Config.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Config.Location = new System.Drawing.Point(66, 27);
             this.Config.Name = "Config";
-            this.Config.Size = new System.Drawing.Size(49, 19);
+            this.Config.Size = new System.Drawing.Size(46, 18);
             this.Config.TabIndex = 3;
             this.Config.Text = "label1";
             // 
@@ -132,8 +132,8 @@
         private ComponentFactory.Krypton.Toolkit.KryptonGroupBox GroupBox;
         private ComponentFactory.Krypton.Toolkit.KryptonLabel ConfigSelectionLabel;
         private ComponentFactory.Krypton.Toolkit.KryptonLabel TargetPathLabel;
-        private ComponentFactory.Krypton.Toolkit.KryptonButton SuppressButton;
         private ComponentFactory.Krypton.Toolkit.KryptonButton TargetPathButton;
         internal System.Windows.Forms.Label Config;
+        internal ComponentFactory.Krypton.Toolkit.KryptonButton SuppressButton;
     }
 }

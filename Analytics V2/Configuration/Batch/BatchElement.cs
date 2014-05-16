@@ -12,9 +12,11 @@ namespace Analytics_V2
 {
     public partial class BatchElement : UserControl
     {
-        ToolTip _SuppressButtonTooltip;
-        ToolTip _TargetPathTooltip;
-        string _TargetPath;
+        private ToolTip _SuppressButtonTooltip;
+        private ToolTip _TargetPathTooltip;
+        private string _TargetPath;
+        private string _ConfigPath;
+        private string _ConfigName;
 
         /**************************************************** Constructor *****************************************************/
 
@@ -25,6 +27,8 @@ namespace Analytics_V2
             InitializeComponent();
 
             _TargetPath = null;
+            _ConfigName = null;
+            _ConfigPath = null;
 
             _SuppressButtonTooltip = new ToolTip();
             _SuppressButtonTooltip.SetToolTip(SuppressButton, "Delete this component.");
@@ -38,11 +42,6 @@ namespace Analytics_V2
 
         #region Events
 
-        private void SuppressButton_Click(object sender, EventArgs e)
-        {
-            this.Dispose();
-        }
-
         private void TargetPathButton_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
@@ -54,7 +53,7 @@ namespace Analytics_V2
                 _TargetPathTooltip.SetToolTip(TargetPathButton, "Target : " + openFolderDialog.SelectedPath);
                 _TargetPath = openFolderDialog.SelectedPath;
 
-                var result2 = KryptonMessageBox.Show("Path defined . ", "Path Defined",
+                var result2 = KryptonMessageBox.Show("Path defined. ", "Path Defined",
                               MessageBoxButtons.OK,
                               MessageBoxIcon.Information);
             }
@@ -67,6 +66,36 @@ namespace Analytics_V2
         public string Get_TargetPath()
         {
             return _TargetPath;
+        }
+
+        public string Get_ConfigPath()
+        {
+            return _ConfigPath;
+        }
+
+        public string Get_ConfigName()
+        {
+            return _ConfigName;
+        }
+
+        public void Set_ConfigPath(string path)
+        {
+            _ConfigPath = path;
+        }
+
+        public void Set_ConfigName(string name)
+        {
+            _ConfigName = name;
+        }
+
+        public void Set_TargetPath(string path)
+        {
+            _TargetPath = path;
+        }
+
+        public void Set_TargetPathTooltip(string path)
+        {
+            _TargetPathTooltip.SetToolTip(TargetPathButton, "Target : " + path);
         }
     }
 }

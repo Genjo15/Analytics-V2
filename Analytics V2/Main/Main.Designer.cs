@@ -54,9 +54,13 @@
             this.FileBrowserNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.common = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.local = new ComponentFactory.Krypton.Navigator.KryptonPage();
+            this.batchs = new ComponentFactory.Krypton.Navigator.KryptonPage();
+            this.BatchListBox = new System.Windows.Forms.ListBox();
+            this.BatchsHeader = new ComponentFactory.Krypton.Toolkit.KryptonHeader();
             this.MainBoardSplitContainer3 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.MainBoardSplitContainer5 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ProcessAndControlGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
+            this.ProcessHelperButton = new XMLLoader.ButtonHelp();
             this.HCButton = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
             this.LaunchButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.PreProcessButton = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
@@ -72,7 +76,6 @@
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ProcessHelperButton = new XMLLoader.ButtonHelp();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1.Panel1)).BeginInit();
             this.MainBoardSplitContainer1.Panel1.SuspendLayout();
@@ -94,6 +97,8 @@
             this.FileBrowserNavigator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.common)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.local)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.batchs)).BeginInit();
+            this.batchs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel1)).BeginInit();
             this.MainBoardSplitContainer3.Panel1.SuspendLayout();
@@ -300,8 +305,10 @@
             this.FileBrowserNavigator.Name = "FileBrowserNavigator";
             this.FileBrowserNavigator.Pages.AddRange(new ComponentFactory.Krypton.Navigator.KryptonPage[] {
             this.common,
-            this.local});
+            this.local,
+            this.batchs});
             this.FileBrowserNavigator.SelectedIndex = 0;
+            this.FileBrowserNavigator.SelectedPageChanged += new System.EventHandler(this.FileBrowserNavigator_SelectedPageChanged);
             // 
             // common
             // 
@@ -320,6 +327,35 @@
             resources.ApplyResources(this.local, "local");
             this.local.Name = "local";
             this.local.UniqueName = "1ABA6857C37647321887B23E69B0623E";
+            // 
+            // batchs
+            // 
+            this.batchs.AutoHiddenSlideSize = new System.Drawing.Size(200, 200);
+            this.batchs.Controls.Add(this.BatchListBox);
+            this.batchs.Controls.Add(this.BatchsHeader);
+            this.batchs.Flags = 65534;
+            this.batchs.LastVisibleSet = true;
+            resources.ApplyResources(this.batchs, "batchs");
+            this.batchs.Name = "batchs";
+            this.batchs.UniqueName = "008FC0F145F44E760191FCEA945BD880";
+            // 
+            // BatchListBox
+            // 
+            this.BatchListBox.BackColor = System.Drawing.Color.White;
+            this.BatchListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.BatchListBox, "BatchListBox");
+            this.BatchListBox.FormattingEnabled = true;
+            this.BatchListBox.Name = "BatchListBox";
+            this.BatchListBox.SelectedIndexChanged += new System.EventHandler(this.BatchListBox_SelectedIndexChanged);
+            this.BatchListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BatchListBox_MouseDoubleClick);
+            // 
+            // BatchsHeader
+            // 
+            resources.ApplyResources(this.BatchsHeader, "BatchsHeader");
+            this.BatchsHeader.Name = "BatchsHeader";
+            this.BatchsHeader.Values.Description = resources.GetString("BatchsHeader.Values.Description");
+            this.BatchsHeader.Values.Heading = resources.GetString("BatchsHeader.Values.Heading");
+            this.BatchsHeader.Values.Image = global::Analytics_V2.Properties.Resources.Batch3;
             // 
             // MainBoardSplitContainer3
             // 
@@ -360,6 +396,11 @@
             this.ProcessAndControlGroupBox.Panel.Controls.Add(this.ControlsButton);
             this.ProcessAndControlGroupBox.Panel.Controls.Add(this.ProcessButton);
             this.ProcessAndControlGroupBox.Values.Heading = resources.GetString("ProcessAndControlGroupBox.Values.Heading");
+            // 
+            // ProcessHelperButton
+            // 
+            resources.ApplyResources(this.ProcessHelperButton, "ProcessHelperButton");
+            this.ProcessHelperButton.Name = "ProcessHelperButton";
             // 
             // HCButton
             // 
@@ -463,11 +504,6 @@
             this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
             this.StatusToolStripMenuItem.TextChanged += new System.EventHandler(this.StatusToolStripMenuItem_TextChanged);
             // 
-            // ProcessHelperButton
-            // 
-            resources.ApplyResources(this.ProcessHelperButton, "ProcessHelperButton");
-            this.ProcessHelperButton.Name = "ProcessHelperButton";
-            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -477,6 +513,7 @@
             this.Controls.Add(this.MenuStrip);
             this.MainMenuStrip = this.MenuStrip;
             this.Name = "Main";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Resize += new System.EventHandler(this.Main_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1.Panel1)).EndInit();
             this.MainBoardSplitContainer1.Panel1.ResumeLayout(false);
@@ -501,6 +538,9 @@
             this.FileBrowserNavigator.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.common)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.local)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.batchs)).EndInit();
+            this.batchs.ResumeLayout(false);
+            this.batchs.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel1)).EndInit();
             this.MainBoardSplitContainer3.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer3.Panel2)).EndInit();
@@ -572,6 +612,9 @@
         private System.Windows.Forms.ToolStripButton BatchToolStripButton;
         private System.Windows.Forms.ToolStripButton HCToolStripButton;
         internal XMLLoader.ButtonHelp ProcessHelperButton;
+        private ComponentFactory.Krypton.Navigator.KryptonPage batchs;
+        private ComponentFactory.Krypton.Toolkit.KryptonHeader BatchsHeader;
+        private System.Windows.Forms.ListBox BatchListBox;
 
 
 

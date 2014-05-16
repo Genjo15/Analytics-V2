@@ -39,6 +39,7 @@
             this.Cellcopy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Columns = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDeleter = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnMover = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Copy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cut = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Dateconvert = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -80,6 +81,7 @@
             this.Cellcopy,
             this.Columns,
             this.ColumnDeleter,
+            this.ColumnMover,
             this.Copy,
             this.Cut,
             this.Dateconvert,
@@ -197,6 +199,14 @@
             this.ColumnDeleter.Name = "ColumnDeleter";
             this.ColumnDeleter.ReadOnly = true;
             this.ColumnDeleter.Width = 133;
+            // 
+            // ColumnMover
+            // 
+            this.ColumnMover.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnMover.HeaderText = "COLUMNMOVER";
+            this.ColumnMover.Name = "ColumnMover";
+            this.ColumnMover.ReadOnly = true;
+            this.ColumnMover.Width = 127;
             // 
             // Copy
             // 
@@ -446,6 +456,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Cellcopy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Columns;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDeleter;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMover;
         private System.Windows.Forms.DataGridViewTextBoxColumn Copy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cut;
         private System.Windows.Forms.DataGridViewTextBoxColumn Dateconvert;

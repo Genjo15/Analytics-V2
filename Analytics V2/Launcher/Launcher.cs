@@ -1,13 +1,13 @@
-﻿using ComponentFactory.Krypton.Toolkit;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
 using System.Data;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.ComponentModel;
+using System.Text;
+
 
 namespace Analytics_V2
 {
@@ -133,7 +133,7 @@ namespace Analytics_V2
                             counter++;
                             UpdateProgressBar(counter);
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             counter++;
                             UpdateProgressBar(counter);
@@ -444,6 +444,28 @@ namespace Analytics_V2
                     {
                         ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COLUMNDELETER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
                         UpdateRichTextBox("fail", "FAIL");
+                    }
+                    StopStopWatch(launchStopwatch);
+                    break;
+
+                case "COLUMNMOVER":
+                    StartStopWatch(launchStopwatch);
+                    UpdateRichTextBox("function", "COLUMNMOVER..... ");
+                    try
+                    {
+                        MyTextColumnsDeleter.ColumnMove columnMoverProcess = new MyTextColumnsDeleter.ColumnMove(_TabData, dataTable, _Config.Get_DataSeparator());
+                        _TabData = columnMoverProcess.run();
+                        foreach (String logLine in columnMoverProcess.Log)
+                            _Logs += logLine + "\r\n";
+                        columnMoverProcess = null;
+                        UpdateRichTextBox("complete", "Complete!");
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== COLUMNMOVER ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                        _Logs += "\r\n== COLUMNMOVER ==\r\n";
+
                     }
                     StopStopWatch(launchStopwatch);
                     break;

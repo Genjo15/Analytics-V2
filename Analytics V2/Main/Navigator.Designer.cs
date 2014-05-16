@@ -210,7 +210,7 @@
         internal ComponentFactory.Krypton.Toolkit.KryptonSplitContainer SummarySplitContainer2;
         internal ComponentFactory.Krypton.Toolkit.KryptonGroupBox ProgressGroupBox;
         internal ComponentFactory.Krypton.Navigator.KryptonNavigator LogsNavigator;
-        internal System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
+        internal new System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
         internal ComponentFactory.Krypton.Navigator.ButtonSpecNavigator switchButtonSpec;
     }
 }
