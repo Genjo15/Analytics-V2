@@ -29,15 +29,18 @@
         private void InitializeComponent()
         {
             this.GroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
+            this.ConsistencyCheckingButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            this.ConsistencyCheckingTextBox = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
+            this.ConsistencyPathLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
+            this.XMLTemplateButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            this.XMLTemplateTextBox = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
+            this.XMLTemplateLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             this.HCButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.HCTextBox = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
             this.HCLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             this.PersonnalPathButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.PersonnalPathTextBox = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
             this.PersonnalPathLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
-            this.XMLTemplateButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.XMLTemplateTextBox = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
-            this.XMLTemplateLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             ((System.ComponentModel.ISupportInitialize)(this.GroupBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GroupBox.Panel)).BeginInit();
             this.GroupBox.Panel.SuspendLayout();
@@ -53,6 +56,9 @@
             // 
             // GroupBox.Panel
             // 
+            this.GroupBox.Panel.Controls.Add(this.ConsistencyCheckingButton);
+            this.GroupBox.Panel.Controls.Add(this.ConsistencyCheckingTextBox);
+            this.GroupBox.Panel.Controls.Add(this.ConsistencyPathLabel);
             this.GroupBox.Panel.Controls.Add(this.XMLTemplateButton);
             this.GroupBox.Panel.Controls.Add(this.XMLTemplateTextBox);
             this.GroupBox.Panel.Controls.Add(this.XMLTemplateLabel);
@@ -64,6 +70,66 @@
             this.GroupBox.Panel.Controls.Add(this.PersonnalPathLabel);
             this.GroupBox.Size = new System.Drawing.Size(633, 321);
             this.GroupBox.TabIndex = 0;
+            // 
+            // ConsistencyCheckingButton
+            // 
+            this.ConsistencyCheckingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ConsistencyCheckingButton.Location = new System.Drawing.Point(579, 240);
+            this.ConsistencyCheckingButton.Name = "ConsistencyCheckingButton";
+            this.ConsistencyCheckingButton.Size = new System.Drawing.Size(24, 27);
+            this.ConsistencyCheckingButton.TabIndex = 11;
+            this.ConsistencyCheckingButton.Values.Image = global::Analytics_V2.Properties.Resources.Edit;
+            this.ConsistencyCheckingButton.Values.Text = "";
+            this.ConsistencyCheckingButton.Click += new System.EventHandler(this.ConsistencyCheckingButton_Click);
+            // 
+            // ConsistencyCheckingTextBox
+            // 
+            this.ConsistencyCheckingTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ConsistencyCheckingTextBox.Location = new System.Drawing.Point(24, 244);
+            this.ConsistencyCheckingTextBox.Name = "ConsistencyCheckingTextBox";
+            this.ConsistencyCheckingTextBox.ReadOnly = true;
+            this.ConsistencyCheckingTextBox.Size = new System.Drawing.Size(535, 20);
+            this.ConsistencyCheckingTextBox.TabIndex = 10;
+            this.ConsistencyCheckingTextBox.Text = "kryptonTextBox1";
+            // 
+            // ConsistencyPathLabel
+            // 
+            this.ConsistencyPathLabel.Location = new System.Drawing.Point(23, 218);
+            this.ConsistencyPathLabel.Name = "ConsistencyPathLabel";
+            this.ConsistencyPathLabel.Size = new System.Drawing.Size(196, 20);
+            this.ConsistencyPathLabel.TabIndex = 9;
+            this.ConsistencyPathLabel.Values.Text = "Dossier du Consistency Checking :";
+            // 
+            // XMLTemplateButton
+            // 
+            this.XMLTemplateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.XMLTemplateButton.Location = new System.Drawing.Point(579, 175);
+            this.XMLTemplateButton.Name = "XMLTemplateButton";
+            this.XMLTemplateButton.Size = new System.Drawing.Size(24, 27);
+            this.XMLTemplateButton.TabIndex = 8;
+            this.XMLTemplateButton.Values.Image = global::Analytics_V2.Properties.Resources.Edit;
+            this.XMLTemplateButton.Values.Text = "";
+            this.XMLTemplateButton.Click += new System.EventHandler(this.XMLTemplateButton_Click);
+            // 
+            // XMLTemplateTextBox
+            // 
+            this.XMLTemplateTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.XMLTemplateTextBox.Location = new System.Drawing.Point(24, 179);
+            this.XMLTemplateTextBox.Name = "XMLTemplateTextBox";
+            this.XMLTemplateTextBox.ReadOnly = true;
+            this.XMLTemplateTextBox.Size = new System.Drawing.Size(535, 20);
+            this.XMLTemplateTextBox.TabIndex = 7;
+            this.XMLTemplateTextBox.Text = "kryptonTextBox1";
+            // 
+            // XMLTemplateLabel
+            // 
+            this.XMLTemplateLabel.Location = new System.Drawing.Point(23, 153);
+            this.XMLTemplateLabel.Name = "XMLTemplateLabel";
+            this.XMLTemplateLabel.Size = new System.Drawing.Size(387, 20);
+            this.XMLTemplateLabel.TabIndex = 6;
+            this.XMLTemplateLabel.Values.Text = "Dossier des Templates d\'interprétation XML (pour le mode création) :";
             // 
             // HCButton
             // 
@@ -82,6 +148,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.HCTextBox.Location = new System.Drawing.Point(24, 111);
             this.HCTextBox.Name = "HCTextBox";
+            this.HCTextBox.ReadOnly = true;
             this.HCTextBox.Size = new System.Drawing.Size(535, 20);
             this.HCTextBox.TabIndex = 4;
             this.HCTextBox.Text = "kryptonTextBox1";
@@ -111,6 +178,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PersonnalPathTextBox.Location = new System.Drawing.Point(24, 44);
             this.PersonnalPathTextBox.Name = "PersonnalPathTextBox";
+            this.PersonnalPathTextBox.ReadOnly = true;
             this.PersonnalPathTextBox.Size = new System.Drawing.Size(535, 20);
             this.PersonnalPathTextBox.TabIndex = 1;
             this.PersonnalPathTextBox.Text = "kryptonTextBox1";
@@ -122,35 +190,6 @@
             this.PersonnalPathLabel.Size = new System.Drawing.Size(114, 20);
             this.PersonnalPathLabel.TabIndex = 0;
             this.PersonnalPathLabel.Values.Text = "Dossier Personnel :";
-            // 
-            // XMLTemplateButton
-            // 
-            this.XMLTemplateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.XMLTemplateButton.Location = new System.Drawing.Point(579, 175);
-            this.XMLTemplateButton.Name = "XMLTemplateButton";
-            this.XMLTemplateButton.Size = new System.Drawing.Size(24, 27);
-            this.XMLTemplateButton.TabIndex = 8;
-            this.XMLTemplateButton.Values.Image = global::Analytics_V2.Properties.Resources.Edit;
-            this.XMLTemplateButton.Values.Text = "";
-            this.XMLTemplateButton.Click += new System.EventHandler(this.XMLTemplateButton_Click);
-            // 
-            // XMLTemplateTextBox
-            // 
-            this.XMLTemplateTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.XMLTemplateTextBox.Location = new System.Drawing.Point(24, 179);
-            this.XMLTemplateTextBox.Name = "XMLTemplateTextBox";
-            this.XMLTemplateTextBox.Size = new System.Drawing.Size(535, 20);
-            this.XMLTemplateTextBox.TabIndex = 7;
-            this.XMLTemplateTextBox.Text = "kryptonTextBox1";
-            // 
-            // XMLTemplateLabel
-            // 
-            this.XMLTemplateLabel.Location = new System.Drawing.Point(23, 153);
-            this.XMLTemplateLabel.Name = "XMLTemplateLabel";
-            this.XMLTemplateLabel.Size = new System.Drawing.Size(380, 20);
-            this.XMLTemplateLabel.TabIndex = 6;
-            this.XMLTemplateLabel.Values.Text = "Dossier des Templates d\'interprétation XML (pour le mode création)";
             // 
             // Settings
             // 
@@ -180,5 +219,8 @@
         private ComponentFactory.Krypton.Toolkit.KryptonButton XMLTemplateButton;
         private ComponentFactory.Krypton.Toolkit.KryptonTextBox XMLTemplateTextBox;
         private ComponentFactory.Krypton.Toolkit.KryptonLabel XMLTemplateLabel;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton ConsistencyCheckingButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonTextBox ConsistencyCheckingTextBox;
+        private ComponentFactory.Krypton.Toolkit.KryptonLabel ConsistencyPathLabel;
     }
 }

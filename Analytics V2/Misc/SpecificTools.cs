@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ComponentFactory.Krypton.Toolkit;
 
 
 namespace Analytics_V2
@@ -47,6 +48,7 @@ namespace Analytics_V2
 
         private void FillSpecificToolsList()
         {
+            _SpecificToolsList.Add("Consistency Checking *BETA*");
             _SpecificToolsList.Add("Consistency Checking - PROGRAMMES");
             _SpecificToolsList.Add("Consistency Checking - QH");
             _SpecificToolsList.Add("Traitements QH");
@@ -60,13 +62,47 @@ namespace Analytics_V2
         {
             switch (tool)
             {
-                case "Consistency Checking - PROGRAMMES": Konsistency.Konsistency consistencyCheckingProgramsProcess = new Konsistency.Konsistency();
-                                                          consistencyCheckingProgramsProcess.Konsis_PRGLoader();
-                                                          break;
+                case "Consistency Checking *BETA*":
+                    try
+                    {
+                        Consistency.Consistency consistencyCheckingBetaProcess = new Consistency.Consistency(Properties.Settings.Default.consistency_checking_path);
+                        consistencyCheckingBetaProcess.StartPosition = FormStartPosition.CenterScreen;
+                        consistencyCheckingBetaProcess.Show();
+                    }
+                    catch
+                    {
+                        KryptonMessageBox.Show("Unable to launch Consistency Checking, please verify your path.", "Error when launching Consistency Checking",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                    }
+                    break;
+                case "Consistency Checking - PROGRAMMES":
+                    try
+                    {
+                        Konsistency.Konsistency consistencyCheckingProgramsProcess = new Konsistency.Konsistency();
+                        consistencyCheckingProgramsProcess.Konsis_PRGLoader();
+                    }
+                    catch
+                    {
+                        KryptonMessageBox.Show("Error! Unable to launch Consistency Checking, please check your export file.", "Error when launching Consistency Checking",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                    }
+                    break;
 
-                case "Consistency Checking - QH": Konsistency.Konsistency consistencyCheckingTimebandsProcess = new Konsistency.Konsistency();
-                                                  consistencyCheckingTimebandsProcess.Konsis_QHLoader();
-                                                  break;
+                case "Consistency Checking - QH":
+                    try
+                    {
+                        Konsistency.Konsistency consistencyCheckingTimebandsProcess = new Konsistency.Konsistency();
+                        consistencyCheckingTimebandsProcess.Konsis_QHLoader();
+                    }
+                    catch
+                    {
+                        KryptonMessageBox.Show("Error! Unable to launch Consistency Checking, please check your export file.", "Error when launching Consistency Checking",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                    }
+                    break;
 
                 case "Traitements QH": Format_QH.Format_QH formatQHProcess = new Format_QH.Format_QH();
                                        formatQHProcess.StartPosition = FormStartPosition.CenterScreen;

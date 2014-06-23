@@ -73,5 +73,17 @@ namespace Analytics_V2.Properties {
                 this["xml_template"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\Janus\\PRODUCTION\\APPLICATIONS\\CONSISTENCY CHECKING\\MyETV\\2014\\")]
+        public string consistency_checking_path {
+            get {
+                return ((string)(this["consistency_checking_path"]));
+            }
+            set {
+                this["consistency_checking_path"] = value;
+            }
+        }
     }
 }

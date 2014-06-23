@@ -108,6 +108,7 @@ namespace Analytics_V2
             {
                 if (grid.DataGridView.Name.Equals(_ComboBox.SelectedItem))
                     _SplitContainer.Panel2.Controls.Add(grid);
+                grid.DataGridView.ClearSelection();
             }
         }
 

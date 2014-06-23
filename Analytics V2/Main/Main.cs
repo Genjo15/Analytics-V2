@@ -204,7 +204,7 @@ namespace Analytics_V2
             MainBoardSplitContainer1.FixedPanel = FixedPanel.Panel1;
 
             // Event handlers
-            this.Resize += Main_Resize;
+            //this.Resize += Main_Resize;
 
             _FileBrowser.TreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             _FileBrowser.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
@@ -1929,23 +1929,27 @@ namespace Analytics_V2
 
         private void Main_Resize(object sender, EventArgs e)
         {
-            _Navigator.SummarySplitContainer1.SplitterDistance += 1;
-            _Navigator.SummarySplitContainer1.SplitterDistance -= 1;
-
-            switch (this.WindowState)
+            try
             {
-                case FormWindowState.Maximized:
-                    //MessageBox.Show("J'aggrandis");
-                    break;
-                case FormWindowState.Minimized:
-                    
-                    break;
-                case FormWindowState.Normal:
-                    //MessageBox.Show("Retour à la normale");
-                    break;
-                default:
-                    break;
+                _Navigator.SummarySplitContainer1.SplitterDistance += 1;
+                _Navigator.SummarySplitContainer1.SplitterDistance -= 1;
             }
+            catch { }
+        
+            //switch (this.WindowState)
+            //{
+            //    case FormWindowState.Maximized:
+            //        //MessageBox.Show("J'aggrandis");
+            //        break;
+            //    case FormWindowState.Minimized:
+            //        
+            //        break;
+            //    case FormWindowState.Normal:
+            //        //MessageBox.Show("Retour à la normale");
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         /***************************************************************************\

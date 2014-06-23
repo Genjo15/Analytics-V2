@@ -88,8 +88,11 @@ namespace Analytics_V2
             DataGridView.Name = name;
             _DatamodRootPath = "";
             _InputFileName = inputFile;
-            _DatacheckerPath = dmPath.Replace(".txt", "_dc.log");
-            _HCPath = dmPath.Replace(".txt", "_hc.log");
+            //_DatacheckerPath = dmPath.Replace(".txt", "_dc.log").Replace(".xml","_dc.log");
+            _DatacheckerPath = Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + "_dc.log";
+            if (File.Exists(Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + "_hc.log"))
+                _HCPath = Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + "_hc.log";
+            else _HCPath = null;
 
             _PreProcess = preProcess;
             _Process = process;
@@ -100,7 +103,7 @@ namespace Analytics_V2
 
             _DatamodRootPath = System.IO.Directory.GetParent(dmPath).FullName + '\\';
 
-            _DatamodLogPath = dmPath.Replace(".txt", ".log");
+            _DatamodLogPath = Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + ".log";
 
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             FillGrid(processList);
@@ -138,27 +141,25 @@ namespace Analytics_V2
         {
             for (int i = 0; i < processList.Count; i++)
             {
-                //if (processList[i].Get_OrderId() != 0)
-                //{
-                    if ((_PreProcess && processList[i].Get_OrderId() < 0) || (_Process && processList[i].Get_OrderId() < 100 && processList[i].Get_OrderId() > 0) || (_Control && processList[i].Get_OrderId() > 100))
-                    {
-                        int occurrenceCounter = 0;
-                        DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
-                        row.Cells[0].Value = processList[i].Get_OrderId();
-                        row.Cells[1].Value = processList[i].Get_Name();
+                if ((_PreProcess && processList[i].Get_OrderId() < 0) || (_Process && processList[i].Get_OrderId() < 100 && processList[i].Get_OrderId() > 0) || (_Control && processList[i].Get_OrderId() > 100))
+                {
+                    int occurrenceCounter = 0;
+                    DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
+                    row.Cells[0].Value = processList[i].Get_OrderId();
+                    row.Cells[1].Value = processList[i].Get_Name();
 
-                        // Check how many time the process has already been called
-                        for (int j = 0; j < i + 1; j++)
-                            if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
-                                occurrenceCounter++;
+                    // Check how many time the process has already been called
+                    for (int j = 0; j < i + 1; j++)
+                        if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
+                            occurrenceCounter++;
 
-
-                        AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
-                        DataGridView.Rows.Add(row);
-                    }
-                //}
+                    AnalyzeLog(processList[i].Get_Name(), row.Cells[2], row.Cells[3], occurrenceCounter);
+                    if (processList[i].Get_OrderId() > 100)
+                        DataGridView.Rows.Insert(0, row);
+                    else DataGridView.Rows.Add(row);
+                }
             }
-
+           
             //////////
             // For HC
 
@@ -167,9 +168,11 @@ namespace Analytics_V2
                 DataGridViewRow row = (DataGridViewRow)DataGridView.Rows[0].Clone();
                 row.Cells[1].Value = "HC";
                 AnalyzeHC(row.Cells[2], row.Cells[3], _HCPath);
-                DataGridView.Rows.Add(row);
+                DataGridView.Rows.Insert(0, row);
             }
 
+            //DataGridView.SelectionMode.
+            
             DataGridView.AllowUserToAddRows = false;
         }
 
@@ -202,7 +205,7 @@ namespace Analytics_V2
                     listErrors.Add("Error in formula: ");
                     listErrors.Add("/!\\ Error: ");
 
-                    AnalyzeProcessLog("------------XLS2TXT------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodRootPath + "XLS2TXT_Process.log");
+                    AnalyzeProcessLog("------------ XLS2TXT ------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodRootPath + "XLS2TXT_Process.log");
 
                     break;
                 }
@@ -214,6 +217,20 @@ namespace Analytics_V2
 
                     AnalyzeProcessLog("------------ XML2TXT ------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodRootPath + "XML2TXT_Process.log");
 
+                    break;
+                }
+
+                case "XMLMERGE":
+                {
+                    List<string> listErrors = new List<string>();
+                    listErrors.Add("Error when reading the list of path");
+                    listErrors.Add("Error when parsing  datatable");
+                    listErrors.Add("Entete different dans le fichier : ");
+                    listErrors.Add("Error detected when parsing files ");
+                    listErrors.Add("Error when creating new file.xml ");
+                
+                    AnalyzeProcessLog("------------ XMLMERGE ------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatamodLogPath);
+                
                     break;
                 }
 
@@ -446,7 +463,7 @@ namespace Analytics_V2
 
                     foreach (FileInfo file in files)
                     {
-                        if (file.FullName.Contains(_InputFileName.Replace(".txt", "")) && file.FullName.Contains("new_ld.log"))
+                        if (file.FullName.Contains(Path.GetFileNameWithoutExtension(_InputFileName)) && file.FullName.Contains("new_ld.log"))
                             _LinedelPath = file.FullName;
                     }
 
@@ -474,7 +491,7 @@ namespace Analytics_V2
 
                     foreach (FileInfo file in files)
                     {
-                        if (file.FullName.Contains(_InputFileName.Replace(".txt", "")) && file.FullName.Contains("DATEFORMAT.log"))
+                        if (file.FullName.Contains(Path.GetFileNameWithoutExtension(_InputFileName)) && file.FullName.Contains("DATEFORMAT.log"))
                             _DateformatPath = file.FullName;
                     }
 
@@ -505,7 +522,8 @@ namespace Analytics_V2
 
                     foreach (FileInfo file in files)
                     {
-                        if (file.FullName.Contains(_InputFileName.Replace(".txt", "")) && file.FullName.Contains("CONTROLDIFF.log"))
+                        //if (file.FullName.Contains(_InputFileName.Replace(".txt", "")) && file.FullName.Contains("CONTROLDIFF.log"))
+                        if (file.FullName.Contains(Path.GetFileNameWithoutExtension(_InputFileName)) && file.FullName.Contains("CONTROLDIFF.log"))
                         {
                             _ControlDiffPath = file.FullName;
                         }
@@ -629,6 +647,7 @@ namespace Analytics_V2
                                 || (line.Contains(error) && error.Equals("Error when creating xml files") && processToAnalyze.Contains("TXT2XML"))
                                 || (line.Contains(error) && processToAnalyze.Contains("COLUMNDELETER"))
                                 || (line.Contains(error) && processToAnalyze.Contains("COLUMNMOVER"))
+                                || (line.Contains(error) && processToAnalyze.Contains("XMLMERGE"))
                                 || (line.Contains(error) && error.Equals("Error ! TTV Channel") && processToAnalyze.Equals("== CONTROL TOTAL TV =="))
                                 )
                             {
@@ -707,6 +726,13 @@ namespace Analytics_V2
                 checkCell.Value = "ALERT";
                 checkCell.Style.ForeColor = System.Drawing.Color.Red;
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+
+                // Renamme Datamod
+                try
+                {
+                    File.Move(_DatamodLogPath.Replace(".log", ".txt"), _DatamodLogPath.Replace(".log", "") + "_ERROR_DC.txt");
+                }
+                catch { }
             }
 
             else if (processToAnalyze.Equals(("== CONTROL TOTAL TV ==")) && informationOrCriticalCounter > 0)
@@ -717,7 +743,7 @@ namespace Analytics_V2
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
             }
 
-            else if ((processToAnalyze.Contains("XML2TXT") || processToAnalyze.Contains("TXT2XML") || processToAnalyze.Contains("COLUMNDELETER") || processToAnalyze.Contains("COLUMNMOVER")) && informationOrCriticalCounter > 0)
+            else if ((processToAnalyze.Contains("XML2TXT") || processToAnalyze.Contains("TXT2XML") || processToAnalyze.Contains("COLUMNDELETER") || processToAnalyze.Contains("COLUMNMOVER") || processToAnalyze.Contains("XMLMERGE")) && informationOrCriticalCounter > 0)
             {
                 commentsCell.Value = "Critical errors : " + informationOrCriticalCounter;
                 checkCell.Value = "ALERT";
@@ -1082,7 +1108,7 @@ namespace Analytics_V2
 
             if (error)
             {
-                checkCell.Value = "WARNING";
+                checkCell.Value = "ALERT";
                 checkCell.Style.ForeColor = System.Drawing.Color.Red;
                 commentsCell.Style.ForeColor = System.Drawing.Color.Red;
             }
@@ -1126,7 +1152,7 @@ namespace Analytics_V2
                     _ControlDiffForm.Show();
                 else if (int.Parse(DataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()) < 0 && DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("XML2TXT"))
                     System.Diagnostics.Process.Start(_DatamodRootPath + "XML2TXT_Process.log");
-                else if (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("TXT2XML") || DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("COLUMNDELETER"))
+                else if (DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("TXT2XML") || DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("COLUMNDELETER") || DataGridView.Rows[e.RowIndex].Cells[1].Value.Equals("XMLMERGE"))
                     System.Diagnostics.Process.Start(_DatamodLogPath);
             }
 
@@ -1173,9 +1199,11 @@ namespace Analytics_V2
         }
 
         #endregion
-
-       
+   
         #region Accessors
+
+        public DataGridView Get_DataGridView(){
+            return DataGridView;}
 
         #endregion
     }

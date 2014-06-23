@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="1373b7f6-d340-4a14-9ef0-e111a9f099fe" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="5d12aef3-4b26-481c-a9c5-0226e3cbf929" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -21,8 +21,8 @@
     <MetadataSource Address="http://vuc0009/Zodiac%20Server%202/analytics.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="analytics.disco" MetadataType="Disco" ID="afb65dfe-1049-4b46-9051-022a7669c0e3" SourceId="1" SourceUrl="http://vuc0009/Zodiac Server 2/analytics.asmx?disco" />
-    <MetadataFile FileName="analytics.wsdl" MetadataType="Wsdl" ID="cbb94c73-09b5-4b3b-bba3-fe5c4e810e86" SourceId="1" SourceUrl="http://vuc0009/Zodiac Server 2/analytics.asmx?wsdl" />
+    <MetadataFile FileName="analytics.disco" MetadataType="Disco" ID="de555795-ebb3-4454-bbf8-9647a079a5d9" SourceId="1" SourceUrl="http://vuc0009/Zodiac Server 2/analytics.asmx?disco" />
+    <MetadataFile FileName="analytics.wsdl" MetadataType="Wsdl" ID="d0378b8f-18fb-4130-bce3-d46baf322107" SourceId="1" SourceUrl="http://vuc0009/Zodiac Server 2/analytics.asmx?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

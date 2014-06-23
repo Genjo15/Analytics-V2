@@ -73,6 +73,7 @@ namespace Analytics_V2
             {
                 // Query on DB & bind to Datagrid View
                 AnalyticsWebService.AnalyticsSoapClient service = new AnalyticsWebService.AnalyticsSoapClient();
+                //service.
                 DataSet dataSet = service.Get_all_histo_modif_per_config();
 
                 BindingSource bs = new BindingSource();

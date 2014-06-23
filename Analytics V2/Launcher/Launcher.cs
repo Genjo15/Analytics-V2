@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Text;
+using ComponentFactory.Krypton.Toolkit;
 
 
 namespace Analytics_V2
@@ -145,6 +146,7 @@ namespace Analytics_V2
             // Treat each input file
             if (_InputFiles.Count > 0)
             {
+                int numberOfInputFiles = _InputFiles.Count;
                 foreach (String processedFile in _InputFiles)
                 {
                     Stopwatch launchStopwatch3 = new Stopwatch();
@@ -154,7 +156,7 @@ namespace Analytics_V2
                     _FileCounter++;
                     _CurrentFile = processedFile;
 
-                    _DatamodPath = Path.GetDirectoryName(processedFile) + "\\" + Path.GetFileNameWithoutExtension(processedFile) + "_new.txt";
+                    _DatamodPath = Path.GetDirectoryName(processedFile) + "\\" + Path.GetFileNameWithoutExtension(processedFile) + "_new" + Path.GetExtension(processedFile);
 
                     // Convert the current treated file into a list of strings.
                     _TabData = FileToLS(processedFile);
@@ -162,12 +164,12 @@ namespace Analytics_V2
                     // Perform process.
                     if (_Process)
                     {
-                        UpdateRichTextBox("title", "PROCESS" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
+                        UpdateRichTextBox("title", "PROCESS" + " (file n° " + _FileCounter + "/" + numberOfInputFiles + ") ");
                         foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
                             if (process.Get_OrderId() > 0 && process.Get_OrderId() < 100)
                             {
                                 Process(process.Get_Datatable());
-                                counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                                counter = counter + (float)((float)1 / (float)numberOfInputFiles);
                                 UpdateProgressBar(counter);
                             }
                     }
@@ -182,18 +184,18 @@ namespace Analytics_V2
                     // Perform Controls.
                     if (_Control)
                     {
-                        UpdateRichTextBox("title", "CONTROL" + " (file n° " + _FileCounter + "/" + _InputFiles.Count + ") ");
+                        UpdateRichTextBox("title", "CONTROL" + " (file n° " + _FileCounter + "/" + numberOfInputFiles + ") ");
                         foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
                             if (process.Get_OrderId() > 100)
                             {
                                 Control(process.Get_Datatable());
-                                counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                                counter = counter + (float)((float)1 / (float)numberOfInputFiles);
                                 UpdateProgressBar(counter);
                             }
                     }
 
                     // Perform Header Consistency.
-                    if (_HeaderConsistency && _Config.Get_Headerlines() > 0)
+                    if (_HeaderConsistency)
                         HeaderConsistency();
 
                     // Write logs.
@@ -208,7 +210,7 @@ namespace Analytics_V2
 
                     UpdateRichTextBox("title", "*** ANALYZE LOGS ***");
                     AddLogsGridView(_DatamodPath, originalProcessedFile);
-                    counter = counter + (float)((float)1 / (float)_InputFiles.Count);
+                    counter = counter + (float)((float)1 / (float)numberOfInputFiles);
                     UpdateRichTextBox("complete", "      |-->Complete!");
                     UpdateProgressBar(counter);
 
@@ -222,6 +224,10 @@ namespace Analytics_V2
                     AnalyticsWebService.AnalyticsSoapClient query = new AnalyticsWebService.AnalyticsSoapClient();
                     query.Insert(System.Environment.UserName, _Config.Get_ConfigType(), _Config.Get_Name(), processedFile, _DatamodPath, (int)launchStopwatch3.ElapsedMilliseconds / 1000);
                     query.Close();
+
+                    // Suppress input file if xml
+                    if (processedFile.Contains(".xml"))
+                        File.Delete(processedFile);
                 }
             }
 
@@ -270,6 +276,7 @@ namespace Analytics_V2
                     }
                     StopStopWatch(launchStopwatch);
                     break;
+
                 case "XML2TXT":
                     StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "XML2TXT.....");
@@ -288,6 +295,32 @@ namespace Analytics_V2
                     }
                     StopStopWatch(launchStopwatch);
                     break;
+
+                case "XMLMERGE":
+                    StartStopWatch(launchStopwatch);
+                    UpdateRichTextBox("function", "XMLMERGE.....");
+                    try
+                    {
+                        string finalPath;
+                        finalPath = Path.GetDirectoryName(_InputFiles[0]) + "\\" + "Results.xml";
+                        Xml_Merge.Merge xmlmergeProcess = new Xml_Merge.Merge(dataTable, _InputFiles, finalPath);
+                        xmlmergeProcess.run();
+                        _Logs += "\r\n== XMLMERGE PROCESS ==\r\n";
+                        foreach (String logLine in xmlmergeProcess.log)
+                            _Logs += logLine + "\r\n";
+                        _InputFiles.Clear();
+                        _InputFiles.Add(finalPath);
+                        xmlmergeProcess = null;
+                        UpdateRichTextBox("complete", "Complete!");
+                    }
+                    catch (Exception ex)
+                    {
+                        ComponentFactory.Krypton.Toolkit.KryptonMessageBox.Show("== XML2TXT ==\r\n" + ex.Message, "Analytics", MessageBoxButtons.OK);
+                        UpdateRichTextBox("fail", "FAIL");
+                    }
+                    StopStopWatch(launchStopwatch);
+                    break;
+
                 case "FILESPLIT":
                     StartStopWatch(launchStopwatch);
                     UpdateRichTextBox("function", "FILESPLIT..... ");
@@ -1106,15 +1139,26 @@ namespace Analytics_V2
         private List<String> FileToLS(String file)
         {
             List<String> LS = new List<String>();
-            StreamReader streamReader = new StreamReader(file, System.Text.Encoding.GetEncoding(_Config.Get_EncodingInput()));
 
-            while (!streamReader.EndOfStream)
+            try
             {
-                LS.Add(streamReader.ReadLine());
+                StreamReader streamReader = new StreamReader(file, System.Text.Encoding.GetEncoding(_Config.Get_EncodingInput()));
+
+                while (!streamReader.EndOfStream)
+                {
+                    LS.Add(streamReader.ReadLine());
+                }
+
+                streamReader.Close();
+                streamReader.Dispose();
             }
 
-            streamReader.Close();
-            streamReader.Dispose();
+            catch(Exception ex)
+            {
+                KryptonMessageBox.Show("Error lors de la conversion fichier - liste de Strings, verifier que le fichier n'est pas ouvert\n\n" + ex, "File To List of String error!",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+            }
 
             return LS;
         }

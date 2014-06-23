@@ -35,6 +35,7 @@
             this.Linesconcat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Xls2txt = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Xml2Txt = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Xmlmerge = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Calcul = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cellcopy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Columns = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -77,6 +78,7 @@
             this.Linesconcat,
             this.Xls2txt,
             this.Xml2Txt,
+            this.Xmlmerge,
             this.Calcul,
             this.Cellcopy,
             this.Columns,
@@ -167,6 +169,14 @@
             this.Xml2Txt.Name = "Xml2Txt";
             this.Xml2Txt.ReadOnly = true;
             this.Xml2Txt.Width = 87;
+            // 
+            // Xmlmerge
+            // 
+            this.Xmlmerge.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Xmlmerge.HeaderText = "XMLMERGE";
+            this.Xmlmerge.Name = "Xmlmerge";
+            this.Xmlmerge.ReadOnly = true;
+            this.Xmlmerge.Width = 98;
             // 
             // Calcul
             // 
@@ -452,6 +462,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Linesconcat;
         private System.Windows.Forms.DataGridViewTextBoxColumn Xls2txt;
         private System.Windows.Forms.DataGridViewTextBoxColumn Xml2Txt;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Xmlmerge;
         private System.Windows.Forms.DataGridViewTextBoxColumn Calcul;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cellcopy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Columns;

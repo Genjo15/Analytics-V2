@@ -29,6 +29,7 @@ namespace Analytics_V2
             PersonnalPathTextBox.Text = Properties.Settings.Default.local_path;
             HCTextBox.Text = Properties.Settings.Default.hc_config;
             XMLTemplateTextBox.Text = Properties.Settings.Default.interpretation_template;
+            ConsistencyCheckingTextBox.Text = Properties.Settings.Default.consistency_checking_path;
         }
 
         #endregion
@@ -97,9 +98,32 @@ namespace Analytics_V2
             }
         }
 
+        // Change Consistency Checking path
+        private void ConsistencyCheckingButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+            openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            DialogResult result = openFolderDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                Properties.Settings.Default.consistency_checking_path = openFolderDialog.SelectedPath + "\\";
+
+                Properties.Settings.Default.Save();
+                ConsistencyCheckingTextBox.Text = Properties.Settings.Default.consistency_checking_path;
+
+                var result2 = KryptonMessageBox.Show("Saved !", "Saved",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+            }
+        }
+
+
+
+
+
+
         #endregion
-
-
 
         #region Accessors
 

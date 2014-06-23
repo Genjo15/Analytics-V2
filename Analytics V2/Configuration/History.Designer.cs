@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.PathAtModifLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.BlankLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.LinesDeletedLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -40,7 +40,7 @@
             this.BeforeRichTextBox = new ComponentFactory.Krypton.Toolkit.KryptonRichTextBox();
             this.AfterGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.AfterRichTextBox = new ComponentFactory.Krypton.Toolkit.KryptonRichTextBox();
-            this.statusStrip1.SuspendLayout();
+            this.StatusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1.Panel1)).BeginInit();
             this.SplitContainer1.Panel1.SuspendLayout();
@@ -64,18 +64,18 @@
             this.AfterGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // statusStrip1
+            // StatusStrip
             // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PathAtModifLabel,
             this.BlankLabel,
             this.LinesDeletedLabel,
             this.LinesAddedLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(3, 532);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(642, 22);
-            this.statusStrip1.TabIndex = 0;
-            this.statusStrip1.Text = "statusStrip1";
+            this.StatusStrip.Location = new System.Drawing.Point(3, 532);
+            this.StatusStrip.Name = "StatusStrip";
+            this.StatusStrip.Size = new System.Drawing.Size(642, 22);
+            this.StatusStrip.TabIndex = 0;
+            this.StatusStrip.Text = "statusStrip1";
             // 
             // PathAtModifLabel
             // 
@@ -85,7 +85,7 @@
             // BlankLabel
             // 
             this.BlankLabel.Name = "BlankLabel";
-            this.BlankLabel.Size = new System.Drawing.Size(627, 17);
+            this.BlankLabel.Size = new System.Drawing.Size(596, 17);
             this.BlankLabel.Spring = true;
             // 
             // LinesDeletedLabel
@@ -113,7 +113,7 @@
             // SplitContainer1.Panel2
             // 
             this.SplitContainer1.Panel2.Controls.Add(this.SplitContainer2);
-            this.SplitContainer1.Panel2.Controls.Add(this.statusStrip1);
+            this.SplitContainer1.Panel2.Controls.Add(this.StatusStrip);
             this.SplitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.SplitContainer1.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
             this.SplitContainer1.Size = new System.Drawing.Size(1030, 554);
@@ -205,15 +205,15 @@
             this.AfterRichTextBox.TabIndex = 0;
             this.AfterRichTextBox.Text = "kryptonRichTextBox1";
             // 
-            // Chronicles
+            // History
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.SplitContainer1);
-            this.Name = "Chronicles";
+            this.Name = "History";
             this.Size = new System.Drawing.Size(1030, 554);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
+            this.StatusStrip.ResumeLayout(false);
+            this.StatusStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1.Panel1)).EndInit();
             this.SplitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1.Panel2)).EndInit();
@@ -242,7 +242,7 @@
 
         #endregion
 
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel PathAtModifLabel;
         private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer SplitContainer1;
         private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer SplitContainer2;

@@ -11,8 +11,7 @@
     <AssemblyName>Analytics V2</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l%27International\POLE INFORMATIQUE\Install Logiciels\Analytics V2\</PublishUrl>
     <Install>true</Install>
@@ -24,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>93</ApplicationRevision>
+    <ApplicationRevision>114</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -99,6 +98,9 @@
     <Reference Include="ComponentFactory.Krypton.Workspace">
       <HintPath>C:\Program Files (x86)\Component Factory\Krypton Toolkit 4.3.2\Bin\ComponentFactory.Krypton.Workspace.dll</HintPath>
     </Reference>
+    <Reference Include="Consistency">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Consistency\Consistency.dll</HintPath>
+    </Reference>
     <Reference Include="Controls">
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Controls\Controls.dll</HintPath>
     </Reference>
@@ -118,7 +120,7 @@
     </Reference>
     <Reference Include="Finland, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Finland\Finland\bin\Release\Finland.dll</HintPath>
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Finland\Finland.dll</HintPath>
     </Reference>
     <Reference Include="Format_QH, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -220,6 +222,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XMLLoader\XMLLoader.dll</HintPath>
     </Reference>
+    <Reference Include="Xml_Merge">
+      <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\XMLMerge\Xml_Merge.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Access\Administration.cs">
@@ -312,11 +317,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Service References\AnalyticsWebService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Misc\SpecificCountries.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -340,6 +340,11 @@
     </Compile>
     <Compile Include="Configuration\WaitingScreen.Designer.cs">
       <DependentUpon>WaitingScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\AnalyticsWebService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Access\Administration.resx">
       <DependentUpon>Administration.cs</DependentUpon>
@@ -401,7 +406,9 @@
       <DependentUpon>WaitingScreen.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Analytics V2_CléTemporaire.pfx" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -440,9 +447,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\AnalyticsWebService\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\PlayBig.png" />
   </ItemGroup>
   <ItemGroup>
@@ -456,21 +460,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Arrow_Up.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AnalyticsWebService\analytics.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AnalyticsWebService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AnalyticsWebService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AnalyticsWebService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Administration.ico" />
@@ -513,6 +502,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AnalyticsIcon.ico" />
+    <None Include="Service References\AnalyticsWebService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\AnalyticsWebService\configuration.svcinfo" />
+    <None Include="Service References\AnalyticsWebService\configuration91.svcinfo" />
+    <None Include="Service References\AnalyticsWebService\analytics.disco" />
     <None Include="Resources\Delete2.png" />
     <None Include="Resources\Batch3.png" />
     <None Include="Resources\Batch2.png" />
@@ -541,7 +537,9 @@
     <None Include="Resources\History.ico" />
     <None Include="Resources\Time Machine.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AnalyticsWebService\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

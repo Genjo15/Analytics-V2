@@ -54,6 +54,7 @@ namespace Analytics_V2
             // Define header colors
             DataGridView.Columns["Xls2txt"].HeaderCell.Style.BackColor = Color.NavajoWhite;
             DataGridView.Columns["Xml2txt"].HeaderCell.Style.BackColor = Color.NavajoWhite;
+            DataGridView.Columns["Xmlmerge"].HeaderCell.Style.BackColor = Color.NavajoWhite;
             DataGridView.Columns["Filesplit"].HeaderCell.Style.BackColor = Color.NavajoWhite;
             DataGridView.Columns["Columnsconcat"].HeaderCell.Style.BackColor = Color.NavajoWhite;
             DataGridView.Columns["Linesconcat"].HeaderCell.Style.BackColor = Color.NavajoWhite;
@@ -162,66 +163,68 @@ namespace Analytics_V2
                             CheckCell(row, 4);
                         if (process.Get_Name().Equals("XML2TXT"))
                             CheckCell(row, 5);
-                        if (process.Get_Name().Equals("CALCUL"))
+                        if (process.Get_Name().Equals("XMLMERGE"))
                             CheckCell(row, 6);
-                        if (process.Get_Name().Equals("CELLCOPY"))
+                        if (process.Get_Name().Equals("CALCUL"))
                             CheckCell(row, 7);
-                        if (process.Get_Name().Equals("COLUMNS"))
+                        if (process.Get_Name().Equals("CELLCOPY"))
                             CheckCell(row, 8);
-                        if (process.Get_Name().Equals("COLUMNDELETER"))
+                        if (process.Get_Name().Equals("COLUMNS"))
                             CheckCell(row, 9);
-                        if (process.Get_Name().Equals("COLUMNMOVER"))
+                        if (process.Get_Name().Equals("COLUMNDELETER"))
                             CheckCell(row, 10);
-                        if (process.Get_Name().Equals("COPY"))
+                        if (process.Get_Name().Equals("COLUMNMOVER"))
                             CheckCell(row, 11);
-                        if (process.Get_Name().Equals("CUT"))
+                        if (process.Get_Name().Equals("COPY"))
                             CheckCell(row, 12);
-                        if (process.Get_Name().Equals("DATECONVERT"))
+                        if (process.Get_Name().Equals("CUT"))
                             CheckCell(row, 13);
-                        if (process.Get_Name().Equals("DATEFORMAT"))
+                        if (process.Get_Name().Equals("DATECONVERT"))
                             CheckCell(row, 14);
-                        if (process.Get_Name().Equals("DUPLICATES"))
+                        if (process.Get_Name().Equals("DATEFORMAT"))
                             CheckCell(row, 15);
-                        if (process.Get_Name().Equals("EXPAND"))
+                        if (process.Get_Name().Equals("DUPLICATES"))
                             CheckCell(row, 16);
-                        if (process.Get_Name().Equals("FILTER"))
+                        if (process.Get_Name().Equals("EXPAND"))
                             CheckCell(row, 17);
-                        if (process.Get_Name().Equals("LEVELS"))
+                        if (process.Get_Name().Equals("FILTER"))
                             CheckCell(row, 18);
-                        if (process.Get_Name().Equals("LINEDEL"))
+                        if (process.Get_Name().Equals("LEVELS"))
                             CheckCell(row, 19);
-                        if (process.Get_Name().Equals("QHFORMAT"))
+                        if (process.Get_Name().Equals("LINEDEL"))
                             CheckCell(row, 20);
-                        if (process.Get_Name().Equals("REMOVER"))
+                        if (process.Get_Name().Equals("QHFORMAT"))
                             CheckCell(row, 21);
-                        if (process.Get_Name().Equals("REPLACE"))
+                        if (process.Get_Name().Equals("REMOVER"))
                             CheckCell(row, 22);
-                        if (process.Get_Name().Equals("TIMECONVERT"))
+                        if (process.Get_Name().Equals("REPLACE"))
                             CheckCell(row, 23);
-                        if (process.Get_Name().Equals("TIMEFORMAT"))
+                        if (process.Get_Name().Equals("TIMECONVERT"))
                             CheckCell(row, 24);
-                        if (process.Get_Name().Equals("TRANSCRIPT"))
+                        if (process.Get_Name().Equals("TIMEFORMAT"))
                             CheckCell(row, 25);
-                        if (process.Get_Name().Equals("TRANSLATE"))
+                        if (process.Get_Name().Equals("TRANSCRIPT"))
                             CheckCell(row, 26);
-                        if (process.Get_Name().Equals("TRANSPOSE"))
+                        if (process.Get_Name().Equals("TRANSLATE"))
                             CheckCell(row, 27);
-                        if (process.Get_Name().Equals("VALUECHECKER"))
+                        if (process.Get_Name().Equals("TRANSPOSE"))
                             CheckCell(row, 28);
-                        if (process.Get_Name().Equals("VALUECORRECTOR"))
+                        if (process.Get_Name().Equals("VALUECHECKER"))
                             CheckCell(row, 29);
-                        if (process.Get_Name().Equals("WRITE"))
+                        if (process.Get_Name().Equals("VALUECORRECTOR"))
                             CheckCell(row, 30);
-                        if (process.Get_Name().Equals("CONTROLDIFF"))
+                        if (process.Get_Name().Equals("WRITE"))
                             CheckCell(row, 31);
-                        if (process.Get_Name().Equals("DATACHECKER"))
+                        if (process.Get_Name().Equals("CONTROLDIFF"))
                             CheckCell(row, 32);
-                        if (process.Get_Name().Equals("QHNUMBERS"))
+                        if (process.Get_Name().Equals("DATACHECKER"))
                             CheckCell(row, 33);
-                        if (process.Get_Name().Equals("TOTALTVCONTROL"))
+                        if (process.Get_Name().Equals("QHNUMBERS"))
                             CheckCell(row, 34);
-                        if (process.Get_Name().Equals("TXT2XML"))
+                        if (process.Get_Name().Equals("TOTALTVCONTROL"))
                             CheckCell(row, 35);
+                        if (process.Get_Name().Equals("TXT2XML"))
+                            CheckCell(row, 36);
                     }
 
                     DataGridView.Rows.Add(row);
