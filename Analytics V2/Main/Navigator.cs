@@ -233,6 +233,7 @@ namespace Analytics_V2
                 navigatorTab.Tag = true;
                 navigatorTab.Controls.Add(XMLLoader);
                 switchButtonSpec.ExtraText = "XML Mode";
+                EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
             }
 
             // If no connection, New tab (XML mode)
@@ -249,6 +250,7 @@ namespace Analytics_V2
                 richTextBox.Tag = path;
                 navigatorTab.Tag = false;
                 switchButtonSpec.ExtraText = "Creation Mode";
+                EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
                 navigatorTab.Controls.Add(richTextBox);
                 DisplayXml(richTextBox);
             }
@@ -494,6 +496,7 @@ namespace Analytics_V2
 
                     NavigatorControl.SelectedPage.Tag = true;
                     switchButtonSpec.ExtraText = "XML Mode";
+                    EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
                     NavigatorControl.SelectedPage.Controls.Clear();
 
                     try
@@ -520,6 +523,7 @@ namespace Analytics_V2
                         richTextBox.Tag = path;
                         NavigatorControl.SelectedPage.Tag = false;
                         switchButtonSpec.ExtraText = "Creation Mode";
+                        EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
 
                         NavigatorControl.SelectedPage.Controls.Add(richTextBox);
                         DisplayXml(richTextBox);
@@ -538,5 +542,22 @@ namespace Analytics_V2
         }
 
         #endregion
+
+        /**********************************************************************\
+         * Event for clicking on the Enable/Disable button of the navigator : *
+         *    - Enable or disable all processes at once                       *
+        \**********************************************************************/
+
+        private void EnableDisableAllProcessesButtonSpec_Click(object sender, EventArgs e)
+        {
+            if ((Boolean)NavigatorControl.SelectedPage.Tag)
+            {
+                var childrens = NavigatorControl.SelectedPage.Controls.OfType<XMLLoader.XMLForm>().ToList();
+                foreach (XMLLoader.XMLForm element in childrens)
+                {
+                    element.EnableDisableAllPanel();
+                }
+            }
+        }
     }
 }

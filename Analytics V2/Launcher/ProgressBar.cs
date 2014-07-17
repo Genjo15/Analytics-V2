@@ -106,12 +106,18 @@ namespace Analytics_V2
 
                 case "fail":
                     ProcessSummaryRichTextBox.SelectionColor = Color.Red;
-                    ProcessSummaryRichTextBox.AppendText(message + "\n");
+                    ProcessSummaryRichTextBox.AppendText(message);
                     break;
 
                 case "superfail":
                     ProcessSummaryRichTextBox.SelectionColor = Color.Red;
                     ProcessSummaryRichTextBox.AppendText("\n\n    ----> " + message + "\n");
+                    break;
+
+                case "lineCounter":
+                    ProcessSummaryRichTextBox.SelectionColor = Color.CornflowerBlue;
+                    ProcessSummaryRichTextBox.AppendText(message + "\n");
+
                     break;
 
             }

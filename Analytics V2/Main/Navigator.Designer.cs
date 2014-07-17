@@ -31,13 +31,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Navigator));
             this.NavigatorControl = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
-            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
             this.SummaryTab = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.SummarySplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.SummarySplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ProgressGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.LogsNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.EnableDisableAllProcessesButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
+            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
             ((System.ComponentModel.ISupportInitialize)(this.NavigatorControl)).BeginInit();
             this.NavigatorControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryTab)).BeginInit();
@@ -63,7 +64,8 @@
             // NavigatorControl
             // 
             this.NavigatorControl.Button.ButtonSpecs.AddRange(new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator[] {
-            this.switchButtonSpec});
+            this.switchButtonSpec,
+            this.EnableDisableAllProcessesButtonSpec});
             this.NavigatorControl.Button.CloseButtonDisplay = ComponentFactory.Krypton.Navigator.ButtonDisplay.Hide;
             this.NavigatorControl.Button.ContextButtonDisplay = ComponentFactory.Krypton.Navigator.ButtonDisplay.ShowEnabled;
             this.NavigatorControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -75,13 +77,6 @@
             this.NavigatorControl.Size = new System.Drawing.Size(638, 392);
             this.NavigatorControl.TabIndex = 0;
             this.NavigatorControl.Text = "kryptonNavigator1";
-            // 
-            // switchButtonSpec
-            // 
-            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
-            this.switchButtonSpec.ExtraText = "Creation Mode";
-            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
-            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
             // 
             // SummaryTab
             // 
@@ -171,6 +166,21 @@
             this.ContextMenuStrip.Name = "ContextMenuStrip";
             this.ContextMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
+            // EnableDisableAllProcessesButtonSpec
+            // 
+            this.EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            this.EnableDisableAllProcessesButtonSpec.Image = global::Analytics_V2.Properties.Resources.ID;
+            this.EnableDisableAllProcessesButtonSpec.Text = "Order IDs ON/OFF";
+            this.EnableDisableAllProcessesButtonSpec.UniqueName = "02482CF2C38F499726B8DEB15AB43908";
+            this.EnableDisableAllProcessesButtonSpec.Click += new System.EventHandler(this.EnableDisableAllProcessesButtonSpec_Click);
+            // 
+            // switchButtonSpec
+            // 
+            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            this.switchButtonSpec.ExtraText = "Creation Mode";
+            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
+            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
+            // 
             // Navigator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -212,5 +222,6 @@
         internal ComponentFactory.Krypton.Navigator.KryptonNavigator LogsNavigator;
         internal new System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
         internal ComponentFactory.Krypton.Navigator.ButtonSpecNavigator switchButtonSpec;
+        internal ComponentFactory.Krypton.Navigator.ButtonSpecNavigator EnableDisableAllProcessesButtonSpec;
     }
 }

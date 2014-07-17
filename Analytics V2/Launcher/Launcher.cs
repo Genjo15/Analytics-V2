@@ -149,6 +149,9 @@ namespace Analytics_V2
                 int numberOfInputFiles = _InputFiles.Count;
                 foreach (String processedFile in _InputFiles)
                 {
+                    int nbLinesBefore = 0; // Number of lines before reformating.
+                    int nbLinesAfter = 0;  // Number of lines after reformating.
+
                     Stopwatch launchStopwatch3 = new Stopwatch();
                     launchStopwatch3.Start();
 
@@ -160,6 +163,7 @@ namespace Analytics_V2
 
                     // Convert the current treated file into a list of strings.
                     _TabData = FileToLS(processedFile);
+                    nbLinesBefore = _TabData.Count;
 
                     // Perform process.
                     if (_Process)
@@ -177,7 +181,7 @@ namespace Analytics_V2
                     // Write Datamod.
                     if (!String.IsNullOrEmpty(_Config.Get_CountryCode()))
                     {
-                        WriteDatamod();
+                        nbLinesAfter = WriteDatamod();
                     }
                     else _DatamodPath = processedFile;
 
@@ -196,13 +200,13 @@ namespace Analytics_V2
 
                     // Perform Header Consistency.
                     if (_HeaderConsistency)
-                        HeaderConsistency();
+                        HeaderConsistency();                  
 
                     // Write logs.
                     WriteLogs();
 
 
-                    ////////////////////////
+                    /////////////////////////////////////////////////////////
                     // Create LogsGrid, analyze it and add it to the control.
 
                     Stopwatch launchStopwatch2 = new Stopwatch();
@@ -228,6 +232,13 @@ namespace Analytics_V2
                     // Suppress input file if xml
                     if (processedFile.Contains(".xml"))
                         File.Delete(processedFile);
+
+                    // Display number of lines before & after reformating
+                    UpdateRichTextBox("lineCounter", "");
+                    if (nbLinesBefore > 0)
+                        UpdateRichTextBox("lineCounter", "Number of line before reformating : " + nbLinesBefore);
+                    if (nbLinesAfter > 0)
+                        UpdateRichTextBox("lineCounter", "Number of line after reformating : " + nbLinesAfter);
                 }
             }
 
@@ -243,10 +254,9 @@ namespace Analytics_V2
             TimeSpan ts = launchStopwatch.Elapsed;
             //string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             string elapsedTime = String.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
-
-            
+         
             UpdateProgressBarPut100Percent();
-            DisplayConfigProcessTime(elapsedTime);
+            DisplayConfigProcessTime(elapsedTime);         
         }
 
         /**************\
@@ -1171,7 +1181,7 @@ namespace Analytics_V2
          *   - Close & dispose SW.                             *
         \*******************************************************/
 
-        private void WriteDatamod()
+        private int WriteDatamod()
         {
             // Create StreamWriter (+ define encoding output).
             StreamWriter streamWriter = new StreamWriter(_DatamodPath, false, System.Text.Encoding.Default);
@@ -1196,19 +1206,26 @@ namespace Analytics_V2
             else inputSeparatorTmp = _Config.Get_DataSeparator();
 
             // Write datamod (+ modify separator or not).
+            int lineCounter = 0;
             if (String.IsNullOrEmpty(outputSeparatorTmp))
                 foreach (String line in _TabData)
+                {
                     streamWriter.WriteLine(line);
+                    lineCounter++;
+                }
             else 
                 foreach (String line in _TabData)
                 {
                     String[] splitter = line.Split(inputSeparatorTmp.ToCharArray());
                     streamWriter.WriteLine(String.Join(outputSeparatorTmp,splitter));
+                    lineCounter++;
                 }
 
-            // Close & dispose SW
+            // Close & dispose SW 
             streamWriter.Close();
-            streamWriter.Dispose();    
+            streamWriter.Dispose();
+
+            return lineCounter;
         }
 
         /******************************\

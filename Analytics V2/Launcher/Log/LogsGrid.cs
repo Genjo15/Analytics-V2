@@ -510,7 +510,8 @@ namespace Analytics_V2
                     listErrors.Add(" - Unknown Channel Id: ");
                     listErrors.Add(" - Unknown Typology Id: ");
 
-                    AnalyzeProcessLog(" DataChecking log --------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatacheckerPath);
+                    //AnalyzeProcessLog(" DataChecking log --------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatacheckerPath);
+                    AnalyzeDatachecker(commentsCell, checkCell, _DatacheckerPath);
 
                     break;
                 }
@@ -657,12 +658,11 @@ namespace Analytics_V2
                         }
                     }
                 }
-            
 
                 file.Close();
             }
  
-            catch (Exception ex) { Console.WriteLine(ex); }
+            catch { }
 
             if (warningCounter > 0)
             {
@@ -753,10 +753,97 @@ namespace Analytics_V2
 
             else
             {
+                commentsCell.Style.ForeColor = System.Drawing.Color.Black;
                 commentsCell.Value = "-";
                 checkCell.Value = "OK";
                 checkCell.Style.ForeColor = System.Drawing.Color.Green;
             }
+        }
+
+        /*************************************************************\
+         * Analyze DATACHECKER :                                     *
+         *   - Go through the file, for each line, 4 possibilities : *
+         *        . Warning                                          *
+         *        . Unknown Typology                                 *
+         *        . Unknown Channel                                  *
+         *        . Empty Field                                      *
+        \*************************************************************/
+
+        private void AnalyzeDatachecker(DataGridViewCell commentsCell, DataGridViewCell checkCell, string DCPath)
+        {
+            int nbWarnings = 0;
+            int nbEmptyFields = 0;
+            int nbUnknownTypos = 0;
+            int nbUnknownChannels = 0;
+
+            Boolean channelTrigger = false;
+            Boolean typoTrigger = false;
+         
+            try
+            {
+                string line;
+                System.IO.StreamReader file = new System.IO.StreamReader(DCPath);
+
+                /* Read Log */
+                while ((line = file.ReadLine()) != null)
+                {
+                    /* Detect warnings */
+                    if (line.Contains("Unable to split typo, error: ")
+                        || line.Contains("Unable to check empties on line: ")
+                        || line.Contains("Unable to check line: "))
+                        nbWarnings++;
+
+                    /* Detect Empty lines */
+                    else if (line.Contains((" - Field is empty.")))
+                        nbEmptyFields++;
+
+                    /* Detect empty channels & typos */
+                    else if (channelTrigger && !String.IsNullOrEmpty(line) && !line.Contains(("Unknown genres list:")))
+                        nbUnknownChannels++;
+                    else if (typoTrigger && !String.IsNullOrEmpty(line))
+                        nbUnknownTypos++;
+                    else if (line.Contains(("Unknown channels list:")))
+                        channelTrigger = true;
+                    else if (line.Contains(("Unknown genres list:")))
+                    {
+                        channelTrigger = false;
+                        typoTrigger = true;
+                    }
+                }
+
+                /* Set results */
+                if (nbWarnings > 0 && nbEmptyFields == 0 && nbUnknownTypos == 0 && nbUnknownChannels == 0)
+                {
+                    commentsCell.Value = "Alerts : " + nbWarnings;
+                    checkCell.Value = "Warning";
+                    checkCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
+                    commentsCell.Style.ForeColor = System.Drawing.Color.DarkOrange;
+                }
+                else if (nbWarnings == 0 && nbEmptyFields == 0 && nbUnknownTypos == 0 && nbUnknownChannels == 0)
+                {
+                    commentsCell.Value = "-";
+                    checkCell.Value = "OK";
+                    checkCell.Style.ForeColor = System.Drawing.Color.Green;
+                    commentsCell.Style.ForeColor = System.Drawing.Color.Black;
+                }
+                else
+                {
+                    if (nbWarnings > 0)
+                        commentsCell.Value = "Warnings : " + nbWarnings + "\n";
+                    if (nbEmptyFields > 0)
+                        commentsCell.Value += "Empty fields : " + nbEmptyFields + ". ";
+                    if (nbUnknownChannels > 0)
+                        commentsCell.Value += "Unkn. Channels : " + nbUnknownChannels + ". ";
+                    if (nbUnknownTypos > 0)
+                        commentsCell.Value += "Unkn. Typos : " + nbUnknownTypos + ". ";
+
+                    checkCell.Value = "ALERT";
+                    commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+                    checkCell.Style.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+
+            catch { }
         }
 
         /********************************************\
@@ -787,185 +874,195 @@ namespace Analytics_V2
                 string line;
                 System.IO.StreamReader file = new System.IO.StreamReader(logPath);
 
-                while ((line = file.ReadLine()) != null)
+                try
                 {
-                    // Define current check.
-                    if (line.Contains("* CHECK NO DIFF :"))
-                        currentCheck = "* CHECK NO DIFF :";
-                    else if (line.Contains("* CHECK DIFF :"))
-                        currentCheck = "* CHECK DIFF :";
-                    else if (line.Contains("* CHECK DURATION :"))
-                        currentCheck = "* CHECK DURATION :";
-                    else if (line.Contains("* CHECK TOT AUD :"))
-                        currentCheck = "* CHECK TOT AUD :";
-                    else if (line.Contains("* CHECK TOT AUD BLOCK:"))
-                        currentCheck = "* CHECK TOT AUD BLOCK:";
-                    else if (line.Contains("* CHECK TARGET AUD :"))
-                        currentCheck = "* CHECK TARGET AUD :";
-                    else if (line.Contains("* CHECK TARGET AUD BLOCK:"))
-                        currentCheck = "* CHECK TARGET AUD BLOCK:";
-                    else if (line.Contains("* CHECK INDICATOR AUD :"))
-                        currentCheck = "* CHECK INDICATOR AUD :";
-                    else if (line.Contains("* CHECK INDICATOR AUD BLOCK:"))
-                        currentCheck = "* CHECK INDICATOR AUD BLOCK:";
-                    else if (line.Contains("== CONTROL TOTAL TV =="))
-                        currentCheck = "";
-                    else if (line.Contains("* CHECK CHANNEL AND DATE AUD :"))
-                        currentCheck = "* CHECK CHANNEL AND DATE AUD :";
 
-                    
-                    if(currentCheck.Equals( "* CHECK NO DIFF :")) 
+                    while ((line = file.ReadLine()) != null)
                     {
-                        _NoDiffAlertsLogs= _NoDiffAlertsLogs + line + "\n";
-
-                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            _NoDiffFormatErrors++;
-
-                        else if (line.Contains("NO DIFF"))
-                        {
-                            checkTotalAudienceDico.Add(line.Replace(" : ", " ").Replace(" NO DIFF", ""), ' ');
-
-                            if (checkNoDiffDico.ContainsKey(line.Split(new string[] { ":" }, StringSplitOptions.None)[1]))
-                                checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] = checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] + 1;
-                            else checkNoDiffDico.Add(line.Split(new string[] { ":" }, StringSplitOptions.None)[1],1);
-
-                        }
-                    }
+                        // Define current check.
+                        if (line.Contains("* CHECK NO DIFF :"))
+                            currentCheck = "* CHECK NO DIFF :";
+                        else if (line.Contains("* CHECK DIFF :"))
+                            currentCheck = "* CHECK DIFF :";
+                        else if (line.Contains("* CHECK DURATION :"))
+                            currentCheck = "* CHECK DURATION :";
+                        else if (line.Contains("* CHECK TOT AUD :"))
+                            currentCheck = "* CHECK TOT AUD :";
+                        else if (line.Contains("* CHECK TOT AUD BLOCK:"))
+                            currentCheck = "* CHECK TOT AUD BLOCK:";
+                        else if (line.Contains("* CHECK TARGET AUD :"))
+                            currentCheck = "* CHECK TARGET AUD :";
+                        else if (line.Contains("* CHECK TARGET AUD BLOCK:"))
+                            currentCheck = "* CHECK TARGET AUD BLOCK:";
+                        else if (line.Contains("* CHECK INDICATOR AUD :"))
+                            currentCheck = "* CHECK INDICATOR AUD :";
+                        else if (line.Contains("* CHECK INDICATOR AUD BLOCK:"))
+                            currentCheck = "* CHECK INDICATOR AUD BLOCK:";
+                        else if (line.Contains("== CONTROL TOTAL TV =="))
+                            currentCheck = "";
+                        else if (line.Contains("* CHECK CHANNEL AND DATE AUD :"))
+                            currentCheck = "* CHECK CHANNEL AND DATE AUD :";
                     
-                    else if (currentCheck.Equals("* CHECK DIFF :"))
-                    {
-                        _DiffAlertsLogs += line + "\n";
-                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            _DiffFormatErrors++;
-                        else if (line.Contains("[Moy"))
+                        if(currentCheck.Equals( "* CHECK NO DIFF :")) 
                         {
-                            _DiffAlerts++;
-                            int average = int.Parse(line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1]);
-                            string[] splitResult = line.Split(null);
-                            int diff = int.Parse(splitResult[splitResult.Length-5]);
+                            _NoDiffAlertsLogs= _NoDiffAlertsLogs + line + "\n";
 
-                            //if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
-                            if ((float)diff < (float)(average / 2))
+                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                                _NoDiffFormatErrors++;
+
+                            else if (line.Contains("NO DIFF"))
                             {
-                                _DiffCriticalAlerts++;
-                                _DiffCriticalAlertsLogs += line + " : nombre de diffusions trop inférieur à la moyenne!\n";
-                            }
-                            else if ((float)diff > ((float)average + (float)(average / 2)))
-                            {
-                                _DiffCriticalAlerts++;
-                                _DiffCriticalAlertsLogs += line + " : nombre de diffusions trop supérieur à la moyenne!\n";
+                                checkTotalAudienceDico.Add(line.Replace(" : ", " ").Replace(" NO DIFF", ""), ' ');
+
+                                if (checkNoDiffDico.ContainsKey(line.Split(new string[] { ":" }, StringSplitOptions.None)[1]))
+                                    checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] = checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] + 1;
+                                else checkNoDiffDico.Add(line.Split(new string[] { ":" }, StringSplitOptions.None)[1],1);
+
                             }
                         }
-                    }
                     
-                    else if (currentCheck.Equals("* CHECK DURATION :"))
-                    {
-                        _DurationAlertsLogs += line + "\n";
-                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            _DurationFormatErrors++;
-                        else if (line.Contains("[Moy"))
+                        else if (currentCheck.Equals("* CHECK DIFF :"))
                         {
-                            _DurationAlerts++;
-                            string average = line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1];
-                            int minutes = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
-                            int seconds = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
-                            int averageSec = (minutes * 60) + seconds;
-
-                            string[] splitResult = line.Split(null);
-                            string duration = splitResult[splitResult.Length - 4];
-                            minutes = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
-                            seconds = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
-                            int durationSec = (minutes * 60) + seconds;
-
-                            //if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
-                            if ((float)durationSec < (float)(averageSec / 2))
+                            _DiffAlertsLogs += line + "\n";
+                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                                _DiffFormatErrors++;
+                            else if (line.Contains("[Moy"))
                             {
-                                _DurationCriticalAlerts++;
-                                _DurationCriticalAlertsLogs += line + " : Durée trop inférieure à la moyenne!\n";
-                            }
+                                _DiffAlerts++;
+                                int average = int.Parse(line.Split(new String[] { "[Moy = ", "]" }, StringSplitOptions.None)[1]);
+                                string[] splitResult = line.Split(null);
+                                int diff = int.Parse(splitResult[splitResult.Length-5]);
 
-                            else if ((float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
-                            {
-                                _DurationCriticalAlerts++;
-                                _DurationCriticalAlertsLogs += line + " : Durée trop supérieure à la moyenne!\n";
+                                //if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
+                                if ((float)diff < (float)(average / 2))
+                                {
+                                    _DiffCriticalAlerts++;
+                                    _DiffCriticalAlertsLogs += line + " : nombre de diffusions trop inférieur à la moyenne!\n";
+                                }
+                                else if ((float)diff > ((float)average + (float)(average / 2)))
+                                {
+                                    _DiffCriticalAlerts++;
+                                    _DiffCriticalAlertsLogs += line + " : nombre de diffusions trop supérieur à la moyenne!\n";
+                                }
                             }
                         }
-                    }
+                    
+                        else if (currentCheck.Equals("* CHECK DURATION :"))
+                        {
+                            _DurationAlertsLogs += line + "\n";
+                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                                _DurationFormatErrors++;
+                            else if (line.Contains("[Moy"))
+                            {
+                                _DurationAlerts++;
+                                string average = line.Split(new String[] { "[Moy = "}, StringSplitOptions.None)[1].Replace("]","");
+                                int minutes = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
+                                int seconds = int.Parse(average.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
+                                int averageSec = (minutes * 60) + seconds;
+
+                                string[] splitResult = line.Split(null);
+                                string duration = splitResult[splitResult.Length - 4];
+                                minutes = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[0]);
+                                seconds = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
+                                int durationSec = (minutes * 60) + seconds;
+
+                                //if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
+                                if ((float)durationSec < (float)(averageSec / 2))
+                                {
+                                    _DurationCriticalAlerts++;
+                                    _DurationCriticalAlertsLogs += line + " : Durée trop inférieure à la moyenne!\n";
+                                }
+
+                                else if ((float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
+                                {
+                                    _DurationCriticalAlerts++;
+                                    _DurationCriticalAlertsLogs += line + " : Durée trop supérieure à la moyenne!\n";
+                                }
+                            }
+                        }
                            
 
-                    else if (currentCheck.Equals("* CHECK TOT AUD BLOCK:") ||currentCheck.Equals("* CHECK TOT AUD :"))
-                    {
-                        _TotalAudienceAlertsLogs += line + "\n";
-                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            _TotalAudienceFormatErrors++;
-
-                        else if (line.Contains("Alert : "))
+                        else if (currentCheck.Equals("* CHECK TOT AUD BLOCK:") ||currentCheck.Equals("* CHECK TOT AUD :"))
                         {
-                            if (checkTotalAudienceDico.ContainsKey(line.Replace("Alert : ", "").Replace(" AUDIENCES N.A OU 0", "")))
-                                _TotalAudienceAlerts++;
-                            else
+                            _TotalAudienceAlertsLogs += line + "\n";
+                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                                _TotalAudienceFormatErrors++;
+
+                            else if (line.Contains("Alert : "))
                             {
-                                _TotalAudienceCriticalAlertsLogs += line.Replace(" AUDIENCES N.A OU 0","") + " Audiences nulles ou égales à 0 (alors que la chaîne est diffusée)\n";
-                                _TotalAudienceCriticalAlerts++;
+                                if (checkTotalAudienceDico.ContainsKey(line.Replace("Alert : ", "").Replace(" AUDIENCES N.A OU 0", "")))
+                                    _TotalAudienceAlerts++;
+                                else
+                                {
+                                    _TotalAudienceCriticalAlertsLogs += line.Replace(" AUDIENCES N.A OU 0","") + " Audiences nulles ou égales à 0 (alors que la chaîne est diffusée)\n";
+                                    _TotalAudienceCriticalAlerts++;
+                                }
                             }
                         }
-                    }
 
-                    else if (currentCheck.Equals("* CHECK TARGET AUD BLOCK:") ||currentCheck.Equals("* CHECK TARGET AUD :"))
-                    {
-                        _TargetAudienceAlertsLogs += line + "\n";
-                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            _TargetAudienceFormatErrors++;
-
-                        else if (line.Contains("Alert : "))
+                        else if (currentCheck.Equals("* CHECK TARGET AUD BLOCK:") ||currentCheck.Equals("* CHECK TARGET AUD :"))
                         {
-                            _TargetAudienceAlerts++;
+                            _TargetAudienceAlertsLogs += line + "\n";
+                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                                _TargetAudienceFormatErrors++;
+
+                            else if (line.Contains("Alert : "))
+                            {
+                                _TargetAudienceAlerts++;
+                            }
                         }
-                    }
 
-                    else if (currentCheck.Equals( "* CHECK INDICATOR AUD BLOCK:") ||currentCheck.Equals("* CHECK INDICATOR AUD :"))
-                    {
-                        _IndicatorAudienceAlertsLogs += line + "\n";
-                        if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
-                            _IndicatorAudienceFormatErrors++;
-                        else if (line.Contains("Alert : "))
+                        else if (currentCheck.Equals( "* CHECK INDICATOR AUD BLOCK:") ||currentCheck.Equals("* CHECK INDICATOR AUD :"))
                         {
-                            Regex rgx = new Regex("(Alert : )([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] )(.*)");
-                            Regex rgx2 = new Regex("(.*)( AUDIENCES N.A OU 0)(.*)");
+                            _IndicatorAudienceAlertsLogs += line + "\n";
+                            if (line.Contains("Error ! Line ") || line.Contains("L'index se trouve en dehors des limites du tableau."))
+                                _IndicatorAudienceFormatErrors++;
+                            else if (line.Contains("Alert : "))
+                            {
+                                Regex rgx = new Regex("(Alert : )([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] )(.*)");
+                                Regex rgx2 = new Regex("(.*)( AUDIENCES N.A OU 0)(.*)");
                                 
-                            // 1st case : For one indicator, audience NA for the whole period
-                            if (rgx.IsMatch(line))
-                            {
-                                Match m = rgx.Match(line);
+                                // 1st case : For one indicator, audience NA for the whole period
+                                if (rgx.IsMatch(line))
+                                {
+                                    Match m = rgx.Match(line);
 
-                                if (checkIndicatorAudienceDico.ContainsKey(m.Groups[3].Value))
-                                    checkIndicatorAudienceDico[m.Groups[3].Value] = checkIndicatorAudienceDico[m.Groups[3].Value] + 1;
-                                else checkIndicatorAudienceDico.Add(m.Groups[3].Value,1);
+                                    if (checkIndicatorAudienceDico.ContainsKey(m.Groups[3].Value))
+                                        checkIndicatorAudienceDico[m.Groups[3].Value] = checkIndicatorAudienceDico[m.Groups[3].Value] + 1;
+                                    else checkIndicatorAudienceDico.Add(m.Groups[3].Value,1);
+                                }
+
+                                // 2nd case : For one day, audience NA for all targets
+                                if (rgx2.IsMatch(line))
+                                {
+                                    Match m = rgx2.Match(line);
+
+                                    if (checkIndicatorAudienceDico2.ContainsKey(m.Groups[1].Value + m.Groups[2].Value))
+                                        checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] = checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] + 1;
+                                    else checkIndicatorAudienceDico2.Add(m.Groups[1].Value + m.Groups[2].Value, 1);
+                                }    
                             }
-
-                            // 2nd case : For one day, audience NA for all targets
-                            if (rgx2.IsMatch(line))
-                            {
-                                Match m = rgx2.Match(line);
-
-                                if (checkIndicatorAudienceDico2.ContainsKey(m.Groups[1].Value + m.Groups[2].Value))
-                                    checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] = checkIndicatorAudienceDico2[m.Groups[1].Value + m.Groups[2].Value] + 1;
-                                else checkIndicatorAudienceDico2.Add(m.Groups[1].Value + m.Groups[2].Value, 1);
-                            }    
                         }
-                    }
 
-                    else if (currentCheck.Equals("* CHECK CHANNEL AND DATE AUD :"))
-                    {
-                        if (line.Contains("Alert"))
+                        else if (currentCheck.Equals("* CHECK CHANNEL AND DATE AUD :"))
                         {
-                            _CheckChannelAndDateAudienceCriticalAlerts++;
-                            _CheckChannelAndDateAudienceCriticalAlertsLogs += line + "\n";
+                            if (line.Contains("Alert"))
+                            {
+                                _CheckChannelAndDateAudienceCriticalAlerts++;
+                                _CheckChannelAndDateAudienceCriticalAlertsLogs += line + "\n";
+                            }
+                        }
+
+                        else if (currentCheck.Equals(""))
+                        {
+
                         }
                     }
+
+                    file.Close();
                 }
 
-                file.Close();
+                catch (Exception ex) { Console.WriteLine(ex); }
 
                 /////////////////////////////
                 // Compute & Display results
