@@ -76,6 +76,7 @@
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FTPToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1.Panel1)).BeginInit();
             this.MainBoardSplitContainer1.Panel1.SuspendLayout();
@@ -171,7 +172,8 @@
             this.ConfigStatementToolStripButton,
             this.StatisticsToolStripButton,
             this.ToolStripSeparator7,
-            this.BatchToolStripButton});
+            this.BatchToolStripButton,
+            this.FTPToolStripButton});
             this.ToolBarToolStrip.Name = "ToolBarToolStrip";
             this.ToolBarToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             // 
@@ -504,6 +506,13 @@
             this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
             this.StatusToolStripMenuItem.TextChanged += new System.EventHandler(this.StatusToolStripMenuItem_TextChanged);
             // 
+            // FTPToolStripButton
+            // 
+            this.FTPToolStripButton.Image = global::Analytics_V2.Properties.Resources.FTP2;
+            resources.ApplyResources(this.FTPToolStripButton, "FTPToolStripButton");
+            this.FTPToolStripButton.Name = "FTPToolStripButton";
+            this.FTPToolStripButton.Click += new System.EventHandler(this.FTPToolStripButton_Click);
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -615,6 +624,7 @@
         private ComponentFactory.Krypton.Navigator.KryptonPage batchs;
         private ComponentFactory.Krypton.Toolkit.KryptonHeader BatchsHeader;
         private System.Windows.Forms.ListBox BatchListBox;
+        private System.Windows.Forms.ToolStripButton FTPToolStripButton;
 
 
 

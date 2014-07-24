@@ -640,8 +640,6 @@ namespace Analytics_V2
                             if ((line.Contains(error) && error.Equals(", replaced:") && processToAnalyze.Contains("VALUECHECKER")) 
                                 || (line.Contains(error) && error.Equals(" was corrected value:") && processToAnalyze.Contains("VALUECORRECTOR")) 
                                 || (line.Contains(error) && error.Equals(", was deleted: ") && processToAnalyze.Contains("LINEDEL"))
-                                || (line.Contains(error) && error.Equals(" - Unknown Channel Id: ") && processToAnalyze.Contains("DataChecking"))
-                                || (line.Contains(error) && error.Equals(" - Unknown Typology Id: ") && processToAnalyze.Contains("DataChecking"))
                                 || (line.Contains(error) && error.Equals(" - Field is empty.") && processToAnalyze.Contains("DataChecking"))
                                 || (line.Contains(error) && error.Equals("-> Duplicated line removed index: ") && processToAnalyze.Contains("DUPLICATES"))
                                 || (line.Contains(error) && processToAnalyze.Contains("XML2TXT"))
@@ -720,20 +718,20 @@ namespace Analytics_V2
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
             }
 
-            else if (processToAnalyze.Contains("DataChecking") && informationOrCriticalCounter > 0)
-            {
-                commentsCell.Value = "Unknown Typology or Channel , or Empty fields :  " + informationOrCriticalCounter;
-                checkCell.Value = "ALERT";
-                checkCell.Style.ForeColor = System.Drawing.Color.Red;
-                commentsCell.Style.ForeColor = System.Drawing.Color.Red;
-
-                // Renamme Datamod
-                try
-                {
-                    File.Move(_DatamodLogPath.Replace(".log", ".txt"), _DatamodLogPath.Replace(".log", "") + "_ERROR_DC.txt");
-                }
-                catch { }
-            }
+            //else if (processToAnalyze.Contains("DataChecking") && informationOrCriticalCounter > 0)
+            //{
+            //    commentsCell.Value = "Unknown Typology or Channel , or Empty fields :  " + informationOrCriticalCounter;
+            //    checkCell.Value = "ALERT";
+            //    checkCell.Style.ForeColor = System.Drawing.Color.Red;
+            //    commentsCell.Style.ForeColor = System.Drawing.Color.Red;
+            //
+            //    // Renamme Datamod
+            //    try
+            //    {
+            //        File.Move(_DatamodLogPath.Replace(".log", ".txt"), _DatamodLogPath.Replace(".log", "") + "_ERROR_DC.txt");
+            //    }
+            //    catch { }
+            //}
 
             else if (processToAnalyze.Equals(("== CONTROL TOTAL TV ==")) && informationOrCriticalCounter > 0)
             {
@@ -841,6 +839,8 @@ namespace Analytics_V2
                     commentsCell.Style.ForeColor = System.Drawing.Color.Red;
                     checkCell.Style.ForeColor = System.Drawing.Color.Red;
                 }
+
+                file.Close();
             }
 
             catch { }

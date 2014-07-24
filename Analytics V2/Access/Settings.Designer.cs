@@ -97,9 +97,9 @@
             // 
             this.ConsistencyPathLabel.Location = new System.Drawing.Point(23, 218);
             this.ConsistencyPathLabel.Name = "ConsistencyPathLabel";
-            this.ConsistencyPathLabel.Size = new System.Drawing.Size(196, 20);
+            this.ConsistencyPathLabel.Size = new System.Drawing.Size(173, 20);
             this.ConsistencyPathLabel.TabIndex = 9;
-            this.ConsistencyPathLabel.Values.Text = "Dossier du Consistency Checking :";
+            this.ConsistencyPathLabel.Values.Text = "Consistency Checking Folder :";
             // 
             // XMLTemplateButton
             // 
@@ -127,9 +127,9 @@
             // 
             this.XMLTemplateLabel.Location = new System.Drawing.Point(23, 153);
             this.XMLTemplateLabel.Name = "XMLTemplateLabel";
-            this.XMLTemplateLabel.Size = new System.Drawing.Size(387, 20);
+            this.XMLTemplateLabel.Size = new System.Drawing.Size(282, 20);
             this.XMLTemplateLabel.TabIndex = 6;
-            this.XMLTemplateLabel.Values.Text = "Dossier des Templates d\'interprétation XML (pour le mode création) :";
+            this.XMLTemplateLabel.Values.Text = "XML Interpretation Template (for creation mode) :";
             // 
             // HCButton
             // 
@@ -157,9 +157,9 @@
             // 
             this.HCLabel.Location = new System.Drawing.Point(23, 85);
             this.HCLabel.Name = "HCLabel";
-            this.HCLabel.Size = new System.Drawing.Size(259, 20);
+            this.HCLabel.Size = new System.Drawing.Size(152, 20);
             this.HCLabel.TabIndex = 3;
-            this.HCLabel.Values.Text = "Fichier de Configuration Header Consistency :";
+            this.HCLabel.Values.Text = "Configuration File for HC :";
             // 
             // PersonnalPathButton
             // 
@@ -187,9 +187,9 @@
             // 
             this.PersonnalPathLabel.Location = new System.Drawing.Point(23, 18);
             this.PersonnalPathLabel.Name = "PersonnalPathLabel";
-            this.PersonnalPathLabel.Size = new System.Drawing.Size(114, 20);
+            this.PersonnalPathLabel.Size = new System.Drawing.Size(108, 20);
             this.PersonnalPathLabel.TabIndex = 0;
-            this.PersonnalPathLabel.Values.Text = "Dossier Personnel :";
+            this.PersonnalPathLabel.Values.Text = "Personnal Folder :";
             // 
             // Settings
             // 

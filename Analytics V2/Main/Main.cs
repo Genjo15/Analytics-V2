@@ -19,9 +19,9 @@ namespace Analytics_V2
 {
     public partial class Main : KryptonForm
     {
-        /********************************************* Declaration of variables *********************************************/
+        /******************************************************************** VARIABLES ***********************************************************************/
 
-        #region Variables
+        #region VARIABLES
 
         private FileBrowser _FileBrowser;             ////
         private FileBrowser _LocalFileBrowser;        //
@@ -48,14 +48,16 @@ namespace Analytics_V2
         private Administration _Administration;           // The Administration module UC.
         private Settings _Settings;                       // The Settings module UC.
         private History _Chronicles;                      // The History module UC.
-        private ConfigStatement _ConfigStatement;         // The Config statement module UC (old "Suivi Pays").
+        private ConfigSummary _ConfigSummary;             // The Config summary module UC (old "Suivi Pays").
         private WaitingScreen _WaitingScreen;             // Waiting Screen UC.
         private BatchUC _Batch;                           // Batch UC.
+        private FTPManager.FTPManager _FtpManager;        // Ftp Manager UC.
         private KryptonForm _AdministrationForm;          // Form hosting the Administration UC.
         private KryptonForm _SettingsForm;                // Form hosting the Settings UC.
-        private KryptonForm _HistoryAndStatementForm;     // Form hosting the Chronicles UC.
+        private KryptonForm _HistoryAndSummaryForm;       // Form hosting the Chronicles UC and the Config summary UC.
         private KryptonForm _WaitScreenForm;              // Form hosting the WaitingScreen UC.
         private KryptonForm _BatchForm;                   // Form hosting the batch UC.
+        private KryptonForm _FtpManagerForm;              // Form hosting the FTP Manager.
          
         private delegate void processOnMainThread(int[] tab);                                                     // Delegate type.
         private processOnMainThread _UpdateProgressBarDel;                                                        // Delegate for updating the progress bar.
@@ -70,9 +72,9 @@ namespace Analytics_V2
 
         #endregion
 
-        /**************************************************** Constructor ****************************************************/
+        /*********************************************************** CONSTRUCTOR & INITIALIZATION *************************************************************/
 
-        #region Constructor
+        #region CONSTRUCTOR & INITIALIZATION
 
         public Main()
         {
@@ -91,11 +93,12 @@ namespace Analytics_V2
             _Administration = new Administration();
             _Settings = new Settings();
             _Chronicles = new History();
-            _ConfigStatement = new ConfigStatement();
+            _ConfigSummary = new ConfigSummary();
             _Batch = new BatchUC();
             LoadBatchs();        // Load batch objects from saved instance.
             _Batch.LoadBatchs(); // Load them graphically (rows in DGV).
             _WaitingScreen = new WaitingScreen();
+            _FtpManager = new FTPManager.FTPManager();
 
             InitializeInterface();
 
@@ -119,12 +122,6 @@ namespace Analytics_V2
             _AbortThreadDel = new ProcessOnMainThread5(AbortThread);
         }
 
-        #endregion
-
-        /****************************************************** Methods ******************************************************/
-
-        #region Methods
-
         /******************************************\
          * Initialize interface :                 *
          *  - Initialize Administration Form      *
@@ -143,7 +140,7 @@ namespace Analytics_V2
             _AdministrationForm = new KryptonForm();
             _AdministrationForm.Text = "Administration";
             _AdministrationForm.StartPosition = FormStartPosition.CenterScreen;
-            _AdministrationForm.Icon = global::Analytics_V2.Properties.Resources.Administration ;
+            _AdministrationForm.Icon = global::Analytics_V2.Properties.Resources.Administration;
             _AdministrationForm.Size = new System.Drawing.Size(600, 400);
             _AdministrationForm.Controls.Add(_Administration);
             _AdministrationForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideAdministrationForm);
@@ -159,13 +156,13 @@ namespace Analytics_V2
             _SettingsForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideSettingsForm);
 
             // Chronicles form
-            _HistoryAndStatementForm = new KryptonForm();
-            _HistoryAndStatementForm.Text = "History";
-            _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
-            _HistoryAndStatementForm.StartPosition = FormStartPosition.CenterScreen;
-            _HistoryAndStatementForm.Size = new Size(1400, 700);
-            _HistoryAndStatementForm.Controls.Add(_Chronicles);
-            _HistoryAndStatementForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideChroniclesForm);
+            _HistoryAndSummaryForm = new KryptonForm();
+            _HistoryAndSummaryForm.Text = "History";
+            _HistoryAndSummaryForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
+            _HistoryAndSummaryForm.StartPosition = FormStartPosition.CenterScreen;
+            _HistoryAndSummaryForm.Size = new Size(1400, 700);
+            _HistoryAndSummaryForm.Controls.Add(_Chronicles);
+            _HistoryAndSummaryForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideChroniclesForm);
 
             // WaitingScreen form
             _WaitScreenForm = new KryptonForm();
@@ -187,7 +184,18 @@ namespace Analytics_V2
             foreach (Batch element in _Batch.Get_BatchsList())
                 BatchListBox.Items.Add(element.Get_Name());
             BatchListBox.BackColor = Color.FromArgb(227, 230, 232);
-            
+
+            // FTP Manager form
+            _FtpManagerForm = new KryptonForm();
+            _FtpManagerForm.Text = "Ftp Manager";
+            _FtpManagerForm.Size = new System.Drawing.Size(1200, 800);
+            _FtpManagerForm.StartPosition = FormStartPosition.CenterScreen;
+            _FtpManagerForm.Icon = global::Analytics_V2.Properties.Resources.FTP3;
+            _FtpManagerForm.FormClosing += HideFtpForm;
+            _FtpManager.Dock = DockStyle.Fill;
+            _FtpManagerForm.Controls.Add(_FtpManager);
+
+
             // Add file browsers (local + common)
             this.FileBrowserNavigator.Pages[0].Controls.Add(_FileBrowser);
             this.FileBrowserNavigator.Pages[0].Tag = _FileBrowser;
@@ -204,8 +212,6 @@ namespace Analytics_V2
             MainBoardSplitContainer1.FixedPanel = FixedPanel.Panel1;
 
             // Event handlers
-            //this.Resize += Main_Resize;
-
             _FileBrowser.TreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             _FileBrowser.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
             _FileBrowser.CutToolStripMenuItem.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
@@ -255,13 +261,10 @@ namespace Analytics_V2
             _Session.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             _Session.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             _Session.PasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(PasswordTextBox_KeyDown);
-           
+
             // Set connection status
             this.StatusToolStripMenuItem.Text = "Connected as " + _Session.GetAccessType();
         }
-
-
-
 
         /***************************************\
          * Get Path of configs from WebService *
@@ -281,7 +284,7 @@ namespace Analytics_V2
                 request.Close();
             }
 
-            catch 
+            catch
             {
                 var result = KryptonMessageBox.Show("Path introuvable, veuillez le définir manuellement", "Path introuvable",
                          MessageBoxButtons.OK,
@@ -304,7 +307,15 @@ namespace Analytics_V2
 
         #endregion
 
-        #region Events
+        /******************************************************************************************************************************************************\
+         *                                                                                                                                                    *
+         *                                                                  - METHODS -                                                                       *
+         *                                                                                                                                                    *
+        \******************************************************************************************************************************************************/     
+
+        /**********************************************************    FILE EXPLORER TREEVIEW   ***************************************************************/
+
+        #region FILE EXPLORER TREEVIEW
 
         /****************************************************************************************\
          * Event of clicking on an element of the tree :                                        *
@@ -361,7 +372,7 @@ namespace Analytics_V2
 
                         // Event handler for the expand/minimize arrow
                         foreach (KryptonHeaderGroup element in _Navigator.Get_ProcessHeaderGroupList())
-                            element.ButtonSpecs[0].Click += new EventHandler(ProcessButtonSpec_Click);
+                            element.ButtonSpecs[0].Click += new EventHandler(SummaryExpandMinimizeButton_Click);
                     }
                     catch(Exception exception)
                     {
@@ -451,7 +462,7 @@ namespace Analytics_V2
          *   - if we click on the up arrow --> minimize panel                                   *
         \****************************************************************************************/
 
-        private void ProcessButtonSpec_Click(object sender, EventArgs e)
+        private void SummaryExpandMinimizeButton_Click(object sender, EventArgs e)
         {
             if (sender is ButtonSpecHeaderGroup)
             {
@@ -1231,20 +1242,49 @@ namespace Analytics_V2
         }
 
 
-        /****************************************************************************************\
-         * Events of double clicking an element of the specific countries list / Specific tools *
-         *  - launch the specific process.                                                      *
-        \****************************************************************************************/
+        /*******************************************************************************\
+         * Event which occurs when the OpenDirectory contextMenuStrip is clicked       *
+         *  - Open the directory in the File Explorer                                  *
+        \*******************************************************************************/
 
-        private void SpecificCountriesListBox_DoubleClick(object sender, EventArgs e)
+        private void OpenDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _SpecificCountries.LaunchSpecificCountry(_SpecificCountries.SpecificCountriesListBox.SelectedItem.ToString());
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (treeView.SelectedNode.ImageIndex == 1)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", treeView.SelectedNode.FullPath);
+                }
+                catch (Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Cannot open File Explorer. Error:\n\n" + ex, "Error while opening File Explorer",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+                };
+            }
+
+            else if (treeView.SelectedNode.ImageIndex == 2)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", treeView.SelectedNode.Parent.FullPath);
+                }
+                catch (Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Cannot open File Explorer. Error:\n\n" + ex, "Error while opening File Explorer",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+                }
+            }
         }
 
-        private void SpecificToolsListBox_DoubleClick(object sender, EventArgs e)
-        {
-            _SpecificTools.LaunchSpecificTool(_SpecificTools.SpecificToolsListBox.SelectedItem.ToString());
-        }
+        #endregion
+
+        /*****************************************************************    LAUNCHER   **********************************************************************/
+
+        #region LAUNCHER
 
         /*********************************************************************************\
          * Event of clicking of the element Launch of the MenuStrip                      *
@@ -1457,6 +1497,12 @@ namespace Analytics_V2
             Invoke(_LogsList[id].Get_AddLogsGridViewDel(), outputFile, inputFile, processList, targetsNumber);
         }
 
+        #endregion
+
+        /**************************************************    ADMINISTRATION, LOGIN & SETTINGS MODULE   ******************************************************/
+
+        #region ADMINISTRATION, LOGIN & SETTINGS MODULE
+
         /******************************************************************\
          * Event of clicking of the element "Connect as" of the MenuStrip *
          *  - Display connection screen.                                  *
@@ -1473,7 +1519,7 @@ namespace Analytics_V2
             connectForm.StartPosition = FormStartPosition.CenterScreen;
             connectForm.Size = new System.Drawing.Size(360, 110);
             connectForm.Controls.Add(_Session);
-            connectForm.ShowDialog();  
+            connectForm.ShowDialog();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -1489,7 +1535,7 @@ namespace Analytics_V2
 
         private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode.Equals(Keys.Enter))
+            if (e.KeyCode.Equals(Keys.Enter))
                 Connect();
         }
 
@@ -1568,169 +1614,11 @@ namespace Analytics_V2
             e.Cancel = true;
         }
 
-        /**************************************************************************************************************************\
-         * Event which occurs when the historic contextMenuStrip item / History toolstrip (whole history in this case) is clicked *
-         *  - Open the config historic.                                                                                           *
-         *  - Also the handler when closing form.                                                                                 *
-        \**************************************************************************************************************************/
+        #endregion
 
-        private void HistoryToolStripButton_Click(object sender, EventArgs e)
-        {
-            if (_Session.GetNetworkAvailable())
-            {
-                _HistoryAndStatementForm.Text = "History";
-                _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
-                _HistoryAndStatementForm.Controls.Clear();
-                _Chronicles.GetAllChronicles();
-                _HistoryAndStatementForm.Controls.Add(_Chronicles);
-                _HistoryAndStatementForm.Show();
-            }
-        }
+        /***************************************************************    BATCH MODULE   ********************************************************************/
 
-        private void ViewHistoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
-            if (_Session.GetNetworkAvailable())
-            {
-                _HistoryAndStatementForm.Text = "History";
-                _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
-                _HistoryAndStatementForm.Controls.Clear();
-                _Chronicles.GetChroniclesFromSpecificConfig(treeView.SelectedNode.Text.Replace(".xml", ""));
-                _HistoryAndStatementForm.Controls.Add(_Chronicles);
-                _HistoryAndStatementForm.Show();
-            }
-        }
-
-        private void HideChroniclesForm(object sender, FormClosingEventArgs e)
-        {
-            _HistoryAndStatementForm.Hide();
-            e.Cancel = true;
-        }
-
-        /*********************************************************************\
-         * Event which occurs when the ConfigStatement toolstrip is clicked  *
-         *  - Open the Config Statement summary (old "SUIVI PAYS ANALYTICS). *
-         *  - Also show & hide the waiting screen.                           *
-        \*********************************************************************/
-
-        private void ConfigStatementToolStripButton_Click(object sender, EventArgs e)
-        {
-            if (_Session.GetNetworkAvailable())
-            {
-                _WaitScreenForm.Show();
-
-                _HistoryAndStatementForm.Text = "Configs Summary";
-                _HistoryAndStatementForm.Icon = global::Analytics_V2.Properties.Resources.ConfigStatement2;
-                _HistoryAndStatementForm.Controls.Clear();
-                _HistoryAndStatementForm.Controls.Add(_ConfigStatement);
-                _ConfigStatement.FillDataGridView();
-
-                _WaitScreenForm.Hide();
-
-                _HistoryAndStatementForm.Show();
-            }
-        }
-
-        /*********************************************************************\
-         * Event which occurs when the Statistics toolstrip is clicked       *
-         *  - Open the statistics module                                     *
-        \*********************************************************************/
-
-        private void StatisticsToolStripButton_Click(object sender, EventArgs e)
-        {
-            Stats.Form1 statsForm = new Stats.Form1();
-            statsForm.StartPosition = FormStartPosition.CenterScreen;
-            statsForm.Show();
-        }
-
-        /****************************************************************\
-         * Event which occurs when the Batch toolstrip is clicked       *
-         *  - Open the batch module                                     *
-        \****************************************************************/
-
-        private void BatchToolStripButton_Click(object sender, EventArgs e)
-        {
-            _BatchForm.Show();
-        }
-
-        private void HideBatchForm(object sender, FormClosingEventArgs e)
-        {
-            _Batch.SplitContainer.Panel2Collapsed = true;
-            _Batch.SplitContainer.Panel2.Hide();
-            _BatchForm.Size = new System.Drawing.Size(600, 400);
-            _Batch.RemoveToolStripButton.Enabled = true;
-            _Batch.AddToolStripButton.Enabled = true;
-            _Batch.EditToolStripButton.Enabled = true;
-
-            _BatchForm.Hide();
-            e.Cancel = true;
-
-            // rebuild batchs listbox
-            BatchListBox.Items.Clear();
-            foreach (Batch element in _Batch.Get_BatchsList())
-                BatchListBox.Items.Add(element.Get_Name());
-        }
-
-        /*************************************************************\
-         * Event which occurs when the HC toolstrip is clicked       *
-         *  - Open the HC Module                                     *
-        \*************************************************************/
-
-        private void HCToolStripButton_Click(object sender, EventArgs e)
-        {
-            if(_Session.CheckIfAccessGranted("hc"))
-            {
-                try
-                {
-                    HeaderConsistency.HC HC = new HeaderConsistency.HC(Properties.Settings.Default.hc_config);
-                    HC.Show();
-                }
-                catch(Exception ex)
-                {
-                    var result = KryptonMessageBox.Show("Cannot open the module (check if path of HC is well defined)." + ex, "Error while opening HC Module",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Exclamation);
-                }
-            }
-        }
-
-        /*******************************************************************************\
-         * Event which occurs when the OpenDirectory contextMenuStrip is clicked       *
-         *  - Open the directory in the File Explorer                                  *
-        \*******************************************************************************/
-
-        private void OpenDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
-
-            if (treeView.SelectedNode.ImageIndex == 1)
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start("explorer.exe", treeView.SelectedNode.FullPath);
-                }
-                catch (Exception ex) 
-                {
-                    var result = KryptonMessageBox.Show("Cannot open File Explorer. Error:\n\n" + ex, "Error while opening File Explorer",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Exclamation);
-                };
-            }
-
-            else if (treeView.SelectedNode.ImageIndex == 2)
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start("explorer.exe", treeView.SelectedNode.Parent.FullPath);
-                }
-                catch (Exception ex)
-                {
-                    var result = KryptonMessageBox.Show("Cannot open File Explorer. Error:\n\n" + ex, "Error while opening File Explorer",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Exclamation);
-                };
-            }
-        }
+        #region BATCH MODULE
 
         /*********************\
          * Save /Load batchs *
@@ -1758,27 +1646,6 @@ namespace Analytics_V2
             }
         }
 
-        /*****************************************************\
-         * event when fileBrowserNavigator page changes :    *
-         *    -> Enable or disable suppress / edit toolstrip *
-        \*****************************************************/
-
-        private void FileBrowserNavigator_SelectedPageChanged(object sender, EventArgs e)
-        {
-            if (FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
-            {
-                SuppressToolStripButton.Enabled = false;
-                EditToolStripButton.Enabled = false;
-                LaunchButton.Enabled = false;
-                _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[0];
-            }
-            else if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
-            {
-                LaunchButton.Enabled = true;
-            }
-
-        }
-
         /*********************************************\
          * Event of clicking batch listbox item :    *
          *    -> Display Batch summary               *
@@ -1798,7 +1665,7 @@ namespace Analytics_V2
 
                     // Event handler for the expand/minimize arrow
                     foreach (KryptonHeaderGroup element2 in _Navigator.Get_ProcessHeaderGroupList())
-                        element2.ButtonSpecs[0].Click += new EventHandler(ProcessButtonSpec_Click);
+                        element2.ButtonSpecs[0].Click += new EventHandler(SummaryExpandMinimizeButton_Click);
                     break;
                 }
             }
@@ -1920,6 +1787,206 @@ namespace Analytics_V2
         }
 
 
+        /****************************************************************\
+         * Event which occurs when the Batch toolstrip is clicked       *
+         *  - Open the batch module                                     *
+        \****************************************************************/
+
+        private void BatchToolStripButton_Click(object sender, EventArgs e)
+        {
+            _BatchForm.Show();
+        }
+
+        private void HideBatchForm(object sender, FormClosingEventArgs e)
+        {
+            _Batch.SplitContainer.Panel2Collapsed = true;
+            _Batch.SplitContainer.Panel2.Hide();
+            _BatchForm.Size = new System.Drawing.Size(600, 400);
+            _Batch.RemoveToolStripButton.Enabled = true;
+            _Batch.AddToolStripButton.Enabled = true;
+            _Batch.EditToolStripButton.Enabled = true;
+
+            _BatchForm.Hide();
+            e.Cancel = true;
+
+            // rebuild batchs listbox
+            BatchListBox.Items.Clear();
+            foreach (Batch element in _Batch.Get_BatchsList())
+                BatchListBox.Items.Add(element.Get_Name());
+        }
+
+        #endregion
+
+        /*******************************************************    CONFIGURATION SUMMARY MODULE   ************************************************************/
+
+        #region CONFIG SUMMARY MODULE
+
+        /*********************************************************************\
+         * Event which occurs when the ConfigStatement toolstrip is clicked  *
+         *  - Open the Config Statement summary (old "SUIVI PAYS ANALYTICS). *
+         *  - Also show & hide the waiting screen.                           *
+        \*********************************************************************/
+
+        private void ConfigStatementToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (_Session.GetNetworkAvailable())
+            {
+                _WaitScreenForm.Show();
+
+                _HistoryAndSummaryForm.Text = "Configs Summary";
+                _HistoryAndSummaryForm.Icon = global::Analytics_V2.Properties.Resources.ConfigStatement2;
+                _HistoryAndSummaryForm.Controls.Clear();
+                _HistoryAndSummaryForm.Controls.Add(_ConfigSummary);
+                _ConfigSummary.FillDataGridView();
+
+                _WaitScreenForm.Hide();
+
+                _HistoryAndSummaryForm.Show();
+            }
+        }
+
+        #endregion
+
+        /***************************************************************    FTP MODULE   **********************************************************************/
+
+        #region FTP MODULE
+
+        /*************************************************************\
+         * Event which occurs when the Batch toolstrip is clicked    *
+         *  - Open the batch module                                  *
+         * Include hiding the module                                 *
+        \*************************************************************/
+
+        private void FTPToolStripButton_Click(object sender, EventArgs e)
+        {
+            _FtpManagerForm.Show();
+        }
+
+        private void HideFtpForm(object sender, FormClosingEventArgs e)
+        {
+            _FtpManagerForm.Hide();
+            _FtpManagerForm.Controls.Clear();
+            _FtpManager.Dispose();
+            _FtpManager = new FTPManager.FTPManager();
+            _FtpManager.Dock = DockStyle.Fill;
+            _FtpManagerForm.Controls.Add(_FtpManager);
+
+            e.Cancel = true;
+        }
+
+        #endregion
+
+        /********************************************************    HEADER CONSISTENCY MODULE   **************************************************************/
+
+        #region HEADER CONSISTENCY MODULE
+
+        /*************************************************************\
+         * Event which occurs when the HC toolstrip is clicked       *
+         *  - Open the HC Module                                     *
+        \*************************************************************/
+
+        private void HCToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (_Session.CheckIfAccessGranted("hc"))
+            {
+                try
+                {
+                    HeaderConsistency.HC HC = new HeaderConsistency.HC(Properties.Settings.Default.hc_config);
+                    HC.Show();
+                }
+                catch (Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Cannot open the module (check if path of HC is well defined)." + ex, "Error while opening HC Module",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Exclamation);
+                }
+            }
+        }
+
+        #endregion
+
+        /**************************************************************    HISTORY MODULE   *******************************************************************/
+
+        #region HISTORY MODULE
+
+        /**************************************************************************************************************************\
+         * Event which occurs when the historic contextMenuStrip item / History toolstrip (whole history in this case) is clicked *
+         *  - Open the config historic.                                                                                           *
+         *  - Also the handler when closing form.                                                                                 *
+        \**************************************************************************************************************************/
+
+        private void HistoryToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (_Session.GetNetworkAvailable())
+            {
+                _HistoryAndSummaryForm.Text = "History";
+                _HistoryAndSummaryForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
+                _HistoryAndSummaryForm.Controls.Clear();
+                _Chronicles.GetAllChronicles();
+                _HistoryAndSummaryForm.Controls.Add(_Chronicles);
+                _HistoryAndSummaryForm.Show();
+            }
+        }
+
+        private void ViewHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+            if (_Session.GetNetworkAvailable())
+            {
+                _HistoryAndSummaryForm.Text = "History";
+                _HistoryAndSummaryForm.Icon = global::Analytics_V2.Properties.Resources.TimeMachine2;
+                _HistoryAndSummaryForm.Controls.Clear();
+                _Chronicles.GetChroniclesFromSpecificConfig(treeView.SelectedNode.Text.Replace(".xml", ""));
+                _HistoryAndSummaryForm.Controls.Add(_Chronicles);
+                _HistoryAndSummaryForm.Show();
+            }
+        }
+
+        private void HideChroniclesForm(object sender, FormClosingEventArgs e)
+        {
+            _HistoryAndSummaryForm.Hide();
+            e.Cancel = true;
+        }
+
+        #endregion
+
+        /************************************************************    STATISTICS MODULE   ******************************************************************/
+
+        #region STATISTICS MODULE
+
+        /*********************************************************************\
+         * Event which occurs when the Statistics toolstrip is clicked       *
+         *  - Open the statistics module                                     *
+        \*********************************************************************/
+
+        private void StatisticsToolStripButton_Click(object sender, EventArgs e)
+        {
+            Stats.Form1 statsForm = new Stats.Form1();
+            statsForm.StartPosition = FormStartPosition.CenterScreen;
+            statsForm.Show();
+        }
+
+        #endregion
+
+        /******************************************************************    MISC  **************************************************************************/
+
+        #region MISC
+
+        /****************************************************************************************\
+         * Events of double clicking an element of the specific countries list / Specific tools *
+         *  - launch the specific process.                                                      *
+        \****************************************************************************************/
+
+        private void SpecificCountriesListBox_DoubleClick(object sender, EventArgs e)
+        {
+            _SpecificCountries.LaunchSpecificCountry(_SpecificCountries.SpecificCountriesListBox.SelectedItem.ToString());
+        }
+
+        private void SpecificToolsListBox_DoubleClick(object sender, EventArgs e)
+        {
+            _SpecificTools.LaunchSpecificTool(_SpecificTools.SpecificToolsListBox.SelectedItem.ToString());
+        }
+
         /******************************************************************************************************\
          * Event of resizing the form                                                                         *
          *  - for correcting a graphical bug which occurs when the form is not focused anymore then refocused *
@@ -1981,7 +2048,6 @@ namespace Analytics_V2
                     _Navigator.EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
                     if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null && ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
                     {
-                        //((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.IndianRed;
                         ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.BackColor = Color.FromKnownColor(System.Drawing.KnownColor.Highlight);
                         ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ForeColor = Color.FromKnownColor(System.Drawing.KnownColor.HighlightText);
                         LaunchButton.Enabled = true;
@@ -2021,6 +2087,27 @@ namespace Analytics_V2
                     }
                 }
             }
+        }
+
+        /*****************************************************\
+         * event when fileBrowserNavigator page changes :    *
+         *    -> Enable or disable suppress / edit toolstrip *
+        \*****************************************************/
+
+        private void FileBrowserNavigator_SelectedPageChanged(object sender, EventArgs e)
+        {
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Batchs"))
+            {
+                SuppressToolStripButton.Enabled = false;
+                EditToolStripButton.Enabled = false;
+                LaunchButton.Enabled = false;
+                _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[0];
+            }
+            else if (!_Navigator.NavigatorControl.SelectedPage.Text.Equals("Summary"))
+            {
+                LaunchButton.Enabled = true;
+            }
+
         }
 
         /***********************************************************************\
@@ -2086,9 +2173,8 @@ namespace Analytics_V2
             Application.Exit();
         }
 
-        
-
         #endregion
+     
     }
 }
 

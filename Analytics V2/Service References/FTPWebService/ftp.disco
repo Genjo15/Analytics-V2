@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://vuc0009/Zodiac Server 2/ftp.asmx?wsdl" docRef="http://vuc0009/Zodiac Server 2/ftp.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://vuc0009/Zodiac%20Server%202/ftp.asmx" xmlns:q1="http://tempuri.org/" binding="q1:ftpSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://vuc0009/Zodiac%20Server%202/ftp.asmx" xmlns:q2="http://tempuri.org/" binding="q2:ftpSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

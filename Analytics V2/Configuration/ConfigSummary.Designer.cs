@@ -1,6 +1,6 @@
 ﻿namespace Analytics_V2
 {
-    partial class ConfigStatement
+    partial class ConfigSummary
     {
         /// <summary> 
         /// Variable nécessaire au concepteur.

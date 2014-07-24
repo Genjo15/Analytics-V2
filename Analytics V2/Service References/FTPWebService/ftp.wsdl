@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Get_all_regions">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get_all_regionsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_all_regionsResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_region_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="regionName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_region_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Get_region_idResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_server_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="provider" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="serverAddress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="login" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_server_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Get_server_idResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_server">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="provider" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="serverAddress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="login" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_serverResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Add_serverResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_region">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="serverID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fileMask" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="targetDirectory" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="recoveryFrequencyID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="recoveryDayID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_regionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Add_regionResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_region">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="oldName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="serverID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fileMask" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="targetDirectory" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="recoveryFrequencyID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="recoveryDayID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update_regionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Update_regionResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Delete_region">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="regionName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Delete_regionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Delete_regionResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_file_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="fileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="regionID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_file_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Get_file_idResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_files_download_date">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="regionId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_files_download_dateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_files_download_dateResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_file">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="regionID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_fileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Add_fileResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_download_per_region">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="regionID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="fileID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="downloadDate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Add_download_per_regionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Add_download_per_regionResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="Get_all_regionsSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_all_regions" />
+  </wsdl:message>
+  <wsdl:message name="Get_all_regionsSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_all_regionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_region_idSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_region_id" />
+  </wsdl:message>
+  <wsdl:message name="Get_region_idSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_region_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_server_idSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_server_id" />
+  </wsdl:message>
+  <wsdl:message name="Get_server_idSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_server_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_serverSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_server" />
+  </wsdl:message>
+  <wsdl:message name="Add_serverSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_serverResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_regionSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_region" />
+  </wsdl:message>
+  <wsdl:message name="Add_regionSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_regionResponse" />
+  </wsdl:message>
+  <wsdl:message name="Update_regionSoapIn">
+    <wsdl:part name="parameters" element="tns:Update_region" />
+  </wsdl:message>
+  <wsdl:message name="Update_regionSoapOut">
+    <wsdl:part name="parameters" element="tns:Update_regionResponse" />
+  </wsdl:message>
+  <wsdl:message name="Delete_regionSoapIn">
+    <wsdl:part name="parameters" element="tns:Delete_region" />
+  </wsdl:message>
+  <wsdl:message name="Delete_regionSoapOut">
+    <wsdl:part name="parameters" element="tns:Delete_regionResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_file_idSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_file_id" />
+  </wsdl:message>
+  <wsdl:message name="Get_file_idSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_file_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_files_download_dateSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_files_download_date" />
+  </wsdl:message>
+  <wsdl:message name="Get_files_download_dateSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_files_download_dateResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_fileSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_file" />
+  </wsdl:message>
+  <wsdl:message name="Add_fileSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_fileResponse" />
+  </wsdl:message>
+  <wsdl:message name="Add_download_per_regionSoapIn">
+    <wsdl:part name="parameters" element="tns:Add_download_per_region" />
+  </wsdl:message>
+  <wsdl:message name="Add_download_per_regionSoapOut">
+    <wsdl:part name="parameters" element="tns:Add_download_per_regionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ftpSoap">
+    <wsdl:operation name="Get_all_regions">
+      <wsdl:input message="tns:Get_all_regionsSoapIn" />
+      <wsdl:output message="tns:Get_all_regionsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_region_id">
+      <wsdl:input message="tns:Get_region_idSoapIn" />
+      <wsdl:output message="tns:Get_region_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_server_id">
+      <wsdl:input message="tns:Get_server_idSoapIn" />
+      <wsdl:output message="tns:Get_server_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_server">
+      <wsdl:input message="tns:Add_serverSoapIn" />
+      <wsdl:output message="tns:Add_serverSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_region">
+      <wsdl:input message="tns:Add_regionSoapIn" />
+      <wsdl:output message="tns:Add_regionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Update_region">
+      <wsdl:input message="tns:Update_regionSoapIn" />
+      <wsdl:output message="tns:Update_regionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete_region">
+      <wsdl:input message="tns:Delete_regionSoapIn" />
+      <wsdl:output message="tns:Delete_regionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_file_id">
+      <wsdl:input message="tns:Get_file_idSoapIn" />
+      <wsdl:output message="tns:Get_file_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_files_download_date">
+      <wsdl:input message="tns:Get_files_download_dateSoapIn" />
+      <wsdl:output message="tns:Get_files_download_dateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_file">
+      <wsdl:input message="tns:Add_fileSoapIn" />
+      <wsdl:output message="tns:Add_fileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add_download_per_region">
+      <wsdl:input message="tns:Add_download_per_regionSoapIn" />
+      <wsdl:output message="tns:Add_download_per_regionSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ftpSoap" type="tns:ftpSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Get_all_regions">
+      <soap:operation soapAction="http://tempuri.org/Get_all_regions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_region_id">
+      <soap:operation soapAction="http://tempuri.org/Get_region_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_server_id">
+      <soap:operation soapAction="http://tempuri.org/Get_server_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_server">
+      <soap:operation soapAction="http://tempuri.org/Add_server" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_region">
+      <soap:operation soapAction="http://tempuri.org/Add_region" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_region">
+      <soap:operation soapAction="http://tempuri.org/Update_region" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_region">
+      <soap:operation soapAction="http://tempuri.org/Delete_region" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_file_id">
+      <soap:operation soapAction="http://tempuri.org/Get_file_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_files_download_date">
+      <soap:operation soapAction="http://tempuri.org/Get_files_download_date" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_file">
+      <soap:operation soapAction="http://tempuri.org/Add_file" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_download_per_region">
+      <soap:operation soapAction="http://tempuri.org/Add_download_per_region" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ftpSoap12" type="tns:ftpSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Get_all_regions">
+      <soap12:operation soapAction="http://tempuri.org/Get_all_regions" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_region_id">
+      <soap12:operation soapAction="http://tempuri.org/Get_region_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_server_id">
+      <soap12:operation soapAction="http://tempuri.org/Get_server_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_server">
+      <soap12:operation soapAction="http://tempuri.org/Add_server" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_region">
+      <soap12:operation soapAction="http://tempuri.org/Add_region" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_region">
+      <soap12:operation soapAction="http://tempuri.org/Update_region" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_region">
+      <soap12:operation soapAction="http://tempuri.org/Delete_region" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_file_id">
+      <soap12:operation soapAction="http://tempuri.org/Get_file_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_files_download_date">
+      <soap12:operation soapAction="http://tempuri.org/Get_files_download_date" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_file">
+      <soap12:operation soapAction="http://tempuri.org/Add_file" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add_download_per_region">
+      <soap12:operation soapAction="http://tempuri.org/Add_download_per_region" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ftp">
+    <wsdl:port name="ftpSoap" binding="tns:ftpSoap">
+      <soap:address location="http://vuc0009/Zodiac%20Server%202/ftp.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ftpSoap12" binding="tns:ftpSoap12">
+      <soap12:address location="http://vuc0009/Zodiac%20Server%202/ftp.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

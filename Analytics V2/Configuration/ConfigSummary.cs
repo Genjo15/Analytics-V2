@@ -10,7 +10,7 @@ using System.IO;
 
 namespace Analytics_V2
 {
-    public partial class ConfigStatement : UserControl
+    public partial class ConfigSummary : UserControl
     {
         /***************************************************** Variables *****************************************************/
 
@@ -24,7 +24,7 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public ConfigStatement()
+        public ConfigSummary()
         {
             InitializeComponent();
             this.Dock = DockStyle.Fill;
