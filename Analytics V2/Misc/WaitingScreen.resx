@@ -117,29 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="switchButtonSpec.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACwwAAAsMAT9AIsgAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfeAwQIORg/2X4s
-        AAACpUlEQVQ4T2MAAkYoZgZiFjQMEgPL8xkwsrCoM3AA2QwKzuwgCgyYgBikkBWIQaIgBSAaxAfJgYGS
-        M6eWTgBvN5DJBuJP/a8FosAaQQKcQMzNLsgoJKrFIi9jzqEtZ8NhLGPHZillw2qnH8SXm9gq998pXWwC
-        UB0XEIMByAaQbbxAzC+ty65oFiTg6ZYqnu9fKDEhtFJsXVyj2Nn0brG3ZXOk/hfOVPrvkSe9lEER4gWQ
-        rdxALADEQhLqrCqazmxuFpEcWS6ZXD1B5TzrE1v5r+ZMFPhZOF30f8k8mf9Na43+64cKHgJpBvmPB4gF
-        gVhEXI1NXcuFw9MqiifXPYuvP6icb0NCi8CVnAlC34tmiP0vW6DwP7pZ+a2yO68mWDMjI1gzdyI3g7mt
-        NLORhiO/rXWoRJhTgmSmS6pYuUeWWEtAkdiavEly/6Ma5c6Km3MbgTSCAMjZLDnCjHqrnbguVSoyewD5
-        IP/zATEoEEFhwiDvwGllnyRyQdCIRRnEhwGmbjl286OxQufO5vD+3xTAs2qNF0/Tai+B4nW+ovGb/CTc
-        N7uLaDgZscqyajCogzT8//+fgQFkxHwdDu0LSRKvH5bx/7+az/rvTCrrs+PRrEcOB7EtOujLUbfPjSNy
-        uy270Q4nPpBrIAAc00CwzZr3wKcW1f9PSnj+3yxg+XcxjenZ2RjmwyeCmOcd8WSu2u/IHLLLgkl/lxMv
-        QjMMtAowcB4LEl76oFjo/51Sjv8X0jnvn0ng3n86mnfBqUjhxpNhorHHfIRNj3sKgAIVE6QBU8wBb54J
-        F9L5/2+0Zc9dqsVivUKPxWSdMZv2JlNO+c3GHEJrtFhA6RwV/JsiAqaLgT7ZZMnevVKfVRssgAVsNkJk
-        CDhYowcxdKYIA/s8aXBaJwIwMAAA/SauI3+q8j8AAAAASUVORK5CYII=
-</value>
-  </data>
-  <metadata name="ContextMenuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>168, 17</value>
-  </metadata>
-  <metadata name="ContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
 </root>

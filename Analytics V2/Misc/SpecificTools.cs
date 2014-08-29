@@ -130,7 +130,6 @@ namespace Analytics_V2
                 case "XML Editor (beta)": XMLEditor.Editor XMLEditorProcess = new XMLEditor.Editor();
                                           XMLEditorProcess.RunControl();
                                           break;
-
             }
         }
 

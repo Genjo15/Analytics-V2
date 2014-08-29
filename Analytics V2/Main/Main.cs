@@ -14,6 +14,7 @@ using System.Xml;
 using System.Threading;
 using System.Xml.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 
 namespace Analytics_V2
 {
@@ -31,7 +32,7 @@ namespace Analytics_V2
 
         private List<Config> _ConfigsList;         // List of configs.
         private List<String> _InputFiles;          // List of input files.
-        String[] _ConfigBeforeModif;               // Config (raw) before modif.
+        String[] _ConfigBeforeModif;               // Config (raw) before modif. Used in historic module.
 
         private List<Thread> _PoolThreads;           // List of threads.
         private List<Launcher> _LaunchersList;       // List of launchers.
@@ -69,6 +70,15 @@ namespace Analytics_V2
         private ProcessOnMainThread4 _DisplayConfigProcessTimeDel;                                                // Delegate for displaying the process time.
         private delegate void ProcessOnMainThread5(int i);                                                        // Delegate type5.
         private ProcessOnMainThread5 _AbortThreadDel;                                                             // Delegate for aborting the specific thread.
+        private delegate void ProcessOnMainThread6();                                                             // Delegate type6.
+        private ProcessOnMainThread6 _ClearProgressBarDel;                                                        // Delegate for clearing all finished progress bar.
+
+        private BackgroundWorker _FTPWorker;                // Worker for using the FTP API.
+        private int _FtpDLCounter;                          // Downloaded File counter.
+        private List<string> _BatchTargetPathsTmp;          // List of target paths (tmp, used for copying downloaded data to respective folders).
+        private string _LaunchedBatchType;                  // Single or Multi.
+        private Batch _LaunchedBatch;                       // Launched Batch.
+        private List<FTPManager.Region> _RegionsToDownload; // Regions to dl.
 
         #endregion
 
@@ -85,7 +95,8 @@ namespace Analytics_V2
                 _LocalFileBrowser = new FileBrowser(Properties.Settings.Default.local_path);
             else
                 _LocalFileBrowser = new FileBrowser(@"D:\\");
-            _Navigator = new Navigator(ProcessHelperButton);
+            _ClearProgressBarDel = new ProcessOnMainThread6(ClearAllProgressBars);
+            _Navigator = new Navigator(ProcessHelperButton, _ClearProgressBarDel);
             _SpecificCountries = new SpecificCountries();
             _SpecificTools = new SpecificTools();
             _Session = new Authentication("user");
@@ -94,11 +105,12 @@ namespace Analytics_V2
             _Settings = new Settings();
             _Chronicles = new History();
             _ConfigSummary = new ConfigSummary();
-            _Batch = new BatchUC();
+            _FtpManager = new FTPManager.FTPManager();
+            _Batch = new BatchUC(_FtpManager.Get_RegionsList());
             LoadBatchs();        // Load batch objects from saved instance.
             _Batch.LoadBatchs(); // Load them graphically (rows in DGV).
             _WaitingScreen = new WaitingScreen();
-            _FtpManager = new FTPManager.FTPManager();
+            
 
             InitializeInterface();
 
@@ -120,7 +132,20 @@ namespace Analytics_V2
             _AddLogsGridViewDel = new processOnMainThread3(AddLogsGridView);
             _DisplayConfigProcessTimeDel = new ProcessOnMainThread4(DisplayConfigProcessTime);
             _AbortThreadDel = new ProcessOnMainThread5(AbortThread);
+
+            _FTPWorker = new BackgroundWorker();
+            _FTPWorker.WorkerReportsProgress = true;
+            _FTPWorker.WorkerSupportsCancellation = true;
+            _FTPWorker.DoWork += _FTPWorker_DoWork;
+            _FTPWorker.RunWorkerCompleted += _FTPWorker_RunWorkerCompleted;
+            _FTPWorker.ProgressChanged += _FTPWorker_ProgressChanged;
+            _FtpDLCounter = 1;
+            _BatchTargetPathsTmp = new List<string>();
+            _RegionsToDownload = new List<FTPManager.Region>();
+            _LaunchedBatchType = String.Empty;
+            _LaunchedBatch = new Batch();
         }
+
 
         /******************************************\
          * Initialize interface :                 *
@@ -151,7 +176,7 @@ namespace Analytics_V2
             _SettingsForm.Text = "Settings";
             _SettingsForm.StartPosition = FormStartPosition.CenterScreen;
             _SettingsForm.Icon = global::Analytics_V2.Properties.Resources.Settings;
-            _SettingsForm.Size = new System.Drawing.Size(680, 320);
+            _SettingsForm.Size = new System.Drawing.Size(680, 350);
             _SettingsForm.Controls.Add(_Settings);
             _SettingsForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(HideSettingsForm);
 
@@ -223,6 +248,7 @@ namespace Analytics_V2
             _FileBrowser.FullCollapseToolStripMenuItem.Click += new System.EventHandler(this.FullCollapseToolStripMenu_Click);
             _FileBrowser.FullExpandToolStripMenuItem.Click += new System.EventHandler(this.FullExpandToolStripMenuItem_Click);
             _FileBrowser.NewDirectoryToolStripMenuItem.Click += new System.EventHandler(this.NewDirectoryToolStripMenuItem_Click);
+            _FileBrowser.NewFileToolStripMenuItem.Click += new System.EventHandler(this.NewFileToolStripMenuItem_Click);
             _FileBrowser.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             _FileBrowser.TreeView.KeyDown += new KeyEventHandler(this.TreeView_KeyDown);
             _FileBrowser.TreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
@@ -244,6 +270,7 @@ namespace Analytics_V2
             _LocalFileBrowser.FullCollapseToolStripMenuItem.Click += new System.EventHandler(this.FullCollapseToolStripMenu_Click);
             _LocalFileBrowser.FullExpandToolStripMenuItem.Click += new System.EventHandler(this.FullExpandToolStripMenuItem_Click);
             _LocalFileBrowser.NewDirectoryToolStripMenuItem.Click += new System.EventHandler(this.NewDirectoryToolStripMenuItem_Click);
+            _LocalFileBrowser.NewFileToolStripMenuItem.Click += new System.EventHandler(this.NewFileToolStripMenuItem_Click);
             _LocalFileBrowser.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             _LocalFileBrowser.TreeView.KeyDown += new KeyEventHandler(this.TreeView_KeyDown);
             _LocalFileBrowser.TreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
@@ -280,7 +307,7 @@ namespace Analytics_V2
             try
             {
                 request.Open();
-                path = request.Get_Path("ADM");
+                path = request.Get_Path("ADMV2");
                 request.Close();
             }
 
@@ -763,7 +790,7 @@ namespace Analytics_V2
                 if (!tabExists)
                 {
                     _Navigator.ContextMenuStrip.Items.Add(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0]);
-                    _Navigator.AddTab(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], treeView.SelectedNode.FullPath);
+                    _Navigator.AddTab(treeView.SelectedNode.Text.Split(new string[] { "." }, StringSplitOptions.None)[0], treeView.SelectedNode.FullPath, Properties.Settings.Default.defaultEditionMode);
                     _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[_Navigator.NavigatorControl.Pages.Count - 1];
                 }
             }
@@ -1102,10 +1129,10 @@ namespace Analytics_V2
             }
         }
 
-        /*****************************************************************\
-         * Events of clicking the element create config of the MenuStrip *
-         *  - Create a new file.                                         *
-        \*****************************************************************/
+        /********************************************************************************\
+         * Events of clicking the element create config of the MenuStrip or ContextMenu *
+         *  - Create a new file.                                                        *
+        \********************************************************************************/
 
         private void NewFileToolStripButton_Click(object sender, EventArgs e)
         {
@@ -1119,6 +1146,21 @@ namespace Analytics_V2
                 NewFile();
         }
 
+        private void NewFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeView treeView = ((TreeView)((ContextMenuStrip)(((ToolStripMenuItem)(sender)).Owner)).SourceControl);
+
+            if (FileBrowserNavigator.SelectedPage.Text.Equals("Common"))
+            {
+                if (_Session.CheckIfAccessGranted("newFile"))
+                    NewFileViaContextMenu();
+            }
+
+            else
+                NewFileViaContextMenu();
+
+        }
+
         private void NewFile()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -1130,8 +1172,12 @@ namespace Analytics_V2
                     saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Parent.FullPath;
                 else if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 1)
                     saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath;
+                else saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.Nodes[0].FullPath;
             }
-            else saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.Nodes[0].FullPath;
+            else
+            {
+                saveFileDialog.InitialDirectory = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.Nodes[0].FullPath;
+            }
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -1173,7 +1219,74 @@ namespace Analytics_V2
 
                 // Add Page to navigator
                 _Navigator.ContextMenuStrip.Items.Add(System.IO.Path.GetFileName(saveFileDialog.FileName).Replace(".xml",""));
-                _Navigator.AddTab(System.IO.Path.GetFileName(saveFileDialog.FileName).Replace(".xml", ""), saveFileDialog.FileName);
+                _Navigator.AddTab(System.IO.Path.GetFileName(saveFileDialog.FileName).Replace(".xml", ""), saveFileDialog.FileName, Properties.Settings.Default.defaultEditionMode);
+                _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[_Navigator.NavigatorControl.Pages.Count - 1];
+            }
+        }
+
+        private void NewFileViaContextMenu()
+        {
+            /* ask user to name file */
+            string name =  KryptonInputBox.Show("Enter file name","File Name required","New File.xml");
+            string path = "";
+
+            if (!String.IsNullOrEmpty(name))
+            {
+                if (!name.Contains(".xml"))
+                {
+                    name += ".xml";
+                }
+
+                /* define path */
+                if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode != null)
+                {
+                    if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 2)
+                        path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.Parent.FullPath + "\\" + name;
+                    else if (((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.ImageIndex == 1)
+                        path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.SelectedNode.FullPath + "\\" + name;
+                    else path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.Nodes[0].FullPath + "\\" + name;
+                }
+                else path = ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).TreeView.Nodes[0].FullPath + "\\" + name;
+
+                /* create xml */
+                try
+                {
+                    StreamReader streamReader = new StreamReader(Properties.Settings.Default.xml_template, System.Text.Encoding.Default);
+                    string text = streamReader.ReadToEnd();
+                    streamReader.Close();
+                    streamReader.Dispose();
+
+                    StreamWriter streamWriter = new StreamWriter(path, false, System.Text.Encoding.Default);
+                    streamWriter.WriteLine(text);
+                    streamWriter.Close();
+                    streamWriter.Dispose();
+                }
+                /* If no connection, create virgin xml */
+                catch
+                {
+                    var result = KryptonMessageBox.Show("Unable to access file (maybe there is no network). An empty XML file will be created instead.", "No network",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+
+                    StreamWriter streamWriter = new StreamWriter(path, false, System.Text.Encoding.Default);
+                    streamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>");
+                    streamWriter.WriteLine("<region>");
+                    streamWriter.WriteLine("</region>");
+                    streamWriter.Close();
+                    streamWriter.Dispose();
+                }
+
+                var result2 = KryptonMessageBox.Show("File Created in :\n" + path, "File Created.",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+
+                /* Refresh TreeView */
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).PopulateTreeView();
+                ((FileBrowser)FileBrowserNavigator.SelectedPage.Tag).ScrollToCreatedItem(path);
+
+                /* Add Page to navigator */
+                _Navigator.ContextMenuStrip.Items.Add(System.IO.Path.GetFileName(path).Replace(".xml", ""));
+                _Navigator.AddTab(System.IO.Path.GetFileName(path).Replace(".xml", ""), path, Properties.Settings.Default.defaultEditionMode);
                 _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[_Navigator.NavigatorControl.Pages.Count - 1];
             }
         }
@@ -1381,6 +1494,25 @@ namespace Analytics_V2
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "CONFIG : " + treeView.SelectedNode.Text;
             openFileDialog.InitialDirectory = @"D:\";
+            try
+            {
+                if (System.Environment.MachineName.Equals("PUC1433"))
+                    openFileDialog.InitialDirectory = @"\\Puc1433\_partage pole info\Conversion";
+                else if (System.Environment.MachineName.Equals("PUC1438"))
+                    openFileDialog.InitialDirectory = @"\\Puc1438\_partage pole info\Conversions";
+                else if (System.Environment.MachineName.Equals("PUC1440"))
+                    openFileDialog.InitialDirectory = @"\\Puc1440\_partage pole info\Conversion";
+                else if (System.Environment.MachineName.Equals("PUC1436"))
+                    openFileDialog.InitialDirectory = @"\\Puc1436\_partage_pole_info\_Conversions";
+                else if (System.Environment.MachineName.Equals("PUC1257"))
+                    openFileDialog.InitialDirectory = @"\\Puc1257\_partage pole info\Conversions";
+                else if (System.Environment.MachineName.Equals("PUC1589"))
+                    openFileDialog.InitialDirectory = @"\\Puc1589\_partage pole info\Conversions";
+                else if (System.Environment.MachineName.Equals("PUC1441"))
+                    openFileDialog.InitialDirectory = @"\\Puc1441\_partage pole info\_CONVERSIONS";
+            }
+            catch{}
+
             openFileDialog.Multiselect = true;
             // openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
 
@@ -1639,10 +1771,17 @@ namespace Analytics_V2
         {
             if (File.Exists(@"D:\Documents\Analytics\Batchs"))
             {
-                Stream stream = File.OpenRead(@"D:\Documents\Analytics\Batchs");
-                BinaryFormatter deserializer = new BinaryFormatter();
-                _Batch.Set_BatchsList((List<Batch>)deserializer.Deserialize(stream));
-                stream.Close();
+                try
+                {
+                    Stream stream = File.OpenRead(@"D:\Documents\Analytics\Batchs");
+                    BinaryFormatter deserializer = new BinaryFormatter();
+                    _Batch.Set_BatchsList((List<Batch>)deserializer.Deserialize(stream));
+                    stream.Close();
+                }
+                catch
+                {
+                    KryptonMessageBox.Show("Error while loading batchs !!!!");
+                }
             }
         }
 
@@ -1678,19 +1817,106 @@ namespace Analytics_V2
 
         private void BatchListBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            // Display Summary page
+            _BatchTargetPathsTmp.Clear();
+            _RegionsToDownload.Clear();
+
+            /* Display Summary page */
             _Navigator.NavigatorControl.SelectedPage = _Navigator.NavigatorControl.Pages[0];
 
-            // Retrieve batch to launch
+            /* Retrieve batch to launch */
             foreach (Batch element in _Batch.Get_BatchsList())
             {
                 if (element.Get_Name().Equals(BatchListBox.SelectedItem.ToString()))
                 {
-                    // Launch batch, depending on if it's a single or multi batch
+                    _LaunchedBatch = element;
                     if (element.Get_Type().Equals("Single"))
-                        LaunchBatchSingle(element);
+                        _LaunchedBatchType = "Single";
                     else if (element.Get_Type().Equals("Multi"))
-                        LaunchBatchMulti(element);
+                        _LaunchedBatchType = "Multi";
+
+
+                    Boolean hasFtpDownload = false;
+                    if(_LaunchedBatchType.Equals("Single"))
+                        foreach (KeyValuePair<string, Tuple<string, string, string>> element2 in element.Get_BatchElements())
+                        {
+                            /* Check if batch element has FTP Download */
+                            if (!String.IsNullOrEmpty(element2.Value.Item3) && !element2.Value.Item3.Equals("-"))
+                                hasFtpDownload = true;
+                        }
+                    else if (_LaunchedBatchType.Equals("Multi"))
+                        foreach (KeyValuePair<Tuple<string, string>, List<Tuple<string, string>>> element2 in element.Get_BatchElementsMulti())
+                        {
+                            /* Check if batch element has FTP Download */
+                            if (!String.IsNullOrEmpty(element2.Key.Item2) && !element2.Key.Item2.Equals("-"))
+                                hasFtpDownload = true;
+                        }
+
+                    /* If no FTP download required, start directly the reformating */
+                    if (!hasFtpDownload)
+                    {
+                        if(_LaunchedBatchType.Equals("Single"))
+                            LaunchBatchSingle(element);
+                        else LaunchBatchMulti(element);
+                    }
+
+                    /* Else download files (first get list of regions to connect for downloading files) */
+                    else
+                    {
+                        _FtpDLCounter = 1;
+                        if (_LaunchedBatchType.Equals("Single"))
+                        {
+                            foreach (KeyValuePair<string, Tuple<string, string, string>> element3 in element.Get_BatchElements())
+                                foreach (FTPManager.Region region in _FtpManager.Get_RegionsList())
+                                    if (element3.Value.Item3.Equals(region.Get_RegionName()))
+                                    {
+                                        _RegionsToDownload.Add(region);
+                                        _BatchTargetPathsTmp.Add(element3.Key);
+                                    }
+                        }
+                        else if (_LaunchedBatchType.Equals("Multi"))
+                        {
+                            foreach (KeyValuePair<Tuple<string, string>, List<Tuple<string, string>>> element4 in element.Get_BatchElementsMulti())
+                                foreach (FTPManager.Region region2 in _FtpManager.Get_RegionsList())
+                                    if (element4.Key.Item2.Equals(region2.Get_RegionName()))
+                                    {
+                                        _RegionsToDownload.Add(region2);
+                                        _BatchTargetPathsTmp.Add(element4.Key.Item1);
+                                    }
+                        }
+
+                        /* Don't check region if target directory has not been set*/
+                        for (int i = 0; i < _RegionsToDownload.Count; i++ )
+                        {
+                            if (!System.IO.Directory.Exists(_RegionsToDownload[i].Get_TargetDirectory()))
+                            {
+                                _RegionsToDownload.Remove(_RegionsToDownload[i]);
+                                if(i!=0)i--;
+                                var result = KryptonMessageBox.Show(_RegionsToDownload[i].Get_RegionName() + " will not been included because target directory is wrong or not defined.", "Warning",
+                                                    MessageBoxButtons.OK,
+                                                    MessageBoxIcon.Warning);
+                            }
+                        }
+
+                        List<object> arguments = new List<object>();
+                        arguments.Add("DlLastUp");
+                        arguments.Add(_FtpDLCounter - 1);
+                        _FTPWorker.RunWorkerAsync(arguments);
+                        _WaitScreenForm.Show();
+                        _FtpManagerForm.Show();
+                        _FtpManager.Get_LogCat().AppendText("Connecting to " + _RegionsToDownload[0].Get_RegionName() + " : " + _RegionsToDownload[0].Get_FtpHost() + "... ");
+
+                        /* Clear interface */
+                        _FtpManager.Get_ProgressBar().Value = 0;
+                        _FtpManager.Get_ProgressLabel().Text = "-";
+                        _FtpManager.Get_DirFileCounterLabel().Text = "";
+                        _FtpManager.Get_FTPBrowserHeaderGroup().ValuesPrimary.Heading = "FTP Browser :";
+
+                    }
+                    
+
+                    /* Launch batch (MULTI MODE) */
+                    //else if (element.Get_Type().Equals("Multi"))
+                    //    LaunchBatchMulti(element);
                     break;
                 }
             }
@@ -1698,9 +1924,9 @@ namespace Analytics_V2
 
         private void LaunchBatchSingle(Batch batch)
         {
-            foreach (KeyValuePair<string, Tuple<string, string>> element in batch.Get_BatchElements())
+            foreach (KeyValuePair<string, Tuple<string, string, string>> element in batch.Get_BatchElements())
             {
-                // Define paths (input, logs)
+                /* Define paths (input, logs) */
                 DirectoryInfo targetPath = new DirectoryInfo(element.Key);
                 FileInfo[] inputFiles = targetPath.GetFiles();
 
@@ -1711,10 +1937,10 @@ namespace Analytics_V2
                     _LogsPath = file.Directory.FullName;
                 }
 
-                // Create a new config
+                /* Create a new config */
                 Config config = new Config(element.Value.Item1, element.Value.Item2);
 
-                // Create launcher and associated UC.
+                /* Create launcher and associated UC. */
                 _LaunchersList.Add(new Launcher(config, PreProcessButton.Checked, ProcessButton.Checked, ControlsButton.Checked, HCButton.Checked, new List<String>(_InputFiles), _LogsPath, _UpdateProgressBarDel, _UpdateRichTextBoxDel, _AddLogsGridViewDel, _DisplayConfigProcessTimeDel));
 
                 _ProgressBarsList.Add(new ProgressBar(config.Get_Name(), _ProgressBarsList.Count, _AbortThreadDel));
@@ -1732,12 +1958,12 @@ namespace Analytics_V2
 
         private void LaunchBatchMulti(Batch batch)
         {
-            foreach (KeyValuePair<string, List<Tuple<string, string>>> element in batch.Get_BatchElementsMulti())
+            foreach (KeyValuePair<Tuple<string,string>, List<Tuple<string, string>>> element in batch.Get_BatchElementsMulti())
             {
                 int configCounter = 1;
 
                 // Define paths (input, logs)
-                DirectoryInfo targetPath = new DirectoryInfo(element.Key);
+                DirectoryInfo targetPath = new DirectoryInfo(element.Key.Item1);
                 FileInfo[] inputFiles = targetPath.GetFiles();
 
                 _InputFiles.Clear();
@@ -1794,6 +2020,7 @@ namespace Analytics_V2
 
         private void BatchToolStripButton_Click(object sender, EventArgs e)
         {
+            _Batch.Set_RegionsList(_FtpManager.Get_RegionsList());
             _BatchForm.Show();
         }
 
@@ -1813,6 +2040,192 @@ namespace Analytics_V2
             BatchListBox.Items.Clear();
             foreach (Batch element in _Batch.Get_BatchsList())
                 BatchListBox.Items.Add(element.Get_Name());
+
+            // save batchs
+            SaveBatchs();
+        }
+
+        /*******************\
+         * Worker handlers *
+        \*******************/
+
+        private void _FTPWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _FtpManager.Get_StopButton().Enabled = ButtonEnabled.False;
+
+            if (e.Error != null)
+            {
+                _FtpManager.Get_LogCat().AppendText("Error ! Details : \n" + e.Error.Message + "\n");
+                _FtpManager.Get_LogCat().ScrollToCaret();
+                _FtpManager.Get_FilesToDownload().Clear();
+                _FtpManager.Get_FtpAPI().Reset_DownloadedFilesTarget();
+                _BatchTargetPathsTmp.Clear();
+                _RegionsToDownload.Clear();
+                _WaitScreenForm.Hide();
+            }
+
+            else if (e.Cancelled)
+            {
+                _FtpManager.Get_LogCat().AppendText("Cancelled !\n");
+                _FtpManager.Get_LogCat().ScrollToCaret();
+                _FtpManager.Get_ProgressBar().Value = 0;
+                _FtpManager.Get_ProgressLabel().Text = " - ";
+                _FtpManager.Get_FilesToDownload().Clear();
+                _FtpManager.Get_FtpAPI().Reset_DownloadedFilesTarget();
+                _BatchTargetPathsTmp.Clear();
+                _RegionsToDownload.Clear();
+                _WaitScreenForm.Hide();
+            }
+
+            else
+            {
+                List<object> returnArguments = e.Result as List<object>;
+                if (returnArguments.Count > 1)
+                {
+                    for (int i = 1; i < returnArguments.Count; i++)
+                    {
+                        _FtpManager.Get_LogCat().AppendText("Error ! :\n" + (string)returnArguments[i]);
+                    }
+                    _FtpManager.Get_FilesToDownload().Clear();
+                    _FtpManager.Get_FtpAPI().Reset_DownloadedFilesTarget();
+                    _WaitScreenForm.Hide();
+                }
+
+                else
+                {
+                    switch ((string)returnArguments[0])
+                    {
+                        case "DlLastUp":
+                            _FtpManager.Get_LogCat().AppendText("Done !\n");
+                            _FtpManager.Get_LogCat().AppendText("Downloading last updates... ");
+                            _FtpManager.Get_LogCat().ScrollToCaret();
+                            _FtpManager.Set_CurrentDirectory(_FtpManager.Get_Root());
+                            List<object> arguments = new List<object>();
+                            arguments.Add("DlLastUpBis");
+                            _FtpManager.SetFilesToDownload();
+                            if (_FtpManager.Get_FilesToDownload().Count > 0)
+                            {
+                                arguments.Add(_FtpManager.Get_ConnectedRegion().Get_TargetDirectory());
+                                _FtpManager.Get_StopButton().Enabled = ButtonEnabled.True;
+                                _FTPWorker.RunWorkerAsync(arguments);
+                            }
+                            /* no download for this region but continue checking other regions */
+                            else
+                            {
+                                _FtpManager.Get_LogCat().AppendText("Already up to date !\n");
+                                _FtpManager.Get_LogCat().ScrollToCaret();
+                                _FtpDLCounter++;
+                                /* If all regions have been checked (and all files downloaded), start batch */
+                                if ((_FtpDLCounter - 1) == _RegionsToDownload.Count && _LaunchedBatchType.Equals("Single"))
+                                {
+                                    _WaitScreenForm.Hide();
+                                    LaunchBatchSingle(_LaunchedBatch);
+                                }
+                                else if ((_FtpDLCounter - 1) == _RegionsToDownload.Count && _LaunchedBatchType.Equals("Multi"))
+                                {
+                                    _WaitScreenForm.Hide();
+                                    LaunchBatchMulti(_LaunchedBatch);
+                                }
+
+                                /* Check the next region */
+                                else
+                                {
+                                    List<object> arguments2 = new List<object>();
+                                    arguments2.Add("DlLastUp");
+                                    arguments2.Add(_FtpDLCounter - 1);
+                                    _FtpManagerForm.Show();
+                                    _FTPWorker.RunWorkerAsync(arguments2);
+                                    _WaitScreenForm.Show();
+                                    _FtpManager.Get_LogCat().AppendText("Connecting to " + _RegionsToDownload[_FtpDLCounter - 1].Get_RegionName() + " : " + _RegionsToDownload[_FtpDLCounter - 1].Get_FtpHost() + "... ");
+
+                                    /* Clear interface */
+                                    _FtpManager.Get_ProgressBar().Value = 0;
+                                    _FtpManager.Get_ProgressLabel().Text = "-";
+                                    _FtpManager.Get_DirFileCounterLabel().Text = "";
+                                    _FtpManager.Get_FTPBrowserHeaderGroup().ValuesPrimary.Heading = "FTP Browser :";
+                                }
+                            }
+                            break;
+
+                        case "Download":
+                            _FtpManager.Get_LogCat().AppendText("Downloaded to " + _FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[0] + ".\n");
+                            /* Copy file to target folder */
+                            File.Copy(_FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[0], _BatchTargetPathsTmp[_FtpDLCounter - 1] + "\\" + Path.GetFileName(_FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[0]),true);
+                            _FtpManager.Get_LogCat().AppendText("................................................... Copied to " + _BatchTargetPathsTmp[_FtpDLCounter - 1] + "\\" + Path.GetFileName(_FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[0]) + ".\n");
+
+                            for (int i = 1; i < _FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget().Count; i++)
+                            {
+                                _FtpManager.Get_LogCat().AppendText("................................................... Downloaded to " + _FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[i] + ".\n");
+                                /* Copy file to target folder */
+                                File.Copy(_FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[i], _BatchTargetPathsTmp[_FtpDLCounter - 1] + "\\" + Path.GetFileName(_FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[i]),true);
+                                _FtpManager.Get_LogCat().AppendText("................................................... Copied to " + _BatchTargetPathsTmp[_FtpDLCounter - 1] + "\\" + Path.GetFileName(_FtpManager.Get_FtpAPI().Get_DownloadedFilesTarget()[i]) + ".\n");
+                            }
+                            _FtpManager.Get_LogCat().ScrollToCaret();
+                            _FtpManager.AddDownloadLog();
+                            _FtpDLCounter++;
+
+                            if (_FtpDLCounter-1 == _RegionsToDownload.Count && _LaunchedBatchType.Equals("Single"))
+                            {
+                                _WaitScreenForm.Hide();
+                                LaunchBatchSingle(_LaunchedBatch);
+                            }
+
+                            else if (_FtpDLCounter - 1 == _RegionsToDownload.Count && _LaunchedBatchType.Equals("Multi"))
+                            {
+                                _WaitScreenForm.Hide();
+                                LaunchBatchMulti(_LaunchedBatch);
+                            }
+
+                            /* Download next region */
+                            else
+                            {
+                                List<object> arguments2 = new List<object>();
+                                arguments2.Add("DlLastUp");
+                                arguments2.Add(_FtpDLCounter - 1);
+                                _FtpManagerForm.Show();
+                                _FTPWorker.RunWorkerAsync(arguments2);
+                                _WaitScreenForm.Show();
+                                _FtpManager.Get_LogCat().AppendText("Connecting to " + _RegionsToDownload[_FtpDLCounter - 1].Get_RegionName() + " : " + _RegionsToDownload[_FtpDLCounter - 1].Get_FtpHost() + "... ");
+
+                                /* Clear interface */
+                                _FtpManager.Get_ProgressBar().Value = 0;
+                                _FtpManager.Get_ProgressLabel().Text = "-";
+                                _FtpManager.Get_DirFileCounterLabel().Text = "";
+                                _FtpManager.Get_FTPBrowserHeaderGroup().ValuesPrimary.Heading = "FTP Browser :";
+                            }
+
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void _FTPWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as System.ComponentModel.BackgroundWorker;
+            List<object> arguments = e.Argument as List<object>;
+
+            switch ((string)arguments[0])
+            {
+                case "DlLastUp":
+                    _FtpManager.DLLastUpdate(_RegionsToDownload[(int)arguments[1]]);
+                    _FtpManager.Get_FtpAPI().GetDirectoryList(_FtpManager.Get_Root(), _FTPWorker, e);
+                    break;
+                case "DlLastUpBis":
+                    _FtpManager.Get_FtpAPI().DownloadFiles(_FtpManager.Get_FilesToDownload(), ((string)arguments[1]), _FTPWorker, e);
+                    break;
+            }
+        }
+
+        private void _FTPWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage > 100)
+                _FtpManager.Get_ProgressBar().Value = 100;
+            else
+            {
+                _FtpManager.Get_ProgressBar().Value = e.ProgressPercentage;
+                _FtpManager.Get_ProgressLabel().Text = e.ProgressPercentage + "%";
+            }
         }
 
         #endregion
@@ -2107,8 +2520,22 @@ namespace Analytics_V2
             {
                 LaunchButton.Enabled = true;
             }
-
         }
+
+        /********************************************\
+         * Delegate for clearing all progress bars  *
+         *    Clear only if process is finished.    *
+        \********************************************/
+
+        private void ClearAllProgressBars()
+        {
+            foreach (ProgressBar PG in _ProgressBarsList)
+            {
+                if (PG.Bar.Value == 100)
+                    PG.Visible = false;
+            }
+        }
+
 
         /***********************************************************************\
          * Events of right click on a Treenode --> Full Collapse / Full Expand *
@@ -2156,6 +2583,28 @@ namespace Analytics_V2
             _ConfigsList.Clear();
         }
 
+
+        /*********************************************************************************\
+         * Event of clicking of the element Expand/minimize right panel of the MenuStrip *
+         *  - Hide/show right panel                                                      *
+        \*********************************************************************************/
+
+        private void ExpandMinimizeToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (MainBoardSplitContainer3.Panel2Collapsed == false)
+            {
+                MainBoardSplitContainer3.Panel2Collapsed = true;
+                ExpandMinimizeToolStripButton.Text = "Show Right Panel";
+                ExpandMinimizeToolStripButton.Image = Properties.Resources.ExpandPanel;
+            }
+            else
+            {
+                MainBoardSplitContainer3.Panel2Collapsed = false;
+                ExpandMinimizeToolStripButton.Text = "Hide Right Panel";
+                ExpandMinimizeToolStripButton.Image = Properties.Resources.CollapsePanel;
+            }
+        }
+
         /***********************************************************************\
          * Event of clicking of the element exit of the MenuStrip or the cross *
          *  - Close the form.                                                  *
@@ -2174,7 +2623,6 @@ namespace Analytics_V2
         }
 
         #endregion
-     
     }
 }
 

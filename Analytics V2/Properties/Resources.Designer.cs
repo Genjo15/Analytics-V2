@@ -163,6 +163,16 @@ namespace Analytics_V2.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CollapsePanel {
+            get {
+                object obj = ResourceManager.GetObject("CollapsePanel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ConfigStatement {
             get {
                 object obj = ResourceManager.GetObject("ConfigStatement", resourceCulture);
@@ -223,6 +233,16 @@ namespace Analytics_V2.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ExpandPanel {
+            get {
+                object obj = ResourceManager.GetObject("ExpandPanel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap FTP2 {
             get {
                 object obj = ResourceManager.GetObject("FTP2", resourceCulture);
@@ -266,6 +286,16 @@ namespace Analytics_V2.Properties {
         internal static System.Drawing.Bitmap Launch {
             get {
                 object obj = ResourceManager.GetObject("Launch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Loading {
+            get {
+                object obj = ResourceManager.GetObject("Loading", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -367,16 +397,6 @@ namespace Analytics_V2.Properties {
             get {
                 object obj = ResourceManager.GetObject("TimeMachine2", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap WaitingScreen {
-            get {
-                object obj = ResourceManager.GetObject("WaitingScreen", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

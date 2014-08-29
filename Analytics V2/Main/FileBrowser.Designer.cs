@@ -35,6 +35,7 @@
             this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.OpenDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.FullCollapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +51,7 @@
             this.NewDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageList = new System.Windows.Forms.ImageList(this.components);
             this.BrowserHeader = new ComponentFactory.Krypton.Toolkit.KryptonHeader();
-            this.OpenDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.BrowserGroupBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BrowserGroupBox.Panel)).BeginInit();
             this.BrowserGroupBox.Panel.SuspendLayout();
@@ -108,9 +109,10 @@
             this.DeleteToolStripMenuItem,
             this.RenameToolStripMenuItem,
             this.toolStripSeparator4,
+            this.NewFileToolStripMenuItem,
             this.NewDirectoryToolStripMenuItem});
             this.ContextMenuStrip.Name = "contextMenuStrip1";
-            this.ContextMenuStrip.Size = new System.Drawing.Size(155, 298);
+            this.ContextMenuStrip.Size = new System.Drawing.Size(155, 320);
             // 
             // EditToolStripMenuItem
             // 
@@ -123,6 +125,12 @@
             // 
             this.ToolStripSeparator1.Name = "ToolStripSeparator1";
             this.ToolStripSeparator1.Size = new System.Drawing.Size(151, 6);
+            // 
+            // OpenDirectoryToolStripMenuItem
+            // 
+            this.OpenDirectoryToolStripMenuItem.Name = "OpenDirectoryToolStripMenuItem";
+            this.OpenDirectoryToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.OpenDirectoryToolStripMenuItem.Text = "Open Directory";
             // 
             // ViewHistoryToolStripMenuItem
             // 
@@ -220,11 +228,11 @@
             this.BrowserHeader.Values.Heading = "Data Process";
             this.BrowserHeader.Values.Image = global::Analytics_V2.Properties.Resources.AnalyticsIcon2;
             // 
-            // OpenDirectoryToolStripMenuItem
+            // NewFileToolStripMenuItem
             // 
-            this.OpenDirectoryToolStripMenuItem.Name = "OpenDirectoryToolStripMenuItem";
-            this.OpenDirectoryToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.OpenDirectoryToolStripMenuItem.Text = "Open Directory";
+            this.NewFileToolStripMenuItem.Name = "NewFileToolStripMenuItem";
+            this.NewFileToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.NewFileToolStripMenuItem.Text = "New File";
             // 
             // FileBrowser
             // 
@@ -269,5 +277,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         internal System.Windows.Forms.ToolStripMenuItem ViewHistoryToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OpenDirectoryToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem NewFileToolStripMenuItem;
     }
 }

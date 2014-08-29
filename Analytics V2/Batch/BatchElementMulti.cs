@@ -19,24 +19,28 @@ namespace Analytics_V2
         private List<KryptonLabel> _AdditionalConfigsLabel;
         private List<Label> _AdditionalConfigs;
         private List<KryptonButton> _SuppressButtons;
-
-        int _IdControls;
+        private string _FtpRegion;
+        private int _IdControls;
+        private Timer _Timer;
 
         /**************************************************** Constructor *****************************************************/
 
         #region Constructor
 
-        public BatchElementMulti()
+        public BatchElementMulti(List<FTPManager.Region> regions)
         {
             InitializeComponent();
 
             SuppressButton.Tag = this;
 
             _TargetPath = null;
+            _FtpRegion = null;
             _ConfigsInfo = new Dictionary<string, string>();
             _AdditionalConfigsLabel = new List<KryptonLabel>();
             _AdditionalConfigs = new List<Label>();
             _SuppressButtons = new List<KryptonButton>();
+            _Timer = new Timer();
+            _Timer.Tick += _Timer_Tick;
 
             _SuppressButtonTooltip = new ToolTip();
             _SuppressButtonTooltip.SetToolTip(SuppressButton, "Delete this component.");
@@ -44,8 +48,13 @@ namespace Analytics_V2
             _TargetPathTooltip.SetToolTip(TargetPathButton, "Not defined");
 
             _IdControls = 0;
-        }
 
+            /* Fill regions in Combobox */
+            regions = regions.OrderBy(o => o.Get_RegionName()).ToList();
+            foreach (FTPManager.Region region in regions)
+                FTPComboBox.Items.Add(region.Get_RegionName());
+            FTPComboBox.Items.Insert(0, "-");
+        }
         #endregion
 
         
@@ -68,6 +77,24 @@ namespace Analytics_V2
                               MessageBoxButtons.OK,
                               MessageBoxIcon.Information);
             }
+        }
+
+        private void FTPComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            _FtpRegion = FTPComboBox.Text;
+            _Timer.Enabled = true;
+        }
+
+        /* The timer is a little trick to remove the highlight (focus on another control doesn't work). */
+        private void _Timer_Tick(object sender, EventArgs e)
+        {
+            FTPComboBox.Select(0, 0);
+            _Timer.Enabled = false;
+        }
+
+        private void FTPComboBox_Enter(object sender, EventArgs e)
+        {
+            _Timer.Enabled = true;
         }
 
         /***********************************\
@@ -99,7 +126,7 @@ namespace Analytics_V2
                     KryptonLabel configLabel = new KryptonLabel();
                     configLabel.Text = "Config : ";
                     configLabel.Tag = _IdControls;
-                    configLabel.Location = new System.Drawing.Point(25, 65 + (_AdditionalConfigsLabel.Count + 1) * 20);
+                    configLabel.Location = new System.Drawing.Point(35, 86 + (_AdditionalConfigsLabel.Count + 1) * 20);
                     GroupBox.Panel.Controls.Add(configLabel);
 
                     // Label config name
@@ -110,14 +137,14 @@ namespace Analytics_V2
                     configNameLabel.BackColor = System.Drawing.Color.Transparent;
                     configNameLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
                     configNameLabel.Tag = _IdControls;
-                    configNameLabel.Location = new System.Drawing.Point(85, 65 + (_AdditionalConfigs.Count + 1) * 20);
+                    configNameLabel.Location = new System.Drawing.Point(94, 86 + (_AdditionalConfigs.Count + 1) * 20);
                     GroupBox.Panel.Controls.Add(configNameLabel);
 
                     // mini suppress button
                     KryptonButton button = new KryptonButton();
                     button.Tag = _IdControls;
                     button.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.LowProfile;
-                    button.Location = new System.Drawing.Point(10, 67 + (_AdditionalConfigs.Count + 1) * 20);
+                    button.Location = new System.Drawing.Point(10, 88 + (_AdditionalConfigs.Count + 1) * 20);
                     button.Size = new System.Drawing.Size(16, 16);
                     button.Values.Image = global::Analytics_V2.Properties.Resources.Delete2;
                     button.Click += SuppressConfigElement;
@@ -160,7 +187,7 @@ namespace Analytics_V2
                     {
                         if (j > i)
                         {
-                            _AdditionalConfigsLabel[j].Location = new System.Drawing.Point(25, _AdditionalConfigsLabel[j].Location.Y - 20);
+                            _AdditionalConfigsLabel[j].Location = new System.Drawing.Point(35, _AdditionalConfigsLabel[j].Location.Y - 20);
                         }
                     }
 
@@ -180,7 +207,7 @@ namespace Analytics_V2
                     {
                         if (j > i)
                         {
-                            _AdditionalConfigs[j].Location = new System.Drawing.Point(85, _AdditionalConfigs[j].Location.Y - 20);
+                            _AdditionalConfigs[j].Location = new System.Drawing.Point(94, _AdditionalConfigs[j].Location.Y - 20);
                         }
                     }
 
@@ -229,6 +256,11 @@ namespace Analytics_V2
             return _TargetPath;
         }
 
+        public string Get_FtpRegion()
+        {
+            return _FtpRegion;
+        }
+
         public void Set_TargetPath(string path)
         {
             _TargetPath = path;
@@ -262,6 +294,11 @@ namespace Analytics_V2
         public List<KryptonButton> Get_SuppressButtons()
         {
             return _SuppressButtons;
+        }
+
+        public void Set_FtpRegion(string FTPregion)
+        {
+            _FtpRegion = FTPregion;
         }
     }
 }

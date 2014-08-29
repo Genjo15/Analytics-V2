@@ -33,23 +33,11 @@
             this.MainBoardSplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ToolBarGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.ToolBarToolStrip = new System.Windows.Forms.ToolStrip();
-            this.SettingsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.HCToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.NewFileToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.SaveToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.EditToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.SuppressToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.RefreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.HistoryToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.AdministrationToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.ConfigStatementToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.StatisticsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.BatchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.MainBoardSplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.FileBrowserNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.common = new ComponentFactory.Krypton.Navigator.KryptonPage();
@@ -76,6 +64,19 @@
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExpandMinimizeToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.SettingsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.HCToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.NewFileToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.SaveToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.EditToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.SuppressToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.RefreshToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.HistoryToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.AdministrationToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ConfigStatementToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.StatisticsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.BatchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.FTPToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBoardSplitContainer1.Panel1)).BeginInit();
@@ -173,81 +174,25 @@
             this.StatisticsToolStripButton,
             this.ToolStripSeparator7,
             this.BatchToolStripButton,
-            this.FTPToolStripButton});
+            this.FTPToolStripButton,
+            this.ExpandMinimizeToolStripButton});
             this.ToolBarToolStrip.Name = "ToolBarToolStrip";
             this.ToolBarToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            // 
-            // SettingsToolStripButton
-            // 
-            resources.ApplyResources(this.SettingsToolStripButton, "SettingsToolStripButton");
-            this.SettingsToolStripButton.Name = "SettingsToolStripButton";
-            this.SettingsToolStripButton.Click += new System.EventHandler(this.SettingsToolStripButton_Click);
-            // 
-            // HCToolStripButton
-            // 
-            this.HCToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            resources.ApplyResources(this.HCToolStripButton, "HCToolStripButton");
-            this.HCToolStripButton.Name = "HCToolStripButton";
-            this.HCToolStripButton.Click += new System.EventHandler(this.HCToolStripButton_Click);
             // 
             // ToolStripSeparator1
             // 
             this.ToolStripSeparator1.Name = "ToolStripSeparator1";
             resources.ApplyResources(this.ToolStripSeparator1, "ToolStripSeparator1");
             // 
-            // NewFileToolStripButton
-            // 
-            resources.ApplyResources(this.NewFileToolStripButton, "NewFileToolStripButton");
-            this.NewFileToolStripButton.Name = "NewFileToolStripButton";
-            this.NewFileToolStripButton.Click += new System.EventHandler(this.NewFileToolStripButton_Click);
-            // 
-            // SaveToolStripButton
-            // 
-            resources.ApplyResources(this.SaveToolStripButton, "SaveToolStripButton");
-            this.SaveToolStripButton.Name = "SaveToolStripButton";
-            this.SaveToolStripButton.Click += new System.EventHandler(this.SaveToolStripButton_Click);
-            // 
-            // EditToolStripButton
-            // 
-            resources.ApplyResources(this.EditToolStripButton, "EditToolStripButton");
-            this.EditToolStripButton.Name = "EditToolStripButton";
-            this.EditToolStripButton.Click += new System.EventHandler(this.EditToolStripButton_Click);
-            // 
-            // SuppressToolStripButton
-            // 
-            resources.ApplyResources(this.SuppressToolStripButton, "SuppressToolStripButton");
-            this.SuppressToolStripButton.Name = "SuppressToolStripButton";
-            this.SuppressToolStripButton.Click += new System.EventHandler(this.SuppressToolStripButton_Click);
-            // 
             // ToolStripSeparator2
             // 
             this.ToolStripSeparator2.Name = "ToolStripSeparator2";
             resources.ApplyResources(this.ToolStripSeparator2, "ToolStripSeparator2");
             // 
-            // RefreshToolStripButton
-            // 
-            resources.ApplyResources(this.RefreshToolStripButton, "RefreshToolStripButton");
-            this.RefreshToolStripButton.Name = "RefreshToolStripButton";
-            this.RefreshToolStripButton.Click += new System.EventHandler(this.RefreshToolStripButton_Click);
-            // 
             // ToolStripSeparator3
             // 
             this.ToolStripSeparator3.Name = "ToolStripSeparator3";
             resources.ApplyResources(this.ToolStripSeparator3, "ToolStripSeparator3");
-            // 
-            // HistoryToolStripButton
-            // 
-            resources.ApplyResources(this.HistoryToolStripButton, "HistoryToolStripButton");
-            this.HistoryToolStripButton.Image = global::Analytics_V2.Properties.Resources.TimeMachine;
-            this.HistoryToolStripButton.Name = "HistoryToolStripButton";
-            this.HistoryToolStripButton.Click += new System.EventHandler(this.HistoryToolStripButton_Click);
-            // 
-            // AdministrationToolStripButton
-            // 
-            this.AdministrationToolStripButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            resources.ApplyResources(this.AdministrationToolStripButton, "AdministrationToolStripButton");
-            this.AdministrationToolStripButton.Name = "AdministrationToolStripButton";
-            this.AdministrationToolStripButton.Click += new System.EventHandler(this.AdministrationToolStripButton_Click);
             // 
             // ToolStripSeparator6
             // 
@@ -255,31 +200,10 @@
             this.ToolStripSeparator6.Name = "ToolStripSeparator6";
             resources.ApplyResources(this.ToolStripSeparator6, "ToolStripSeparator6");
             // 
-            // ConfigStatementToolStripButton
-            // 
-            this.ConfigStatementToolStripButton.Image = global::Analytics_V2.Properties.Resources.ConfigStatement;
-            resources.ApplyResources(this.ConfigStatementToolStripButton, "ConfigStatementToolStripButton");
-            this.ConfigStatementToolStripButton.Name = "ConfigStatementToolStripButton";
-            this.ConfigStatementToolStripButton.Click += new System.EventHandler(this.ConfigStatementToolStripButton_Click);
-            // 
-            // StatisticsToolStripButton
-            // 
-            this.StatisticsToolStripButton.Image = global::Analytics_V2.Properties.Resources.Statistics;
-            resources.ApplyResources(this.StatisticsToolStripButton, "StatisticsToolStripButton");
-            this.StatisticsToolStripButton.Name = "StatisticsToolStripButton";
-            this.StatisticsToolStripButton.Click += new System.EventHandler(this.StatisticsToolStripButton_Click);
-            // 
             // ToolStripSeparator7
             // 
             this.ToolStripSeparator7.Name = "ToolStripSeparator7";
             resources.ApplyResources(this.ToolStripSeparator7, "ToolStripSeparator7");
-            // 
-            // BatchToolStripButton
-            // 
-            this.BatchToolStripButton.Image = global::Analytics_V2.Properties.Resources.Batch;
-            resources.ApplyResources(this.BatchToolStripButton, "BatchToolStripButton");
-            this.BatchToolStripButton.Name = "BatchToolStripButton";
-            this.BatchToolStripButton.Click += new System.EventHandler(this.BatchToolStripButton_Click);
             // 
             // MainBoardSplitContainer2
             // 
@@ -357,7 +281,7 @@
             this.BatchsHeader.Name = "BatchsHeader";
             this.BatchsHeader.Values.Description = resources.GetString("BatchsHeader.Values.Description");
             this.BatchsHeader.Values.Heading = resources.GetString("BatchsHeader.Values.Heading");
-            this.BatchsHeader.Values.Image = global::Analytics_V2.Properties.Resources.Batch3;
+            this.BatchsHeader.Values.Image = ((System.Drawing.Image)(resources.GetObject("BatchsHeader.Values.Image")));
             // 
             // MainBoardSplitContainer3
             // 
@@ -415,7 +339,7 @@
             // 
             resources.ApplyResources(this.LaunchButton, "LaunchButton");
             this.LaunchButton.Name = "LaunchButton";
-            this.LaunchButton.Values.Image = global::Analytics_V2.Properties.Resources.Launch;
+            this.LaunchButton.Values.Image = ((System.Drawing.Image)(resources.GetObject("LaunchButton.Values.Image")));
             this.LaunchButton.Values.Text = resources.GetString("LaunchButton.Values.Text");
             this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
             // 
@@ -506,9 +430,90 @@
             this.StatusToolStripMenuItem.Name = "StatusToolStripMenuItem";
             this.StatusToolStripMenuItem.TextChanged += new System.EventHandler(this.StatusToolStripMenuItem_TextChanged);
             // 
+            // ExpandMinimizeToolStripButton
+            // 
+            this.ExpandMinimizeToolStripButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.ExpandMinimizeToolStripButton.Image = global::Analytics_V2.Properties.Resources.CollapsePanel;
+            resources.ApplyResources(this.ExpandMinimizeToolStripButton, "ExpandMinimizeToolStripButton");
+            this.ExpandMinimizeToolStripButton.Name = "ExpandMinimizeToolStripButton";
+            this.ExpandMinimizeToolStripButton.Click += new System.EventHandler(this.ExpandMinimizeToolStripButton_Click);
+            // 
+            // SettingsToolStripButton
+            // 
+            resources.ApplyResources(this.SettingsToolStripButton, "SettingsToolStripButton");
+            this.SettingsToolStripButton.Name = "SettingsToolStripButton";
+            this.SettingsToolStripButton.Click += new System.EventHandler(this.SettingsToolStripButton_Click);
+            // 
+            // HCToolStripButton
+            // 
+            this.HCToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.HCToolStripButton, "HCToolStripButton");
+            this.HCToolStripButton.Name = "HCToolStripButton";
+            this.HCToolStripButton.Click += new System.EventHandler(this.HCToolStripButton_Click);
+            // 
+            // NewFileToolStripButton
+            // 
+            resources.ApplyResources(this.NewFileToolStripButton, "NewFileToolStripButton");
+            this.NewFileToolStripButton.Name = "NewFileToolStripButton";
+            this.NewFileToolStripButton.Click += new System.EventHandler(this.NewFileToolStripButton_Click);
+            // 
+            // SaveToolStripButton
+            // 
+            resources.ApplyResources(this.SaveToolStripButton, "SaveToolStripButton");
+            this.SaveToolStripButton.Name = "SaveToolStripButton";
+            this.SaveToolStripButton.Click += new System.EventHandler(this.SaveToolStripButton_Click);
+            // 
+            // EditToolStripButton
+            // 
+            resources.ApplyResources(this.EditToolStripButton, "EditToolStripButton");
+            this.EditToolStripButton.Name = "EditToolStripButton";
+            this.EditToolStripButton.Click += new System.EventHandler(this.EditToolStripButton_Click);
+            // 
+            // SuppressToolStripButton
+            // 
+            resources.ApplyResources(this.SuppressToolStripButton, "SuppressToolStripButton");
+            this.SuppressToolStripButton.Name = "SuppressToolStripButton";
+            this.SuppressToolStripButton.Click += new System.EventHandler(this.SuppressToolStripButton_Click);
+            // 
+            // RefreshToolStripButton
+            // 
+            resources.ApplyResources(this.RefreshToolStripButton, "RefreshToolStripButton");
+            this.RefreshToolStripButton.Name = "RefreshToolStripButton";
+            this.RefreshToolStripButton.Click += new System.EventHandler(this.RefreshToolStripButton_Click);
+            // 
+            // HistoryToolStripButton
+            // 
+            resources.ApplyResources(this.HistoryToolStripButton, "HistoryToolStripButton");
+            this.HistoryToolStripButton.Name = "HistoryToolStripButton";
+            this.HistoryToolStripButton.Click += new System.EventHandler(this.HistoryToolStripButton_Click);
+            // 
+            // AdministrationToolStripButton
+            // 
+            this.AdministrationToolStripButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            resources.ApplyResources(this.AdministrationToolStripButton, "AdministrationToolStripButton");
+            this.AdministrationToolStripButton.Name = "AdministrationToolStripButton";
+            this.AdministrationToolStripButton.Click += new System.EventHandler(this.AdministrationToolStripButton_Click);
+            // 
+            // ConfigStatementToolStripButton
+            // 
+            resources.ApplyResources(this.ConfigStatementToolStripButton, "ConfigStatementToolStripButton");
+            this.ConfigStatementToolStripButton.Name = "ConfigStatementToolStripButton";
+            this.ConfigStatementToolStripButton.Click += new System.EventHandler(this.ConfigStatementToolStripButton_Click);
+            // 
+            // StatisticsToolStripButton
+            // 
+            resources.ApplyResources(this.StatisticsToolStripButton, "StatisticsToolStripButton");
+            this.StatisticsToolStripButton.Name = "StatisticsToolStripButton";
+            this.StatisticsToolStripButton.Click += new System.EventHandler(this.StatisticsToolStripButton_Click);
+            // 
+            // BatchToolStripButton
+            // 
+            resources.ApplyResources(this.BatchToolStripButton, "BatchToolStripButton");
+            this.BatchToolStripButton.Name = "BatchToolStripButton";
+            this.BatchToolStripButton.Click += new System.EventHandler(this.BatchToolStripButton_Click);
+            // 
             // FTPToolStripButton
             // 
-            this.FTPToolStripButton.Image = global::Analytics_V2.Properties.Resources.FTP2;
             resources.ApplyResources(this.FTPToolStripButton, "FTPToolStripButton");
             this.FTPToolStripButton.Name = "FTPToolStripButton";
             this.FTPToolStripButton.Click += new System.EventHandler(this.FTPToolStripButton_Click);
@@ -625,6 +630,7 @@
         private ComponentFactory.Krypton.Toolkit.KryptonHeader BatchsHeader;
         private System.Windows.Forms.ListBox BatchListBox;
         private System.Windows.Forms.ToolStripButton FTPToolStripButton;
+        private System.Windows.Forms.ToolStripButton ExpandMinimizeToolStripButton;
 
 
 

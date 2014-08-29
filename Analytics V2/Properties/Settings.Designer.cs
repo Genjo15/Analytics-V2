@@ -26,7 +26,7 @@ namespace Analytics_V2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\MIMAS\\BUREAUTIQUE\\GROUPES\\Direction de l\'International\\POLE INFORMATIQUE\\Develo" +
-            "ppement Internes\\References Applications\\Analytics\\HC\\hc.cfg")]
+            "ppement Internes\\References Applications\\Analytics 2\\_UTILITIES\\HC\\hc.cfg")]
         public string hc_config {
             get {
                 return ((string)(this["hc_config"]));
@@ -51,7 +51,8 @@ namespace Analytics_V2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\MIMAS\\BUREAUTIQUE\\GROUPES\\Direction de l\'International\\POLE INFORMATIQUE\\Develo" +
-            "ppement Internes\\References Applications\\Analytics\\Process Templates")]
+            "ppement Internes\\References Applications\\Analytics 2\\_UTILITIES\\Process Template" +
+            "s")]
         public string interpretation_template {
             get {
                 return ((string)(this["interpretation_template"]));
@@ -64,7 +65,8 @@ namespace Analytics_V2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\MIMAS\\BUREAUTIQUE\\GROUPES\\Direction de l\'International\\POLE INFORMATIQUE\\Develo" +
-            "ppement Internes\\References Applications\\Analytics\\Recettes\\Template_XML.xml")]
+            "ppement Internes\\References Applications\\Analytics 2\\_UTILITIES\\Template_XML.xml" +
+            "")]
         public string xml_template {
             get {
                 return ((string)(this["xml_template"]));
@@ -83,6 +85,18 @@ namespace Analytics_V2.Properties {
             }
             set {
                 this["consistency_checking_path"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CREATION")]
+        public string defaultEditionMode {
+            get {
+                return ((string)(this["defaultEditionMode"]));
+            }
+            set {
+                this["defaultEditionMode"] = value;
             }
         }
     }

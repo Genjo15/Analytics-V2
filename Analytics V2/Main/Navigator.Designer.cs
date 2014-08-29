@@ -31,14 +31,16 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Navigator));
             this.NavigatorControl = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
+            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
+            this.EnableDisableAllProcessesButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
             this.SummaryTab = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.SummarySplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.SummarySplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ProgressGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.LogsNavigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.EnableDisableAllProcessesButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
-            this.switchButtonSpec = new ComponentFactory.Krypton.Navigator.ButtonSpecNavigator();
+            this.ContextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ClearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.NavigatorControl)).BeginInit();
             this.NavigatorControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SummaryTab)).BeginInit();
@@ -59,6 +61,7 @@
             this.ProgressGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LogsNavigator)).BeginInit();
             this.LogsNavigator.SuspendLayout();
+            this.ContextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // NavigatorControl
@@ -77,6 +80,21 @@
             this.NavigatorControl.Size = new System.Drawing.Size(638, 392);
             this.NavigatorControl.TabIndex = 0;
             this.NavigatorControl.Text = "kryptonNavigator1";
+            // 
+            // switchButtonSpec
+            // 
+            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            this.switchButtonSpec.ExtraText = "Creation Mode";
+            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
+            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
+            // 
+            // EnableDisableAllProcessesButtonSpec
+            // 
+            this.EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            this.EnableDisableAllProcessesButtonSpec.Image = global::Analytics_V2.Properties.Resources.ID;
+            this.EnableDisableAllProcessesButtonSpec.Text = "Order IDs ON/OFF";
+            this.EnableDisableAllProcessesButtonSpec.UniqueName = "02482CF2C38F499726B8DEB15AB43908";
+            this.EnableDisableAllProcessesButtonSpec.Click += new System.EventHandler(this.EnableDisableAllProcessesButtonSpec_Click);
             // 
             // SummaryTab
             // 
@@ -144,6 +162,11 @@
             this.ProgressGroupBox.Location = new System.Drawing.Point(5, 5);
             this.ProgressGroupBox.Name = "ProgressGroupBox";
             this.ProgressGroupBox.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.ProfessionalSystem;
+            // 
+            // ProgressGroupBox.Panel
+            // 
+            this.ProgressGroupBox.Panel.AutoScroll = true;
+            this.ProgressGroupBox.Panel.ContextMenuStrip = this.ContextMenuStrip2;
             this.ProgressGroupBox.Size = new System.Drawing.Size(475, 156);
             this.ProgressGroupBox.TabIndex = 0;
             this.ProgressGroupBox.Values.Heading = "Progress";
@@ -166,20 +189,20 @@
             this.ContextMenuStrip.Name = "ContextMenuStrip";
             this.ContextMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
-            // EnableDisableAllProcessesButtonSpec
+            // ContextMenuStrip2
             // 
-            this.EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
-            this.EnableDisableAllProcessesButtonSpec.Image = global::Analytics_V2.Properties.Resources.ID;
-            this.EnableDisableAllProcessesButtonSpec.Text = "Order IDs ON/OFF";
-            this.EnableDisableAllProcessesButtonSpec.UniqueName = "02482CF2C38F499726B8DEB15AB43908";
-            this.EnableDisableAllProcessesButtonSpec.Click += new System.EventHandler(this.EnableDisableAllProcessesButtonSpec_Click);
+            this.ContextMenuStrip2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ContextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ClearAllToolStripMenuItem});
+            this.ContextMenuStrip2.Name = "ContextMenuStrip2";
+            this.ContextMenuStrip2.Size = new System.Drawing.Size(153, 48);
             // 
-            // switchButtonSpec
+            // ClearAllToolStripMenuItem
             // 
-            this.switchButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
-            this.switchButtonSpec.ExtraText = "Creation Mode";
-            this.switchButtonSpec.Image = ((System.Drawing.Image)(resources.GetObject("switchButtonSpec.Image")));
-            this.switchButtonSpec.UniqueName = "A177BEABA78545302FBE677A857478D9";
+            this.ClearAllToolStripMenuItem.Name = "ClearAllToolStripMenuItem";
+            this.ClearAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ClearAllToolStripMenuItem.Text = "Clear All";
+            this.ClearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllToolStripMenuItem_Click);
             // 
             // Navigator
             // 
@@ -208,6 +231,7 @@
             this.ProgressGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.LogsNavigator)).EndInit();
             this.LogsNavigator.ResumeLayout(false);
+            this.ContextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -223,5 +247,7 @@
         internal new System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
         internal ComponentFactory.Krypton.Navigator.ButtonSpecNavigator switchButtonSpec;
         internal ComponentFactory.Krypton.Navigator.ButtonSpecNavigator EnableDisableAllProcessesButtonSpec;
+        private System.Windows.Forms.ContextMenuStrip ContextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem ClearAllToolStripMenuItem;
     }
 }

@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Analytics_V2</RootNamespace>
     <AssemblyName>Analytics V2</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l%27International\POLE INFORMATIQUE\Install Logiciels\Analytics V2\</PublishUrl>
     <Install>true</Install>
@@ -23,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>145</ApplicationRevision>
+    <ApplicationRevision>185</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -38,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,14 +49,17 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>8C4C700992E1E85B5510EB9CE2C0F5480066ED77</ManifestCertificateThumbprint>
@@ -72,7 +77,8 @@
     <ApplicationIcon>AnalyticsIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Calcul">
+    <Reference Include="Calcul, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Calcul\V2\Calcul.dll</HintPath>
     </Reference>
     <Reference Include="CanadaQH, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -127,7 +133,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>O:\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\Librairies\_Analytics\Format_QH\v2\Format_QH.dll</HintPath>
     </Reference>
-    <Reference Include="FTPManager">
+    <Reference Include="FTPManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\FTPManager\FTPManager\bin\Debug\FTPManager.dll</HintPath>
     </Reference>
     <Reference Include="HeaderConsistency">
@@ -342,10 +349,10 @@
     <Compile Include="Access\Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\WaitingScreen.cs">
+    <Compile Include="Misc\WaitingScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Configuration\WaitingScreen.Designer.cs">
+    <Compile Include="Misc\WaitingScreen.Designer.cs">
       <DependentUpon>WaitingScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\AnalyticsWebService\Reference.cs">
@@ -375,6 +382,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\ConfigSummary.resx">
       <DependentUpon>ConfigSummary.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\History.resx">
       <DependentUpon>History.cs</DependentUpon>
@@ -414,7 +422,7 @@
     <EmbeddedResource Include="Access\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\WaitingScreen.resx">
+    <EmbeddedResource Include="Misc\WaitingScreen.resx">
       <DependentUpon>WaitingScreen.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Analytics V2_CléTemporaire.pfx" />
@@ -515,6 +523,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AnalyticsIcon.ico" />
+    <None Include="Resources\ExpandPanel.png" />
+    <None Include="Resources\CollapsePanel.png" />
+    <None Include="Resources\ExpandMinimize.png" />
+    <None Include="Resources\Loading.png" />
     <None Include="Resources\FTP3.ico" />
     <None Include="Resources\FTP2.png" />
     <None Include="Service References\FTPWebService\Reference.svcmap">

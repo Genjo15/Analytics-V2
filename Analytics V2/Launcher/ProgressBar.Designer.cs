@@ -165,10 +165,10 @@
 
         internal ComponentFactory.Krypton.Toolkit.KryptonGroupBox ProgressBarGroupBox;
         internal ComponentFactory.Krypton.Toolkit.KryptonSplitContainer SplitContainer1;
-        private System.Windows.Forms.ProgressBar Bar;
         private ComponentFactory.Krypton.Toolkit.KryptonRichTextBox ProcessSummaryRichTextBox;
         private ComponentFactory.Krypton.Toolkit.KryptonButton ExpandMinimize;
         private ComponentFactory.Krypton.Toolkit.KryptonButton StopButton;
+        internal System.Windows.Forms.ProgressBar Bar;
 
     }
 }

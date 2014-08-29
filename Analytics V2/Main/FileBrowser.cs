@@ -198,29 +198,13 @@ namespace Analytics_V2
             {
                 if (element.FullPath.Equals(itemPath))
                 {
-                    //element.EnsureVisible();          ////
-                    //TreeView.SelectedNode = element;  // For information (several ways to do that)
                     TreeView.TopNode = element;
                     if (element.Parent != null && element.Parent != TreeView.Nodes[0])
                         TreeView.TopNode = element.Parent;
-                    //CheckParentForVisibility(element);
-
                 }
                 else BrowseAndSeek(element, itemPath);
             }
         }
-
-        //private void CheckParentForVisibility(TreeNode node)
-        //{
-        //    for(int i =0; i<4;i++)
-        //    {
-        //        if (node.Parent != null && node.Parent != TreeView.Nodes[0])
-        //        {
-        //            TreeView.TopNode = node.Parent;
-        //            CheckParentForVisibility(node.Parent);
-        //        }
-        //    }
-        //}
 
         /*****************************\
          * Sort (by type or by name) *
@@ -295,8 +279,6 @@ namespace Analytics_V2
 
         private void TreeView_GotFocus(object sender, EventArgs e)
         {
-            //if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
-            //    TreeView.SelectedNode.BackColor =System.Drawing.SystemColors.ControlLight;
             if (TreeView.SelectedNode != null && TreeView.SelectedNode.ImageIndex == 2)
             {
                 TreeView.SelectedNode.BackColor = System.Drawing.SystemColors.ControlLight;

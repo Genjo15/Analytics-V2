@@ -39,8 +39,6 @@ namespace Analytics_V2
 
         #region Methods
 
-
-
         #endregion
 
         #region Accessors

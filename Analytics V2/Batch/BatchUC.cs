@@ -17,9 +17,10 @@ namespace Analytics_V2
 
         #region Variables
 
-        private List<BatchElement> _BatchElements;
-        private List<BatchElementMulti> _BatchElementsMulti;
-        private List<Batch> _BatchsList;
+        private List<BatchElement> _BatchElements;           // Graphical elements for batch (single).
+        private List<BatchElementMulti> _BatchElementsMulti; // Graphical elements for batch (multi).
+        private List<Batch> _BatchsList;                     // List of ALL batchs.
+        private List<FTPManager.Region> _RegionsList;        // List of all regions (fetched from FTPManager).
 
         #endregion
 
@@ -27,7 +28,7 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public BatchUC()
+        public BatchUC(List<FTPManager.Region> FtpRegionsList)
         {
             InitializeComponent();
             this.Dock = DockStyle.Fill;
@@ -38,8 +39,7 @@ namespace Analytics_V2
             _BatchElements = new List<BatchElement>();
             _BatchElementsMulti = new List<BatchElementMulti>();
             _BatchsList = new List<Batch>();
-
-            // Test
+            _RegionsList = FtpRegionsList;
         }
 
         #endregion
@@ -308,22 +308,23 @@ namespace Analytics_V2
             {
                 BatchNameTextBox.Text = batch.Get_Name();
 
-                foreach (KeyValuePair<string, Tuple<string, string>> element in batch.Get_BatchElements())
+                foreach (KeyValuePair<string, Tuple<string, string, string>> element in batch.Get_BatchElements())
                 {
-                    BatchElement batchElement = new BatchElement();
+                    BatchElement batchElement = new BatchElement(_RegionsList);
                     batchElement.Config.Text = element.Value.Item1.Replace(".xml", "");
                     batchElement.Set_TargetPathTooltip(element.Key);
                     batchElement.Set_TargetPath(element.Key);
                     batchElement.Set_ConfigPath(element.Value.Item2);
                     batchElement.Set_ConfigName(element.Value.Item1.Replace(".xml", ""));
-
+                    batchElement.Set_FtpRegion(element.Value.Item3);
+                    batchElement.FTPComboBox.SelectedItem = element.Value.Item3;
+                    
                     batchElement.SuppressButton.Click += SuppressButton_Click;
 
                     // Add new element to the UC
                     BatchElementsGroupBox.Panel.Controls.Add(batchElement);
                     batchElement.Dock = DockStyle.Top;
                     batchElement.BringToFront();
-
                     _BatchElements.Add(batchElement);
                 }
             }
@@ -390,7 +391,7 @@ namespace Analytics_V2
 
                 foreach (BatchElement element in _BatchElements)
                 {
-                    batch.AddBatchElement(element.Get_TargetPath(), element.Get_ConfigName(), element.Get_ConfigPath());
+                    batch.AddBatchElement(element.Get_TargetPath(), element.Get_ConfigName(), element.Get_ConfigPath(),element.Get_FtpRegion());
                 }
 
                 _BatchsList.Add(batch);
@@ -455,10 +456,11 @@ namespace Analytics_V2
         
             if (node.ImageIndex == 2 && node.Text.Contains(".xml"))
             {
-                BatchElement batchElement = new BatchElement();
+                BatchElement batchElement = new BatchElement(_RegionsList);
                 batchElement.Config.Text = node.Text.Replace(".xml","");
                 batchElement.Set_ConfigPath(node.FullPath);
                 batchElement.Set_ConfigName(node.Text.Replace(".xml", ""));
+                batchElement.Set_FtpRegion("-");
                 batchElement.SuppressButton.Click += SuppressButton_Click;
         
                 // Add new element to the UC
@@ -507,12 +509,13 @@ namespace Analytics_V2
             {
                 BatchNameTextBoxMulti.Text = batch.Get_Name();
 
-                foreach (KeyValuePair<string, List<Tuple<string, string>>> element in batch.Get_BatchElementsMulti())
+                foreach (KeyValuePair<Tuple<string, string>, List<Tuple<string, string>>> element in batch.Get_BatchElementsMulti())
                 {
-                    BatchElementMulti batchElement = new BatchElementMulti();
-                    batchElement.Set_TargetPathTooltip(element.Key);
-                    batchElement.Set_TargetPath(element.Key);
-
+                    BatchElementMulti batchElement = new BatchElementMulti(_RegionsList);
+                    batchElement.Set_TargetPathTooltip(element.Key.Item1);
+                    batchElement.Set_TargetPath(element.Key.Item1);
+                    batchElement.Set_FtpRegion(element.Key.Item2);
+                    batchElement.FTPComboBox.Text = element.Key.Item2;
                     
                     for (int i = 0; i < element.Value.Count; i++)
                     {
@@ -535,7 +538,7 @@ namespace Analytics_V2
                             KryptonLabel configLabel = new KryptonLabel();
                             configLabel.Text = "Config : ";
                             configLabel.Tag = batchElement.Get_IdControls();
-                            configLabel.Location = new System.Drawing.Point(25, 65 + (batchElement.Get_AdditionalConfigsLabel().Count + 1) * 20);
+                            configLabel.Location = new System.Drawing.Point(35, 86 + (batchElement.Get_AdditionalConfigsLabel().Count + 1) * 20);
                             batchElement.GroupBox.Panel.Controls.Add(configLabel);
 
                             // Label config name
@@ -546,14 +549,14 @@ namespace Analytics_V2
                             configNameLabel.BackColor = System.Drawing.Color.Transparent;
                             configNameLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
                             configNameLabel.Tag = batchElement.Get_IdControls(); ;
-                            configNameLabel.Location = new System.Drawing.Point(85, 65 + (batchElement.Get_AdditionalConfigs().Count + 1) * 20);
+                            configNameLabel.Location = new System.Drawing.Point(94, 86 + (batchElement.Get_AdditionalConfigs().Count + 1) * 20);
                             batchElement.GroupBox.Panel.Controls.Add(configNameLabel);
 
                             // mini suppress button
                             KryptonButton button = new KryptonButton();
                             button.Tag = batchElement.Get_IdControls();
                             button.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.LowProfile;
-                            button.Location = new System.Drawing.Point(10, 67 + (batchElement.Get_AdditionalConfigs().Count + 1) * 20);
+                            button.Location = new System.Drawing.Point(10, 88 + (batchElement.Get_AdditionalConfigs().Count + 1) * 20);
                             button.Size = new System.Drawing.Size(16, 16);
                             button.Values.Image = global::Analytics_V2.Properties.Resources.Delete2;
                             button.Click += batchElement.SuppressConfigElement;
@@ -566,11 +569,9 @@ namespace Analytics_V2
                             // Add config to dictionnary
                             batchElement.Get_ConfigsInfo().Add(element.Value[i].Item1, element.Value[i].Item2);
 
-
                             batchElement.Height += 20;
                         }
                     }
-
 
                     // Add new element to the UC
                     BatchElementsGroupBoxMulti.Panel.Controls.Add(batchElement);
@@ -578,7 +579,6 @@ namespace Analytics_V2
                     batchElement.BringToFront();
 
                     _BatchElementsMulti.Add(batchElement);
-
                 }
             }
         }
@@ -630,7 +630,7 @@ namespace Analytics_V2
 
                 foreach (BatchElementMulti element in _BatchElementsMulti)
                 {
-                    batch.AddBatchElement(element.Get_TargetPath(), element.Get_ConfigsInfo());
+                    batch.AddBatchElement(element.Get_TargetPath(),element.Get_FtpRegion(), element.Get_ConfigsInfo());
                 }
 
                 _BatchsList.Add(batch);
@@ -690,10 +690,11 @@ namespace Analytics_V2
 
             if (node.ImageIndex == 2 && node.Text.Contains(".xml"))
             {
-                BatchElementMulti batchElement = new BatchElementMulti();
+                BatchElementMulti batchElement = new BatchElementMulti(_RegionsList);
                 batchElement.Config.Text = node.Text.Replace(".xml", "");
                 batchElement.Get_ConfigsInfo().Add(node.Text.Replace(".xml", ""), node.FullPath);
                 batchElement.SuppressButton.Click += SuppressButton_Click;
+                batchElement.Set_FtpRegion("-");
 
                 // Add new element to the UC
                 BatchElementsGroupBoxMulti.Panel.Controls.Add(batchElement);
@@ -718,6 +719,11 @@ namespace Analytics_V2
         public void Set_BatchsList(List<Batch> batchs)
         {
             _BatchsList = batchs;
+        }
+
+        public void Set_RegionsList(List<FTPManager.Region> regionsList)
+        {
+            _RegionsList = regionsList;
         }
 
         #endregion

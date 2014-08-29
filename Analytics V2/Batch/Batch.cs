@@ -12,8 +12,8 @@ namespace Analytics_V2
     {
         private string _Name;
         private string _Type;
-        Dictionary<string, Tuple<string,string>> _BatchElements;              // Batch (single config) -> For an element : Target path - Config Name/Config path.
-        Dictionary<string, List<Tuple<string, string>>> _BatchElementsMulti; // Batch (multi config) -> For an element : Target path - Tuple(Config Name / Config path).
+        Dictionary<string, Tuple<string,string,string>> _BatchElements;                     // Batch (single config) -> For an element : Target path - Config Name/Config path/Region FTP.
+        Dictionary<Tuple<string, string>, List<Tuple<string, string>>> _BatchElementsMulti; // Batch (multi config) -> For an element : Target path/FTP Region - Tuple(Config Name / Config path).
 
         /**************************************************** Constructor *****************************************************/
 
@@ -23,8 +23,11 @@ namespace Analytics_V2
         {
             _Name = name;
             _Type = type;
-            _BatchElements = new Dictionary<string, Tuple<string, string>>();
-            _BatchElementsMulti = new Dictionary<string,List<Tuple<string,string>>>();
+            _BatchElements = new Dictionary<string, Tuple<string, string, string>>();
+            _BatchElementsMulti = new Dictionary<Tuple<string,string>, List<Tuple<string, string>>>();
+        }
+        public Batch()
+        {
         }
 
         #endregion
@@ -37,11 +40,11 @@ namespace Analytics_V2
          * Add element of batch (single/multi) *
         \***************************************/
 
-        public void AddBatchElement(string targetPath, string configName, string configPath)
+        public void AddBatchElement(string targetPath, string configName, string configPath, string regionFTP)
         {
             try
             {
-                _BatchElements.Add(targetPath, Tuple.Create(configName, configPath));
+                _BatchElements.Add(targetPath, Tuple.Create(configName, configPath, regionFTP));
             }
             catch
             {
@@ -49,7 +52,7 @@ namespace Analytics_V2
             }
         }
 
-        public void AddBatchElement(string targetPath, Dictionary<string, string> configsInfo)
+        public void AddBatchElement(string targetPath, string ftpRegion, Dictionary<string, string> configsInfo)
         {
             try
             {
@@ -60,7 +63,7 @@ namespace Analytics_V2
                     listOfConfigsForOneElement.Add(Tuple.Create(configInfo.Key, configInfo.Value));
                 }
 
-                _BatchElementsMulti.Add(targetPath,listOfConfigsForOneElement);
+                _BatchElementsMulti.Add(Tuple.Create(targetPath,ftpRegion),listOfConfigsForOneElement);
 	
             }
             catch
@@ -83,12 +86,12 @@ namespace Analytics_V2
             return _Type;
         }
 
-        public Dictionary<string, Tuple<string, string>> Get_BatchElements()
+        public Dictionary<string, Tuple<string, string, string>> Get_BatchElements()
         {
             return _BatchElements;
         }
 
-        public Dictionary<string, List<Tuple<string,string>>> Get_BatchElementsMulti()
+        public Dictionary<Tuple<string,string>, List<Tuple<string,string>>> Get_BatchElementsMulti()
         {
             return _BatchElementsMulti;
         }

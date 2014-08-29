@@ -88,7 +88,6 @@ namespace Analytics_V2
             DataGridView.Name = name;
             _DatamodRootPath = "";
             _InputFileName = inputFile;
-            //_DatacheckerPath = dmPath.Replace(".txt", "_dc.log").Replace(".xml","_dc.log");
             _DatacheckerPath = Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + "_dc.log";
             if (File.Exists(Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + "_hc.log"))
                 _HCPath = Path.GetDirectoryName(dmPath) + "\\" + Path.GetFileNameWithoutExtension(dmPath) + "_hc.log";
@@ -148,7 +147,7 @@ namespace Analytics_V2
                     row.Cells[0].Value = processList[i].Get_OrderId();
                     row.Cells[1].Value = processList[i].Get_Name();
 
-                    // Check how many time the process has already been called
+                    // Check how many time the process has already been called (for example, if there are several COLUMNS, to know which one to analyze in the log file)
                     for (int j = 0; j < i + 1; j++)
                         if (processList[j].Get_Name().Equals(processList[i].Get_Name()))
                             occurrenceCounter++;
@@ -510,7 +509,6 @@ namespace Analytics_V2
                     listErrors.Add(" - Unknown Channel Id: ");
                     listErrors.Add(" - Unknown Typology Id: ");
 
-                    //AnalyzeProcessLog(" DataChecking log --------------", listErrors, commentsCell, checkCell, occurrenceNumber, _DatacheckerPath);
                     AnalyzeDatachecker(commentsCell, checkCell, _DatacheckerPath);
 
                     break;
@@ -523,7 +521,6 @@ namespace Analytics_V2
 
                     foreach (FileInfo file in files)
                     {
-                        //if (file.FullName.Contains(_InputFileName.Replace(".txt", "")) && file.FullName.Contains("CONTROLDIFF.log"))
                         if (file.FullName.Contains(Path.GetFileNameWithoutExtension(_InputFileName)) && file.FullName.Contains("CONTROLDIFF.log"))
                         {
                             _ControlDiffPath = file.FullName;
@@ -610,6 +607,8 @@ namespace Analytics_V2
             commentsCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             checkCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            /* 1ST PART : FOR EACH LINE OF LOG, COUNT ERRORS/WARNINGS/CRITICAL ERRORS ACCORDING TO ANALYZED PROCESS AND ERRORMESSAGES */
+
             try
             {
                 string line;
@@ -661,6 +660,9 @@ namespace Analytics_V2
             }
  
             catch { }
+
+
+            /* 2ND PART : FILL RESULTS IN CELLS (WARNINGS,CRITICAL ERRORS, INFOS), ACCORDING TO COUNTERS AND PROCESSES */
 
             if (warningCounter > 0)
             {
@@ -717,21 +719,6 @@ namespace Analytics_V2
                 checkCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
                 commentsCell.Style.ForeColor = System.Drawing.Color.CornflowerBlue;
             }
-
-            //else if (processToAnalyze.Contains("DataChecking") && informationOrCriticalCounter > 0)
-            //{
-            //    commentsCell.Value = "Unknown Typology or Channel , or Empty fields :  " + informationOrCriticalCounter;
-            //    checkCell.Value = "ALERT";
-            //    checkCell.Style.ForeColor = System.Drawing.Color.Red;
-            //    commentsCell.Style.ForeColor = System.Drawing.Color.Red;
-            //
-            //    // Renamme Datamod
-            //    try
-            //    {
-            //        File.Move(_DatamodLogPath.Replace(".log", ".txt"), _DatamodLogPath.Replace(".log", "") + "_ERROR_DC.txt");
-            //    }
-            //    catch { }
-            //}
 
             else if (processToAnalyze.Equals(("== CONTROL TOTAL TV ==")) && informationOrCriticalCounter > 0)
             {
@@ -913,7 +900,8 @@ namespace Analytics_V2
                             else if (line.Contains("NO DIFF"))
                             {
                                 checkTotalAudienceDico.Add(line.Replace(" : ", " ").Replace(" NO DIFF", ""), ' ');
-
+                                
+                                // first add line in a dictionnary (which will be analyzed after)
                                 if (checkNoDiffDico.ContainsKey(line.Split(new string[] { ":" }, StringSplitOptions.None)[1]))
                                     checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] = checkNoDiffDico[line.Split(new string[] { ":" }, StringSplitOptions.None)[1]] + 1;
                                 else checkNoDiffDico.Add(line.Split(new string[] { ":" }, StringSplitOptions.None)[1],1);
@@ -933,7 +921,7 @@ namespace Analytics_V2
                                 string[] splitResult = line.Split(null);
                                 int diff = int.Parse(splitResult[splitResult.Length-5]);
 
-                                //if ((float)diff < (float)(average / 2) || (float)diff > ((float)average + (float)(average / 2)))
+                                /* Directly analyze the line (compare the diff with the average value) */
                                 if ((float)diff < (float)(average / 2))
                                 {
                                     _DiffCriticalAlerts++;
@@ -966,7 +954,6 @@ namespace Analytics_V2
                                 seconds = int.Parse(duration.Split(new char[] { ':' }, StringSplitOptions.None)[1]);
                                 int durationSec = (minutes * 60) + seconds;
 
-                                //if ((float)durationSec < (float)(averageSec / 2) || (float)durationSec > ((float)averageSec + (float)(averageSec / 2)))
                                 if ((float)durationSec < (float)(averageSec / 2))
                                 {
                                     _DurationCriticalAlerts++;
@@ -1065,7 +1052,7 @@ namespace Analytics_V2
                 catch (Exception ex) { Console.WriteLine(ex); }
 
                 /////////////////////////////
-                // Compute & Display results
+                // Compute & Display results 
 
                 if (!isQH)
                 {

@@ -30,6 +30,9 @@ namespace Analytics_V2
             HCTextBox.Text = Properties.Settings.Default.hc_config;
             XMLTemplateTextBox.Text = Properties.Settings.Default.interpretation_template;
             ConsistencyCheckingTextBox.Text = Properties.Settings.Default.consistency_checking_path;
+            if (Properties.Settings.Default.defaultEditionMode.Equals("CREATION"))
+                CreationRadioButton.Checked = true;
+            else XMLRadioButton.Checked = true;
         }
 
         #endregion
@@ -118,10 +121,17 @@ namespace Analytics_V2
             }
         }
 
+        private void CreationRadioButton_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.defaultEditionMode = "CREATION";
+            Properties.Settings.Default.Save();
+        }
 
-
-
-
+        private void XMLRadioButton_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.defaultEditionMode = "XML";
+            Properties.Settings.Default.Save();
+        }
 
         #endregion
 

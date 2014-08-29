@@ -30,7 +30,6 @@ namespace Analytics_V2
             this.Dock = DockStyle.Fill;
 
             _AllConfigs = new List<Config>();
-            //_ConfigTreeView = new TreeView();
 
             InitializeDGVGraphical();
         }
@@ -99,7 +98,7 @@ namespace Analytics_V2
         public void FillDataGridView()
         {
             DataGridView.AllowUserToAddRows = true;
-            FillConfigsList();
+            FillConfigsList2();
             FillGrid();
 
             DataGridView.Sort(DataGridView.Columns[0], System.ComponentModel.ListSortDirection.Ascending);
@@ -130,6 +129,49 @@ namespace Analytics_V2
                 }          
         }
 
+        private void FillConfigsList2()
+        {
+            _AllConfigs.Clear();
+
+            DirectoryInfo prodPath = new DirectoryInfo(@"\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics 2");
+            //FileInfo[] files = prodPath.GetFiles();
+
+            /* Treat configs in path */
+            //TreatFiles(prodPath.GetFiles());
+
+            /* Treat all other configs in sub folders */
+            TreatDir(prodPath);
+
+        }
+
+        private void TreatFiles(FileInfo[] files)
+        {
+            foreach (FileInfo file in files)
+                if (file.FullName.Contains(".xml") && !file.FullName.Contains(".bak"))
+                {
+                    string[] splitResult = file.FullName.Split(new string[] { "\\" }, StringSplitOptions.None);
+                    try
+                    {
+                        _AllConfigs.Add(new Config(file.Name.Replace(".xml", ""), file.FullName));
+                    }
+                    catch { }
+                }
+        }
+
+        private void TreatDir(DirectoryInfo directory)
+        {
+            TreatFiles(directory.GetFiles());
+
+            foreach (DirectoryInfo dir in directory.GetDirectories())
+            {
+                if (!dir.Name.Contains("_RECETTES") && !dir.Name.Contains("_UTILITIES") && !dir.Name.Contains("Archived") && !dir.Name.Contains("HC") && !dir.Name.Contains("Process Templates") && !dir.Name.Contains("Configs Specifiques QH"))
+                {
+                    TreatDir(dir);
+                }             
+            }
+        }
+
+
         /******************************************************\
          * Fill grid:                                         *
          *   for each config                                  *
@@ -153,78 +195,114 @@ namespace Analytics_V2
 
                     foreach (Process process in config.Get_ProcessList())
                     {
+                        int i = 1;
                         if (process.Get_Name().Equals("COLUMNSCONCAT"))
-                            CheckCell(row, 1);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("FILESPLIT"))
-                            CheckCell(row, 2);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("LINESCONCAT"))
-                            CheckCell(row, 3);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("XLS2TXT"))
-                            CheckCell(row, 4);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("XML2TXT"))
-                            CheckCell(row, 5);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("XMLMERGE"))
-                            CheckCell(row, 6);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("CALCUL"))
-                            CheckCell(row, 7);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("CELLCOPY"))
-                            CheckCell(row, 8);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("COLUMNS"))
-                            CheckCell(row, 9);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("COLUMNDELETER"))
-                            CheckCell(row, 10);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("COLUMNMOVER"))
-                            CheckCell(row, 11);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("COPY"))
-                            CheckCell(row, 12);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("CUT"))
-                            CheckCell(row, 13);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("DATECONVERT"))
-                            CheckCell(row, 14);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("DATEFORMAT"))
-                            CheckCell(row, 15);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("DUPLICATES"))
-                            CheckCell(row, 16);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("EXPAND"))
-                            CheckCell(row, 17);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("FILTER"))
-                            CheckCell(row, 18);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("LEVELS"))
-                            CheckCell(row, 19);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("LINEDEL"))
-                            CheckCell(row, 20);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("QHFORMAT"))
-                            CheckCell(row, 21);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("REMOVER"))
-                            CheckCell(row, 22);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("REPLACE"))
-                            CheckCell(row, 23);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TIMECONVERT"))
-                            CheckCell(row, 24);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TIMEFORMAT"))
-                            CheckCell(row, 25);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TRANSCRIPT"))
-                            CheckCell(row, 26);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TRANSLATE"))
-                            CheckCell(row, 27);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TRANSPOSE"))
-                            CheckCell(row, 28);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("VALUECHECKER"))
-                            CheckCell(row, 29);
+                            CheckCell(row, i); 
+                        i++;
                         if (process.Get_Name().Equals("VALUECORRECTOR"))
-                            CheckCell(row, 30);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("WRITE"))
-                            CheckCell(row, 31);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("CONTROLDIFF"))
-                            CheckCell(row, 32);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("DATACHECKER"))
-                            CheckCell(row, 33);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("QHNUMBERS"))
-                            CheckCell(row, 34);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TOTALTVCONTROL"))
-                            CheckCell(row, 35);
+                            CheckCell(row, i);
+                        i++;
                         if (process.Get_Name().Equals("TXT2XML"))
-                            CheckCell(row, 36);
+                            CheckCell(row, i);
                     }
 
                     DataGridView.Rows.Add(row);

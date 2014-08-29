@@ -23,7 +23,8 @@ namespace Analytics_V2
 
         private List<KryptonHeaderGroup> _ProcessHeaderGroupList; // List of KryptonHeaderGroup.
         private KryptonGroupBox _WarningGroupBox;                 // Groupbox containing warning.
-        private XMLLoader.ButtonHelp _ButtonHelp;                 // Button helm (used when initializing a XMLLoader).
+        private XMLLoader.ButtonHelp _ButtonHelp;                 // Button help (used when initializing a XMLLoader).
+        private Delegate _ClearAllPG;                             // Delegate for clearing all finished progress bar.
         
         
         #endregion
@@ -32,7 +33,7 @@ namespace Analytics_V2
 
         #region Constructor
 
-        public Navigator(XMLLoader.ButtonHelp buttonHelp)
+        public Navigator(XMLLoader.ButtonHelp buttonHelp, Delegate del)
         {
             _ButtonHelp = buttonHelp;
 
@@ -45,6 +46,8 @@ namespace Analytics_V2
             ContextMenuStrip.ItemClicked += ContextMenuStrip_ItemClicked;
             ContextMenuStrip.Items.Add("Summary");
             switchButtonSpec.Click += switchButtonSpec_Click;
+
+            _ClearAllPG = del;
         }
 
         #endregion
@@ -143,9 +146,9 @@ namespace Analytics_V2
         }
 
 
-        /************************\
-         * Display Folder name  *
-        \************************/
+        /**************************************\
+         * Display Folder name in the summary *
+        \**************************************/
 
         public void DisplayFolderName(String name)
         {
@@ -179,28 +182,63 @@ namespace Analytics_V2
             header.Values.Image = null;
 
             // Display all batch elements
-            foreach (KeyValuePair<string, Tuple<string, string>> element in batch.Get_BatchElements())
+            if (batch.Get_BatchElements().Count > 0)
             {
-                KryptonHeaderGroup headerGroup = new KryptonHeaderGroup();
-                ButtonSpecHeaderGroup buttonSpecHeaderGroup = new ButtonSpecHeaderGroup();
-                headerGroup.Dock = System.Windows.Forms.DockStyle.Top;
-                headerGroup.HeaderPositionSecondary = ComponentFactory.Krypton.Toolkit.VisualOrientation.Left;
-                headerGroup.ValuesPrimary.Image = null;
-                headerGroup.HeaderStylePrimary = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
-                headerGroup.ValuesSecondary.Heading = "Target";
-                headerGroup.Text = element.Value.Item1;
-                buttonSpecHeaderGroup.Tag = headerGroup;
-                headerGroup.ButtonSpecs.AddRange(new ComponentFactory.Krypton.Toolkit.ButtonSpecHeaderGroup[] { buttonSpecHeaderGroup });
-                headerGroup.ButtonSpecs[0].Type = ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonExpand;
-                headerGroup.Size = new System.Drawing.Size(150, 23);
+                foreach (KeyValuePair<string, Tuple<string, string, string>> element in batch.Get_BatchElements())
+                {
+                    KryptonHeaderGroup headerGroup = new KryptonHeaderGroup();
+                    ButtonSpecHeaderGroup buttonSpecHeaderGroup = new ButtonSpecHeaderGroup();
+                    headerGroup.Dock = System.Windows.Forms.DockStyle.Top;
+                    headerGroup.HeaderPositionSecondary = ComponentFactory.Krypton.Toolkit.VisualOrientation.Left;
+                    headerGroup.ValuesPrimary.Image = null;
+                    headerGroup.HeaderStylePrimary = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
+                    headerGroup.ValuesSecondary.Heading = "Target";
+                    headerGroup.Text = element.Value.Item1;
+                    buttonSpecHeaderGroup.Tag = headerGroup;
+                    headerGroup.ButtonSpecs.AddRange(new ComponentFactory.Krypton.Toolkit.ButtonSpecHeaderGroup[] { buttonSpecHeaderGroup });
+                    headerGroup.ButtonSpecs[0].Type = ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonExpand;
+                    headerGroup.Size = new System.Drawing.Size(150, 23);
 
-                KryptonRichTextBox richTextBox = new KryptonRichTextBox();
-                richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-                richTextBox.ReadOnly = true;
-                richTextBox.Text = element.Key;
+                    KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                    richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                    richTextBox.ReadOnly = true;
+                    richTextBox.Text = element.Key + "\n\n FTP : " + element.Value.Item3;
 
-                headerGroup.Panel.Controls.Add(richTextBox);
-                _ProcessHeaderGroupList.Add(headerGroup);
+                    headerGroup.Panel.Controls.Add(richTextBox);
+                    _ProcessHeaderGroupList.Add(headerGroup);
+                }
+            }
+
+            else if (batch.Get_BatchElementsMulti().Count > 0)
+            {
+                foreach (KeyValuePair<Tuple<string, string>, List<Tuple<string, string>>> element in batch.Get_BatchElementsMulti())
+                {
+                    KryptonHeaderGroup headerGroup = new KryptonHeaderGroup();
+                    ButtonSpecHeaderGroup buttonSpecHeaderGroup = new ButtonSpecHeaderGroup();
+                    headerGroup.Dock = System.Windows.Forms.DockStyle.Top;
+                    headerGroup.HeaderPositionSecondary = ComponentFactory.Krypton.Toolkit.VisualOrientation.Left;
+                    headerGroup.ValuesPrimary.Image = null;
+                    headerGroup.HeaderStylePrimary = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
+                    headerGroup.ValuesSecondary.Heading = "Target";
+                    headerGroup.Text = element.Value[0].Item1;
+                    buttonSpecHeaderGroup.Tag = headerGroup;
+                    headerGroup.ButtonSpecs.AddRange(new ComponentFactory.Krypton.Toolkit.ButtonSpecHeaderGroup[] { buttonSpecHeaderGroup });
+                    headerGroup.ButtonSpecs[0].Type = ComponentFactory.Krypton.Toolkit.PaletteButtonSpecStyle.RibbonExpand;
+                    headerGroup.Size = new System.Drawing.Size(150, 23);
+
+                    KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                    richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                    richTextBox.ReadOnly = true;
+                    richTextBox.AppendText( "FTP : " + element.Key.Item2 + "\n\n");
+                    richTextBox.AppendText("Target path : " + element.Key.Item1 + "\n\n");
+                    richTextBox.AppendText("Configs :\n");
+
+                    foreach (Tuple<string, string> config in element.Value)
+                        richTextBox.AppendText(config.Item1 + "\n");
+
+                    headerGroup.Panel.Controls.Add(richTextBox);
+                    _ProcessHeaderGroupList.Add(headerGroup);
+                }
             }
 
             _ProcessHeaderGroupList.Reverse();
@@ -208,6 +246,7 @@ namespace Analytics_V2
                 this.SummarySplitContainer1.Panel1.Controls.Add(element);
 
             this.SummarySplitContainer1.Panel1.Controls.Add(header);
+            
         }
 
         /**************************************************************\
@@ -217,32 +256,49 @@ namespace Analytics_V2
          *   - Manage the event when clicking on "Close".             *
         \**************************************************************/
 
-        public void AddTab(String tabName, String path)
+        public void AddTab(String tabName, String path, string defaultMode)
         {
             KryptonPage navigatorTab = new KryptonPage();
             ButtonSpecAny closeButton = new ButtonSpecAny();
             XMLLoader.XMLForm XMLLoader = new XMLLoader.XMLForm();
             
-            try
+            if(defaultMode.Equals("CREATION"))
             {
-                GC.Collect();
-                XMLLoader.Dock = DockStyle.Fill;
-                XMLLoader.init(Properties.Settings.Default.interpretation_template, _ButtonHelp);
-                XMLLoader.loadXML(path);
-                XMLLoader.Tag = path;
-                navigatorTab.Tag = true;
-                navigatorTab.Controls.Add(XMLLoader);
-                switchButtonSpec.ExtraText = "XML Mode";
-                EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                try
+                {
+                    GC.Collect();
+                    XMLLoader.Dock = DockStyle.Fill;
+                    XMLLoader.init(Properties.Settings.Default.interpretation_template, _ButtonHelp);
+                    XMLLoader.loadXML(path);
+                    XMLLoader.Tag = path;
+                    navigatorTab.Tag = true;
+                    navigatorTab.Controls.Add(XMLLoader);
+                    switchButtonSpec.ExtraText = "XML Mode";
+                    EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                }
+
+                // If no connection, New tab (XML mode)
+                catch (Exception ex)
+                {
+                    var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.\n\n\n" + ex, "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+
+                    KryptonRichTextBox richTextBox = new KryptonRichTextBox();
+                    richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+                    richTextBox.Name = tabName + "RichTextBox";
+                    richTextBox.Text = "";
+                    richTextBox.Tag = path;
+                    navigatorTab.Tag = false;
+                    switchButtonSpec.ExtraText = "Creation Mode";
+                    EnableDisableAllProcessesButtonSpec.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                    navigatorTab.Controls.Add(richTextBox);
+                    DisplayXml(richTextBox);
+                }
             }
 
-            // If no connection, New tab (XML mode)
-            catch (Exception ex)
+            else if (defaultMode.Equals("XML"))
             {
-                var result = KryptonMessageBox.Show("Unable to access XML Template (maybe there is no network). No Creation Mode available.\n\n\n" + ex, "Error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
-
                 KryptonRichTextBox richTextBox = new KryptonRichTextBox();
                 richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
                 richTextBox.Name = tabName + "RichTextBox";
@@ -375,28 +431,15 @@ namespace Analytics_V2
                 ButtonSpecAny buttonSpec = sender as ButtonSpecAny;
                 KryptonPage tab = buttonSpec.Tag as KryptonPage;
 
-                //if (tab.Text.Contains('*'))
-                //{
-                //    var result = KryptonMessageBox.Show("Config unsaved. Close Anyway ?\n\n                        ", "Close Tab",
-                //     MessageBoxButtons.YesNo,
-                //     MessageBoxIcon.Warning);
-                //
-                //    if (result == DialogResult.Yes)
-                //        NavigatorControl.Pages.Remove(tab);
-                //}
-                //
-                //else
-                //{
-                    if ((Boolean)tab.Tag == true)
+                if ((Boolean)tab.Tag == true)
+                {
+                    foreach (Control c in tab.Controls)
                     {
-                        foreach (Control c in tab.Controls)
-                        {
-                            ((XMLLoader.XMLForm)c).Dispose();
-                        }
+                        ((XMLLoader.XMLForm)c).Dispose();
                     }
+                }
 
-                    NavigatorControl.Pages.Remove(tab);
-                //}
+                NavigatorControl.Pages.Remove(tab);
     
                 foreach(ToolStripMenuItem element in ContextMenuStrip.Items)
                 {
@@ -532,17 +575,6 @@ namespace Analytics_V2
             }
         }
 
-        #endregion
-
-        #region Accessors
-
-        public List<KryptonHeaderGroup> Get_ProcessHeaderGroupList()
-        {
-            return _ProcessHeaderGroupList;
-        }
-
-        #endregion
-
         /**********************************************************************\
          * Event for clicking on the Enable/Disable button of the navigator : *
          *    - Enable or disable all processes at once                       *
@@ -559,5 +591,26 @@ namespace Analytics_V2
                 }
             }
         }
+
+        /**************************************************************\
+         * Event for clicking on the "Clear All" toolstrip menu item  *
+         *    Clear all completed PG (by invoking delegate)           *
+        \**************************************************************/
+
+        private void ClearAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _ClearAllPG.DynamicInvoke();
+        }
+
+        #endregion
+
+        #region Accessors
+
+        public List<KryptonHeaderGroup> Get_ProcessHeaderGroupList()
+        {
+            return _ProcessHeaderGroupList;
+        }
+
+        #endregion
     }
 }

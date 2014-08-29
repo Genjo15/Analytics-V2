@@ -51,7 +51,6 @@ namespace Analytics_V2
 
             _NavigatorTab.ButtonSpecs[0].Tag = _NavigatorTab;
 
-            //_InitializeLogsGridViewDel = new processOnLog(InitializeLogsGridView);
             _AddLogsGridViewDel = new processOnLog(AddLogsGridView);
 
             _SplitContainer = new KryptonSplitContainer();
@@ -99,7 +98,6 @@ namespace Analytics_V2
             }
         }
 
-
         private void DisplayLogsGridView(object sender, EventArgs e)
         {
             _SplitContainer.Panel2.Controls.Clear();
@@ -120,11 +118,6 @@ namespace Analytics_V2
         {
             return _NavigatorTab;
         }
-
-        //public Delegate Get_InitializeLogsGridViewDel()
-        //{
-        //    return _InitializeLogsGridViewDel;
-        //}
 
         public Delegate Get_AddLogsGridViewDel()
         {

@@ -219,6 +219,7 @@ namespace Analytics_V2
             switch (actionType)
             {
                 case "newDirectory" :
+                case "newFile":
                 case "dragDrop":
                 case "newConfig":
                 case "rename":

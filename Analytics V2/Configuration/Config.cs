@@ -379,7 +379,6 @@ namespace Analytics_V2
             return clonedConfig;
         }
 
-
         /**********************\
          * Clone process list *
         \**********************/
@@ -566,7 +565,6 @@ namespace Analytics_V2
 
 
         }
-
 
         #endregion
 

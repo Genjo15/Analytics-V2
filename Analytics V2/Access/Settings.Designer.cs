@@ -41,6 +41,9 @@
             this.PersonnalPathButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.PersonnalPathTextBox = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
             this.PersonnalPathLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
+            this.DefaultEditionModeLabel = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
+            this.CreationRadioButton = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
+            this.XMLRadioButton = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.GroupBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GroupBox.Panel)).BeginInit();
             this.GroupBox.Panel.SuspendLayout();
@@ -56,6 +59,9 @@
             // 
             // GroupBox.Panel
             // 
+            this.GroupBox.Panel.Controls.Add(this.XMLRadioButton);
+            this.GroupBox.Panel.Controls.Add(this.CreationRadioButton);
+            this.GroupBox.Panel.Controls.Add(this.DefaultEditionModeLabel);
             this.GroupBox.Panel.Controls.Add(this.ConsistencyCheckingButton);
             this.GroupBox.Panel.Controls.Add(this.ConsistencyCheckingTextBox);
             this.GroupBox.Panel.Controls.Add(this.ConsistencyPathLabel);
@@ -68,7 +74,7 @@
             this.GroupBox.Panel.Controls.Add(this.PersonnalPathButton);
             this.GroupBox.Panel.Controls.Add(this.PersonnalPathTextBox);
             this.GroupBox.Panel.Controls.Add(this.PersonnalPathLabel);
-            this.GroupBox.Size = new System.Drawing.Size(633, 321);
+            this.GroupBox.Size = new System.Drawing.Size(633, 329);
             this.GroupBox.TabIndex = 0;
             // 
             // ConsistencyCheckingButton
@@ -191,13 +197,39 @@
             this.PersonnalPathLabel.TabIndex = 0;
             this.PersonnalPathLabel.Values.Text = "Personnal Folder :";
             // 
+            // DefaultEditionModeLabel
+            // 
+            this.DefaultEditionModeLabel.Location = new System.Drawing.Point(24, 281);
+            this.DefaultEditionModeLabel.Name = "DefaultEditionModeLabel";
+            this.DefaultEditionModeLabel.Size = new System.Drawing.Size(149, 20);
+            this.DefaultEditionModeLabel.TabIndex = 12;
+            this.DefaultEditionModeLabel.Values.Text = "Edition Mode By Default :";
+            // 
+            // CreationRadioButton
+            // 
+            this.CreationRadioButton.Location = new System.Drawing.Point(210, 281);
+            this.CreationRadioButton.Name = "CreationRadioButton";
+            this.CreationRadioButton.Size = new System.Drawing.Size(104, 20);
+            this.CreationRadioButton.TabIndex = 13;
+            this.CreationRadioButton.Values.Text = "Creation Mode";
+            this.CreationRadioButton.Click += new System.EventHandler(this.CreationRadioButton_Click);
+            // 
+            // XMLRadioButton
+            // 
+            this.XMLRadioButton.Location = new System.Drawing.Point(350, 281);
+            this.XMLRadioButton.Name = "XMLRadioButton";
+            this.XMLRadioButton.Size = new System.Drawing.Size(82, 20);
+            this.XMLRadioButton.TabIndex = 14;
+            this.XMLRadioButton.Values.Text = "XML Mode";
+            this.XMLRadioButton.Click += new System.EventHandler(this.XMLRadioButton_Click);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.GroupBox);
             this.Name = "Settings";
-            this.Size = new System.Drawing.Size(633, 321);
+            this.Size = new System.Drawing.Size(633, 329);
             ((System.ComponentModel.ISupportInitialize)(this.GroupBox.Panel)).EndInit();
             this.GroupBox.Panel.ResumeLayout(false);
             this.GroupBox.Panel.PerformLayout();
@@ -222,5 +254,8 @@
         private ComponentFactory.Krypton.Toolkit.KryptonButton ConsistencyCheckingButton;
         private ComponentFactory.Krypton.Toolkit.KryptonTextBox ConsistencyCheckingTextBox;
         private ComponentFactory.Krypton.Toolkit.KryptonLabel ConsistencyPathLabel;
+        private ComponentFactory.Krypton.Toolkit.KryptonRadioButton XMLRadioButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonRadioButton CreationRadioButton;
+        private ComponentFactory.Krypton.Toolkit.KryptonLabel DefaultEditionModeLabel;
     }
 }

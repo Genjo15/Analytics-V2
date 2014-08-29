@@ -67,7 +67,6 @@ namespace Analytics_V2
             {
                 if ((p.Get_OrderId() < 0 && _PreProcess) || ((p.Get_OrderId() > 0 & p.Get_OrderId() < 100) && _Process) || ((p.Get_OrderId() > 100 && _Control)))
                     _NumberOfProcesses++;
-
             }
 
             _Logs = null;
@@ -95,7 +94,7 @@ namespace Analytics_V2
 
         /********************************************************************\
          * Run the config (method called when a thread starts)              *
-         *   - Time the whole process.                                      *
+         *   - Measure the whole process time.                              *
          *   - Perform Preprocess.                                          *
          *   - Treat each input file :                                      *
          *       - Convert the current treated file into a list of strings. *
@@ -104,7 +103,8 @@ namespace Analytics_V2
          *       - Perform Controls.                                        *
          *       - Perform Header Consistency.                              *
          *       - Write logs.                                              *
-         *   - Create Logs Datagrid View.                                   *
+         *       - Create Logs Datagrid View.                               *
+         *       - Update stats                                             *
         \********************************************************************/
 
         internal void Run(int id)
@@ -125,7 +125,6 @@ namespace Analytics_V2
                 UpdateRichTextBox("title", "PRE-PROCESS");
 
                 foreach (Process process in _Config.Get_ProcessList().OrderBy(x => x.Get_OrderId()))
-                //foreach (Process process in _Config.Get_ProcessList())
                     if (process.Get_OrderId() < 0)
                     {
                         try
@@ -560,7 +559,7 @@ namespace Analytics_V2
                     UpdateRichTextBox("function", "LINEDEL..... ");
                     try
                     {
-                        LineDeleter.LineDeleter lineDeleterProcess = new LineDeleter.LineDeleter(_TabData, dataTable, _Config.Get_Headerlines(), _Config.Get_DataSeparator(), _CurrentFile);
+                        LineDeleter.LineDeleter lineDeleterProcess = new LineDeleter.LineDeleter(_TabData, dataTable, _Config.Get_Headerlines(),_Config.Get_DataSeparator(), _CurrentFile);
                         _TabData = lineDeleterProcess.Run();
                         lineDeleterProcess = null;
                         UpdateRichTextBox("complete", "Complete!");

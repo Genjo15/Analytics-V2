@@ -3,19 +3,22 @@
   <Profiles />
   <Settings>
     <Setting Name="hc_config" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\HC\hc.cfg</Value>
+      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics 2\_UTILITIES\HC\hc.cfg</Value>
     </Setting>
     <Setting Name="local_path" Type="System.String" Scope="User">
       <Value Profile="(Default)">D:\\</Value>
     </Setting>
     <Setting Name="interpretation_template" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\Process Templates</Value>
+      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics 2\_UTILITIES\Process Templates</Value>
     </Setting>
     <Setting Name="xml_template" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics\Recettes\Template_XML.xml</Value>
+      <Value Profile="(Default)">\\MIMAS\BUREAUTIQUE\GROUPES\Direction de l'International\POLE INFORMATIQUE\Developpement Internes\References Applications\Analytics 2\_UTILITIES\Template_XML.xml</Value>
     </Setting>
     <Setting Name="consistency_checking_path" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\Janus\PRODUCTION\APPLICATIONS\CONSISTENCY CHECKING\MyETV\2014\</Value>
+    </Setting>
+    <Setting Name="defaultEditionMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CREATION</Value>
     </Setting>
   </Settings>
 </SettingsFile>
